@@ -207,16 +207,22 @@
     font-family: var(--sans);
     font-weight: 500;
     font-size: clamp(48px, 9vw, 140px);
-    line-height: 0.95;
+    line-height: 1.05;
     letter-spacing: -0.045em;
     color: var(--fg);
   }
 
-  .big.heavy { font-weight: 900; }
-  .big.light { font-weight: 400; }
+  .big.heavy { font-weight: 900; line-height: 0.95; }
+  .big.light { font-weight: 400; line-height: 1.15; }
 
   .big .orange { color: var(--orange); }
   .big .dim { color: var(--fg-dim); }
+
+  .slide.url-slide .big {
+    white-space: nowrap;
+    font-size: clamp(36px, 9vw, 140px);
+    letter-spacing: -0.05em;
+  }
 
   .word {
     display: inline-block;
@@ -643,7 +649,8 @@ const slides = [
     weight: "heavy",
     hold: 1800,
     reveal: "char",
-    revealSpeed: 42
+    revealSpeed: 42,
+    isURL: true
   },
   {
     html: `<a class="cta-link" id="ctaLink" href="https://markszymanski.co/work-with-me" target="_top" rel="noopener">Find me there →</a>`,
@@ -792,7 +799,8 @@ function createSlide(slide, index) {
   const el = document.createElement("div");
   el.className = "slide"
     + (slide.isCTA ? " cta-slide" : "")
-    + (slide.isGreeting ? " greeting-slide" : "");
+    + (slide.isGreeting ? " greeting-slide" : "")
+    + (slide.isURL ? " url-slide" : "");
 
   const inner = document.createElement("div");
   inner.className = "slide-inner";
