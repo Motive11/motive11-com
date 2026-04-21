@@ -6,6 +6,8 @@
 <title>Motive11</title>
 <meta name="description" content="Motive11 is the entity. Mark is the operator. One person plus AI, building web systems and automations from Pittsburgh." />
 <meta name="theme-color" content="#1E1E1F" />
+<meta http-equiv="Content-Language" content="en" />
+<meta name="google" content="notranslate" />
 
 <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
 <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
@@ -148,11 +150,28 @@
   .pause-btn.paused .icon-play { display: block; }
   .pause-btn.paused .icon-pause { display: none; }
 
+  .station a {
+    display: block;
+    line-height: 0;
+  }
+
   .station .logo {
     display: block;
     height: 22px;
     width: auto;
     opacity: 0.85;
+    transition: opacity 0.3s ease;
+  }
+
+  .station a:hover .logo,
+  .station a:focus-visible .logo {
+    opacity: 1;
+  }
+
+  .station a:focus-visible {
+    outline: 1px solid var(--fg-faint);
+    outline-offset: 6px;
+    border-radius: 2px;
   }
 
   .stage {
@@ -329,7 +348,9 @@
 <div class="progress" id="progress"></div>
 
 <div class="station">
-  <img class="logo" src="/images/logo-light.svg" alt="Motive11" />
+  <a href="/" aria-label="Replay from the start">
+    <img class="logo" src="/images/logo-light.svg" alt="Motive11" />
+  </a>
 </div>
 <div class="footer-mark">Motive11, LLC</div>
 <div class="footer-mark-right">Est. 2018</div>
