@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Motive11</title>
+<meta name="description" content="Motive11 is the entity. Mark is the operator. One person plus AI, building web systems and automations from Pittsburgh." />
+<meta name="theme-color" content="#1E1E1F" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://motive11.com/" />
+<meta property="og:title" content="Motive11" />
+<meta property="og:description" content="Motive11 is the entity. Mark is the operator." />
+<meta property="og:image" content="https://motive11.com/images/icon-512.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Motive11" />
+<meta name="twitter:description" content="Motive11 is the entity. Mark is the operator." />
+<meta name="twitter:image" content="https://motive11.com/images/icon-512.png" />
+
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<!-- Satoshi: distinctive geometric sans, not Inter, not General Sans -->
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1E1E1F;
+    --fg: #F4F3EF;
+    --fg-dim: rgba(244, 243, 239, 0.55);
+    --fg-faint: rgba(244, 243, 239, 0.18);
+    --orange: #d64916;
+    --sans: "Satoshi", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%);
+  }
+
+  #scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: var(--orange);
+    z-index: 20;
+    box-shadow: 0 0 12px var(--orange);
+  }
+
+  .station,
+  .footer-mark,
+  .footer-mark-right {
+    position: fixed;
+    z-index: 15;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--fg-dim);
+    font-weight: 500;
+  }
+  .station {
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .footer-mark { bottom: 24px; left: 28px; color: var(--fg-faint); }
+  .footer-mark-right { bottom: 24px; right: 28px; color: var(--fg-faint); }
+
+  .pause-btn {
+    position: fixed;
+    right: 28px;
+    bottom: 56px;
+    z-index: 16;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid var(--fg-faint);
+    border-radius: 50%;
+    color: var(--orange);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 1.2s ease, border-color 0.3s ease, background 0.3s ease;
+    padding: 0;
+    font-family: inherit;
+  }
+
+  .pause-btn.visible {
+    opacity: 0.7;
+  }
+
+  .pause-btn:hover,
+  .pause-btn:focus-visible {
+    opacity: 1;
+    border-color: var(--fg-dim);
+    background: rgba(214, 73, 22, 0.08);
+    outline: none;
+  }
+
+  .pause-btn svg {
+    width: 14px;
+    height: 14px;
+    display: block;
+  }
+
+  .pause-btn .icon-play { display: none; }
+  .pause-btn.paused .icon-play { display: block; }
+  .pause-btn.paused .icon-pause { display: none; }
+
+  .station .logo {
+    display: block;
+    height: 22px;
+    width: auto;
+    opacity: 0.85;
+  }
+
+  .stage {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 6vw;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .slide-inner {
+    width: 100%;
+    max-width: 1400px;
+    text-align: left;
+  }
+
+  .big {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: clamp(48px, 9vw, 140px);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    color: var(--fg);
+  }
+
+  .big.heavy { font-weight: 900; }
+  .big.light { font-weight: 400; }
+
+  .big .orange { color: var(--orange); }
+  .big .dim { color: var(--fg-dim); }
+
+  .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.4em);
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    white-space: pre;
+  }
+
+  .word.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.3em);
+    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    white-space: pre;
+  }
+
+  .char.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .cta-slide .big {
+    font-size: clamp(40px, 7vw, 100px);
+  }
+
+  .cta-link {
+    display: inline-block;
+    color: var(--orange);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 8px;
+  }
+
+  .cta-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 3px;
+    background: var(--orange);
+    transition: width 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+  }
+
+  .cta-link.drawn::after {
+    width: 100%;
+  }
+
+  /* Greeting slide: portrait + text */
+  .slide.greeting-slide .slide-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+    text-align: left;
+  }
+
+  .portrait {
+    flex-shrink: 0;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(0.94);
+    transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 0 1px rgba(244, 243, 239, 0.18),
+                0 0 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .portrait.in {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .greeting-text {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: clamp(36px, 6vw, 84px);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    color: var(--fg);
+  }
+
+  .greeting-text .line {
+    display: block;
+  }
+
+  .greeting-text .wave {
+    display: inline-block;
+    margin-right: 0.15em;
+  }
+
+  @media (max-width: 640px) {
+    .portrait { width: 96px; height: 96px; }
+    .slide.greeting-slide .slide-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .greeting-text { font-size: clamp(32px, 9vw, 56px); }
+    .slide { padding: 100px 24px; }
+    .big { font-size: clamp(40px, 13vw, 80px); }
+    .cta-slide .big { font-size: clamp(32px, 10vw, 60px); }
+    .footer-mark, .footer-mark-right { font-size: 9px; letter-spacing: 0.2em; }
+    .station { top: 18px; }
+    .station .logo { height: 18px; }
+    .footer-mark { bottom: 18px; left: 18px; }
+    .footer-mark-right { bottom: 18px; right: 18px; }
+  }
+
+  @media (max-width: 420px) {
+    .footer-mark-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="scene"></canvas>
+
+<div class="progress" id="progress"></div>
+
+<div class="station">
+  <img class="logo" src="/images/logo-light.svg" alt="Motive11" />
+</div>
+<div class="footer-mark">Motive11, LLC</div>
+<div class="footer-mark-right">Est. 2018</div>
+<button class="pause-btn" id="pauseBtn" aria-label="Pause" type="button">
+  <svg class="icon-pause" viewBox="0 0 12 14" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="3" height="12" rx="0.5"/><rect x="8" y="1" width="3" height="12" rx="0.5"/></svg>
+  <svg class="icon-play" viewBox="0 0 12 14" fill="currentColor" aria-hidden="true"><path d="M2 1.5 L11 7 L2 12.5 Z"/></svg>
+</button>
+
+<div class="stage" id="stage"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from "three";
+
+// ============ BACKGROUND ============
+const canvas = document.getElementById("scene");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x1E1E1F, 0.045);
+
+const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.z = 8;
+
+const particleCount = window.innerWidth < 640 ? 1000 : 2500;
+const positions = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
+const sizes = new Float32Array(particleCount);
+const velocities = new Float32Array(particleCount * 3);
+
+const orangeColor = new THREE.Color(0xd64916);
+const whiteColor = new THREE.Color(0xF4F3EF);
+
+for (let i = 0; i < particleCount; i++) {
+  const i3 = i * 3;
+  positions[i3]     = (Math.random() - 0.5) * 45;
+  positions[i3 + 1] = (Math.random() - 0.5) * 30;
+  positions[i3 + 2] = (Math.random() - 0.5) * 35 - 8;
+
+  const isOrange = Math.random() < 0.05;
+  const c = isOrange ? orangeColor : whiteColor;
+  colors[i3]     = c.r;
+  colors[i3 + 1] = c.g;
+  colors[i3 + 2] = c.b;
+
+  sizes[i] = isOrange ? 0.05 + Math.random() * 0.03 : 0.012 + Math.random() * 0.018;
+
+  velocities[i3]     = (Math.random() - 0.5) * 0.0004;
+  velocities[i3 + 1] = (Math.random() - 0.5) * 0.0004;
+  velocities[i3 + 2] = (Math.random() - 0.5) * 0.0003;
+}
+
+const geometry = new THREE.BufferGeometry();
+geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+
+const particleMaterial = new THREE.ShaderMaterial({
+  uniforms: {},
+  vertexShader: `
+    attribute float size;
+    varying vec3 vColor;
+    void main() {
+      vColor = color;
+      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+      gl_PointSize = size * (450.0 / -mvPosition.z);
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+    void main() {
+      vec2 xy = gl_PointCoord.xy - vec2(0.5);
+      float r = length(xy);
+      if (r > 0.5) discard;
+      float alpha = smoothstep(0.5, 0.0, r);
+      gl_FragColor = vec4(vColor, alpha * 0.55);
+    }
+  `,
+  vertexColors: true,
+  transparent: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
+});
+
+const particles = new THREE.Points(geometry, particleMaterial);
+scene.add(particles);
+
+const glowGeom = new THREE.PlaneGeometry(70, 45);
+const glowMat = new THREE.ShaderMaterial({
+  uniforms: { time: { value: 0 } },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform float time;
+    varying vec2 vUv;
+    void main() {
+      vec2 center = vec2(0.5 + sin(time * 0.08) * 0.2, 0.5 + cos(time * 0.06) * 0.12);
+      float d = distance(vUv, center);
+      float glow = smoothstep(0.6, 0.0, d) * 0.28;
+      vec3 col = vec3(0.839, 0.286, 0.086) * glow;
+      gl_FragColor = vec4(col, glow);
+    }
+  `,
+  transparent: true,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
+});
+const glow = new THREE.Mesh(glowGeom, glowMat);
+glow.position.z = -22;
+scene.add(glow);
+
+const clock = new THREE.Clock();
+function animate() {
+  const t = clock.getElapsedTime();
+  const pos = geometry.attributes.position.array;
+
+  for (let i = 0; i < particleCount; i++) {
+    const i3 = i * 3;
+    pos[i3]     += velocities[i3];
+    pos[i3 + 1] += velocities[i3 + 1];
+    pos[i3 + 2] += velocities[i3 + 2];
+
+    if (pos[i3] > 22)  pos[i3] = -22;
+    if (pos[i3] < -22) pos[i3] = 22;
+    if (pos[i3 + 1] > 15)  pos[i3 + 1] = -15;
+    if (pos[i3 + 1] < -15) pos[i3 + 1] = 15;
+    if (pos[i3 + 2] > 18)  pos[i3 + 2] = -18;
+    if (pos[i3 + 2] < -20) pos[i3 + 2] = 12;
+  }
+  geometry.attributes.position.needsUpdate = true;
+
+  particles.rotation.y = t * 0.012;
+  particles.rotation.x = Math.sin(t * 0.06) * 0.015;
+
+  glowMat.uniforms.time.value = t;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ============ SLIDES ============
+const slides = [
+  {
+    isGreeting: true,
+    hold: 2400
+  },
+  {
+    html: `Thanks for stopping by<br>motive11.com.`,
+    weight: "light",
+    hold: 1600,
+    reveal: "word",
+    revealSpeed: 85
+  },
+  {
+    html: `I'm not gonna keep you.<br>I just wanna be straight with you.`,
+    weight: "light",
+    hold: 1800,
+    reveal: "word",
+    revealSpeed: 80
+  },
+  {
+    html: `The whole time<br>I've been doing this,`,
+    weight: "light",
+    hold: 1400,
+    reveal: "word",
+    revealSpeed: 90
+  },
+  {
+    html: `it's just been <span class="orange">me.</span>`,
+    weight: "heavy",
+    hold: 2000,
+    reveal: "word",
+    revealSpeed: 130
+  },
+  {
+    html: `The default in this space<br>is to be a "we."`,
+    weight: "",
+    hold: 1800,
+    reveal: "word",
+    revealSpeed: 75
+  },
+  {
+    html: `<span class="dim">Even if you're not.</span>`,
+    weight: "light",
+    hold: 2000,
+    reveal: "word",
+    revealSpeed: 110
+  },
+  {
+    html: `I always felt more like<br>an <span class="orange">"I"</span> than a "we."`,
+    weight: "heavy",
+    hold: 2400,
+    reveal: "word",
+    revealSpeed: 100
+  },
+  {
+    html: `Motive11 <span class="dim">is</span><br>the entity.`,
+    weight: "heavy",
+    hold: 1800,
+    reveal: "word",
+    revealSpeed: 110
+  },
+  {
+    html: `I'm <span class="orange">the operator.</span>`,
+    weight: "heavy",
+    hold: 2200,
+    reveal: "word",
+    revealSpeed: 110
+  },
+  {
+    html: `Most service businesses<br>pretend to be bigger<br>than they are.`,
+    weight: "",
+    hold: 2000,
+    reveal: "word",
+    revealSpeed: 75
+  },
+  {
+    html: `This one <span class="orange">doesn't.</span>`,
+    weight: "heavy",
+    hold: 1800,
+    reveal: "word",
+    revealSpeed: 130
+  },
+  {
+    html: `It's <span class="orange">one guy.</span><br>And AI.`,
+    weight: "heavy",
+    hold: 2000,
+    reveal: "word",
+    revealSpeed: 130
+  },
+  {
+    html: `That's been the operating<br>model for a while now.`,
+    weight: "light",
+    hold: 1800,
+    reveal: "word",
+    revealSpeed: 75
+  },
+  {
+    html: `It's the one<br>that's going to<br><span class="orange">keep running.</span>`,
+    weight: "heavy",
+    hold: 2200,
+    reveal: "word",
+    revealSpeed: 100
+  },
+  {
+    html: `If you're here<br>to work with me,`,
+    weight: "light",
+    hold: 1500,
+    reveal: "word",
+    revealSpeed: 75
+  },
+  {
+    html: `<span class="orange">markszymanski.co</span>`,
+    weight: "heavy",
+    hold: 1800,
+    reveal: "char",
+    revealSpeed: 42
+  },
+  {
+    html: `<a class="cta-link" id="ctaLink" href="https://markszymanski.co/work-with-me" target="_top" rel="noopener">Find me there →</a>`,
+    weight: "",
+    hold: 999999,
+    reveal: "word",
+    revealSpeed: 140,
+    isCTA: true
+  }
+];
+
+const stage = document.getElementById("stage");
+const progressEl = document.getElementById("progress");
+const pauseBtn = document.getElementById("pauseBtn");
+
+// Fade the pause button in after the first slide has settled
+setTimeout(() => pauseBtn.classList.add("visible"), 2200);
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === " " || e.code === "Space") {
+    e.preventDefault();
+    togglePause();
+  }
+});
+
+// ============ PAUSE STATE ============
+let paused = false;
+let pauseStartedAt = 0;
+const pauseWaiters = new Set();
+
+function togglePause() {
+  if (paused) resume();
+  else pause();
+}
+
+function pause() {
+  if (paused) return;
+  paused = true;
+  pauseStartedAt = performance.now();
+  pauseBtn.classList.add("paused");
+  pauseBtn.setAttribute("aria-label", "Play");
+
+  // Cancel every pending timer, keep remaining ms for resume
+  for (const w of pauseWaiters) {
+    clearTimeout(w.timerId);
+    w.timerId = null;
+    w.remaining = Math.max(0, w.fireAt - pauseStartedAt);
+  }
+}
+
+function resume() {
+  if (!paused) return;
+  const pausedFor = performance.now() - pauseStartedAt;
+  paused = false;
+  pauseBtn.classList.remove("paused");
+  pauseBtn.setAttribute("aria-label", "Pause");
+
+  // Shift progress bar's elapsed-time anchor
+  progressStart += pausedFor;
+
+  // Re-schedule every waiter with its remaining time
+  const now = performance.now();
+  for (const w of pauseWaiters) {
+    w.fireAt = now + w.remaining;
+    w.timerId = setTimeout(w.fire, w.remaining);
+  }
+
+  if (progressRunning) requestAnimationFrame(tickProgress);
+}
+
+pauseBtn.addEventListener("click", togglePause);
+
+function pausableSleep(ms) {
+  return new Promise((resolve) => {
+    const waiter = {
+      fireAt: performance.now() + ms,
+      remaining: ms,
+      timerId: null,
+      fire: () => {
+        pauseWaiters.delete(waiter);
+        resolve();
+      }
+    };
+    pauseWaiters.add(waiter);
+    if (!paused) {
+      waiter.timerId = setTimeout(waiter.fire, ms);
+    }
+    // If paused, waiter just sits in the set; resume() will schedule it.
+  });
+}
+
+function splitForReveal(html, mode) {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  const output = document.createElement("div");
+
+  function processNode(node, parent) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.nodeValue;
+      if (mode === "word") {
+        const parts = text.split(/(\s+)/);
+        for (const p of parts) {
+          if (p.length === 0) continue;
+          if (/^\s+$/.test(p)) {
+            parent.appendChild(document.createTextNode(p));
+          } else {
+            const span = document.createElement("span");
+            span.className = "word";
+            span.textContent = p;
+            parent.appendChild(span);
+          }
+        }
+      } else if (mode === "char") {
+        for (const ch of text) {
+          if (ch === " ") {
+            parent.appendChild(document.createTextNode(" "));
+          } else {
+            const span = document.createElement("span");
+            span.className = "char";
+            span.textContent = ch;
+            parent.appendChild(span);
+          }
+        }
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      if (node.tagName === "BR") {
+        parent.appendChild(document.createElement("br"));
+      } else {
+        const clone = node.cloneNode(false);
+        parent.appendChild(clone);
+        for (const child of Array.from(node.childNodes)) {
+          processNode(child, clone);
+        }
+      }
+    }
+  }
+
+  for (const child of Array.from(tmp.childNodes)) {
+    processNode(child, output);
+  }
+
+  return output;
+}
+
+function createSlide(slide, index) {
+  const el = document.createElement("div");
+  el.className = "slide"
+    + (slide.isCTA ? " cta-slide" : "")
+    + (slide.isGreeting ? " greeting-slide" : "");
+
+  const inner = document.createElement("div");
+  inner.className = "slide-inner";
+
+  if (slide.isGreeting) {
+    const img = document.createElement("img");
+    img.className = "portrait";
+    img.src = "/images/mark-szymanski.webp";
+    img.alt = "Mark Szymanski";
+
+    const text = document.createElement("div");
+    text.className = "greeting-text";
+    text.innerHTML = `
+      <span class="line"><span class="word"><span class="wave">👋</span>Hey there.</span></span>
+      <span class="line"><span class="word">I'm Mark Szymanski.</span></span>
+    `;
+
+    inner.appendChild(img);
+    inner.appendChild(text);
+    el.appendChild(inner);
+    return el;
+  }
+
+  const big = document.createElement("div");
+  big.className = "big" + (slide.weight ? " " + slide.weight : "");
+
+  const revealContainer = splitForReveal(slide.html, slide.reveal);
+  while (revealContainer.firstChild) {
+    big.appendChild(revealContainer.firstChild);
+  }
+
+  inner.appendChild(big);
+  el.appendChild(inner);
+  return el;
+}
+
+async function revealSlide(slideEl, mode, speed) {
+  const units = slideEl.querySelectorAll(mode === "word" ? ".word" : ".char");
+  if (units.length === 0) return;
+  for (let i = 0; i < units.length; i++) {
+    units[i].classList.add("in");
+    if (i < units.length - 1) await pausableSleep(speed);
+  }
+  await pausableSleep(300);
+}
+
+async function revealGreeting(slideEl) {
+  const img = slideEl.querySelector(".portrait");
+  const words = slideEl.querySelectorAll(".greeting-text .word");
+  if (img) requestAnimationFrame(() => img.classList.add("in"));
+  await pausableSleep(400);
+  for (let i = 0; i < words.length; i++) {
+    words[i].classList.add("in");
+    if (i < words.length - 1) await pausableSleep(450);
+  }
+  await pausableSleep(400);
+}
+
+// All timing in the sequencer goes through pausableSleep
+const sleep = pausableSleep;
+
+function countRevealUnits(html, mode) {
+  if (!html) return 0;
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  const text = tmp.textContent || "";
+  if (mode === "word") {
+    return text.trim().split(/\s+/).filter(Boolean).length;
+  }
+  return text.replace(/\s+/g, "").length;
+}
+
+function estimateSlideDuration(slide) {
+  const PRE = 300;
+  const REVEAL_BUFFER = 300;
+  const FADE_OUT = 900;
+  if (slide.isGreeting) {
+    // 400ms initial delay + 2 lines × 450ms stagger + 400ms trailing buffer
+    return PRE + 400 + 2 * 450 + 400 + slide.hold + FADE_OUT;
+  }
+  const units = countRevealUnits(slide.html, slide.reveal);
+  const revealTime = Math.max(0, units - 1) * (slide.revealSpeed || 0);
+  return PRE + revealTime + REVEAL_BUFFER + slide.hold + FADE_OUT;
+}
+
+let progressStart = 0;
+let progressTotal = 0;
+let progressRunning = false;
+
+function tickProgress() {
+  if (!progressRunning || paused) return;
+  const elapsed = performance.now() - progressStart;
+  const pct = Math.min(100, (elapsed / progressTotal) * 100);
+  progressEl.style.width = pct + "%";
+  if (pct < 100) requestAnimationFrame(tickProgress);
+}
+
+async function run() {
+  // total runtime = everything up to the moment the CTA appears
+  progressTotal = slides
+    .filter(s => !s.isCTA)
+    .reduce((sum, s) => sum + estimateSlideDuration(s), 0);
+  // add the pre-run sleep and the CTA's pre-reveal/fade-in so the bar
+  // finishes as the CTA text starts revealing
+  progressTotal += 700 + 300;
+
+  await sleep(700);
+
+  progressStart = performance.now();
+  progressRunning = true;
+  requestAnimationFrame(tickProgress);
+
+  for (let i = 0; i < slides.length; i++) {
+    const slide = slides[i];
+    const el = createSlide(slide, i);
+    stage.appendChild(el);
+
+    void el.offsetHeight;
+
+    el.classList.add("active");
+
+    await sleep(300);
+    if (slide.isGreeting) {
+      await revealGreeting(el);
+    } else {
+      await revealSlide(el, slide.reveal, slide.revealSpeed);
+    }
+
+    if (slide.isCTA) {
+      progressRunning = false;
+      progressEl.style.width = "100%";
+      const link = el.querySelector(".cta-link");
+      if (link) {
+        setTimeout(() => link.classList.add("drawn"), 400);
+      }
+    }
+
+    await sleep(slide.hold);
+
+    if (!slide.isCTA) {
+      el.classList.remove("active");
+      await sleep(900);
+      stage.removeChild(el);
+    }
+  }
+}
+
+run();
+</script>
+
+</body>
+</html>

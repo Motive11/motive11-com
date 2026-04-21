@@ -1,0 +1,5 @@
+/about              https://markszymanski.co/about              301
+/contact            https://markszymanski.co/contact            301
+/case-studies       https://markszymanski.co/success-stories    301
+/case-studies/*     https://markszymanski.co/success-stories    301
+/work-with-me       https://markszymanski.co/work-with-me       301

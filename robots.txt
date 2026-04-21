@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://motive11.com/sitemap-index.xml

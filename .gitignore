@@ -1,0 +1,12 @@
+# Local-only project context, not for the public repo
+CONTEXT.md
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
