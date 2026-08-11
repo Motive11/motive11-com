@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Policy — Motive11</title>
+<meta name="description" content="How Motive11 uses AI to build, what happens to material you provide, and what you own when the work is done." />
+<meta name="theme-color" content="#1E1E1F" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://motive11.com/ai-policy" />
+<meta property="og:title" content="AI Policy — Motive11" />
+<meta property="og:description" content="How Motive11 uses AI to build, what happens to material you provide, and what you own when the work is done." />
+<meta property="og:image" content="https://motive11.com/images/icon-512.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="AI Policy — Motive11" />
+<meta name="twitter:description" content="How Motive11 uses AI to build, what happens to material you provide, and what you own." />
+<meta name="twitter:image" content="https://motive11.com/images/icon-512.png" />
+
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
+
+<!-- Fathom Analytics (motive11.com). Source of truth is AIOS site_traffic; see
+     pipelines/site-analytics. -->
+<script src="https://cdn.usefathom.com/script.js" data-site="UYCRGPKV" defer></script>
+
+<style>
+  :root {
+    --bg: #1E1E1F;
+    --fg: #F4F3EF;
+    --fg-dim: rgba(244, 243, 239, 0.55);
+    --fg-faint: rgba(244, 243, 239, 0.18);
+    --orange: #d64916;
+    --sans: "Satoshi", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.65;
+  }
+
+  /* Same grain overlay as the home page, so this reads as the same site. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 5rem 1.75rem 7rem;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin-bottom: 1.25rem;
+  }
+
+  .standfirst {
+    font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+    color: var(--fg-dim);
+    margin-bottom: 1.75rem;
+  }
+
+  .updated {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--fg-faint);
+    margin-bottom: 3.5rem;
+  }
+
+  section { margin-bottom: 3.25rem; }
+
+  h2 {
+    font-size: clamp(1.35rem, 3.2vw, 1.6rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.02rem;
+    font-weight: 700;
+    margin: 1.75rem 0 0.6rem;
+  }
+
+  p { color: var(--fg-dim); margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--fg); font-weight: 700; }
+
+  ul { list-style: none; margin: 1rem 0; }
+
+  li {
+    color: var(--fg-dim);
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 7px;
+    height: 1px;
+    background: var(--orange);
+  }
+
+  .callout {
+    border-left: 2px solid var(--orange);
+    padding: 0.25rem 0 0.25rem 1.5rem;
+    margin: 1.75rem 0;
+  }
+
+  .callout p { color: var(--fg); }
+
+  a { color: var(--orange); text-decoration: none; border-bottom: 1px solid rgba(214, 73, 22, 0.35); }
+  a:hover { border-bottom-color: var(--orange); }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--fg-faint);
+    font-size: 13px;
+    color: var(--fg-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  footer a { color: var(--fg-dim); border-bottom: none; }
+  footer a:hover { color: var(--orange); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 3.5rem 1.25rem 5rem; }
+    section { margin-bottom: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <p class="eyebrow">Motive11</p>
+  <h1>AI Policy</h1>
+  <p class="standfirst">
+    Almost everyone building software today builds with AI. Most of them will not tell you that.
+    This page tells you exactly how I work, what happens to the material you hand me, and what you
+    own when it is finished.
+  </p>
+  <p class="updated">Last updated August 11, 2026</p>
+
+  <section>
+    <h2>The short version</h2>
+    <p>
+      I use AI heavily to build. Your material, meaning files, documents, and correspondence, goes
+      through AI providers so I can analyze and synthesize it. That is not a corner being cut. It is
+      the reason you get in weeks what used to take months.
+    </p>
+    <p>
+      If you want something kept out of that, tell me which parts and I will work them by hand. It
+      costs more and takes longer, and I will quote it honestly before I start.
+    </p>
+  </section>
+
+  <section>
+    <h2>AI in the build is not AI in your product</h2>
+    <p>
+      This is the distinction that matters most, and almost every concern people raise comes from the
+      two being blurred together.
+    </p>
+    <ul>
+      <li>
+        <strong>In the build.</strong> Reading your existing material, research, planning, drafting,
+        and writing code. This is where AI genuinely changes what is possible, and it is always
+        happening.
+      </li>
+      <li>
+        <strong>In your product.</strong> A feature that calls an AI model while your customers use
+        it. Sometimes that is the right answer. Often it is not. It happens only when the job calls
+        for it, and it is always spelled out in your scope of work before it is built.
+      </li>
+    </ul>
+    <p>
+      A recent engagement is a fair illustration of the normal ratio. Roughly 1,500 of the client's
+      past documents were analyzed to understand how their business actually writes. The system
+      delivered to them makes two AI calls, each writing a single paragraph. Heavy AI in the build.
+      Almost none in the product.
+    </p>
+  </section>
+
+  <section>
+    <h2>What happens to material you provide</h2>
+    <p>
+      Material you send me may be transmitted to third-party AI providers through their APIs so it can
+      be processed during the engagement. Anthropic is the primary provider. There are two paths, and
+      they are governed differently:
+    </p>
+    <ul>
+      <li>
+        <strong>Development work</strong> runs on an AI subscription with the model training setting
+        turned off. That excludes the work from being used to train future models, and places the
+        account on the shorter of the provider's two data retention tiers.
+      </li>
+      <li>
+        <strong>Anything your delivered product calls in production</strong> runs on commercial API
+        access, which under those providers' commercial terms is not used to train their models by
+        default.
+      </li>
+    </ul>
+    <p>
+      Your material is never sold, never published, and never used for any purpose other than
+      performing your engagement.
+    </p>
+    <p>
+      Two honest limits. Providers reserve the right to review conversations their systems flag for
+      safety, regardless of the training setting. And I can tell you which provider controls are
+      enabled, but I cannot make guarantees on a provider's behalf beyond the controls they offer and
+      the terms they publish.
+    </p>
+    <p>
+      Working copies of your material also live on my own machines for the length of the engagement,
+      which is true of any consultant who has ever been sent a file. That copy is the one I actually
+      control, and it is the one I will make commitments about.
+    </p>
+  </section>
+
+  <section>
+    <h2>What never goes to an AI provider</h2>
+    <ul>
+      <li>Credentials, API keys, access tokens, and passwords. These operate your systems and are never transmitted.</li>
+      <li>Payment details and financial account numbers.</li>
+      <li>Government identifiers.</li>
+    </ul>
+    <p>
+      On a typical engagement, the personal information that does get processed is ordinary business
+      contact data: names, addresses, email addresses, phone numbers. That is real personal data and
+      it is handled accordingly. It is not the same category as the list above, and the two are not
+      treated the same way.
+    </p>
+  </section>
+
+  <section>
+    <h2>Automated systems</h2>
+    <p>
+      This one goes further than most people's AI policy, so it is worth stating plainly.
+    </p>
+    <p>
+      I run automated systems that assist with running my business. Some of them read project and
+      communication activity on a schedule and keep my own records current, without me triggering
+      them each time. They operate under the same rules as everything else on this page, on the same
+      provider settings, and they hold the same material you have already sent me.
+    </p>
+    <div class="callout">
+      <p>
+        These systems record and prepare. They never send anything to you or on your behalf, publish
+        anything, or make a decision about your account. Anything that leaves my hands was reviewed
+        and sent by me.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Keeping something out</h2>
+    <p>
+      You can designate specific material as excluded from AI processing. Identify it in writing
+      before or at the time you provide it, and it will be handled manually.
+    </p>
+    <p>
+      Where exclusions materially change the work, I will quote the additional time and cost before
+      proceeding. That is usually a significant difference. Reading fifteen hundred documents by hand
+      is a genuinely different job from reading them in an afternoon.
+    </p>
+    <p>
+      There is also a middle option. Some work can run on a model hosted locally on hardware I
+      control, where nothing is transmitted to a third party at all. It is slower and less capable
+      than a frontier model, and far faster than doing it by hand. If your material is sensitive
+      enough to warrant it, ask and we will scope it.
+    </p>
+  </section>
+
+  <section>
+    <h2>What you own when it is done</h2>
+    <p>
+      Worth understanding, because it is the part most people building with AI will not raise with
+      you.
+    </p>
+    <p>
+      Under current United States law, material generated purely by AI cannot be copyrighted, because
+      copyright requires human authorship. Prompting alone does not create authorship, however
+      detailed the prompt. Human contribution does: substantial editing, deliberate compositional
+      decisions, and combining generated output with original human work.
+    </p>
+    <p>
+      In practice this rarely affects a working system, where the protection that matters is your
+      trademark, your contract, and your access to the code. It matters a great deal for brand assets
+      like a logo or a wordmark, where being able to stop someone else from using it is the entire
+      point of owning it.
+    </p>
+    <div class="callout">
+      <p>
+        So where ownership is the point, there is real human authorship in the work, and it is
+        documented. If you ever need to enforce your rights in something I made for you, you should
+        have something enforceable to point at.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <h2>AI material you bring me</h2>
+    <p>
+      Bring it. If you generated a layout, drafted copy, or built a rough version of what you want
+      before hiring me, that is useful and I would rather see it than not.
+    </p>
+    <p>
+      It gets treated as a brief, not as a deliverable. It tells me what you are drawn to and what you
+      are trying to say, which is often the hardest thing to get out of a conversation. What ships is
+      built properly, to the standard the rest of the work is held to.
+    </p>
+    <p>
+      Two practical notes. Where AI-generated material is going to carry your brand long term, see the
+      ownership section above, because it applies to what you made too. And if you want an existing
+      AI-generated site or system taken over and finished properly, that is its own scope, quoted on
+      its own, because repairing generated work is often more effort than building it once.
+    </p>
+  </section>
+
+  <section>
+    <h2>Changes to this policy</h2>
+    <p>
+      This page will change as the tools and the law change, and both are moving quickly. The date at
+      the top reflects the current version. Where a change is significant, clients with active
+      engagements will be told directly rather than left to notice.
+    </p>
+    <p>
+      Questions about any of this are welcome, including hard ones. If something here does not work
+      for your situation, say so early. It is a much better conversation before a project starts than
+      in the middle of one.
+    </p>
+  </section>
+
+  <footer>
+    <span>Motive11 &middot; Pittsburgh, PA</span>
+    <span><a href="/">motive11.com</a> &middot; <a href="https://markszymanski.co/how-i-work">How I work</a></span>
+  </footer>
+
+</main>
+
+</body>
+</html>
