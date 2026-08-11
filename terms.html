@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Terms of Service — Motive11</title>
+<meta name="description" content="The terms that apply when you buy services from Motive11. Scope, payment, ownership, and what each side is responsible for." />
+<meta name="theme-color" content="#1E1E1F" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://motive11.com/terms" />
+<meta property="og:title" content="Terms of Service — Motive11" />
+<meta property="og:description" content="The terms that apply when you buy services from Motive11." />
+<meta property="og:image" content="https://motive11.com/images/icon-512.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Terms of Service — Motive11" />
+<meta name="twitter:description" content="The terms that apply when you buy services from Motive11." />
+<meta name="twitter:image" content="https://motive11.com/images/icon-512.png" />
+
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
+
+<!-- Fathom Analytics (motive11.com). Source of truth is AIOS site_traffic; see
+     pipelines/site-analytics. -->
+<script src="https://cdn.usefathom.com/script.js" data-site="UYCRGPKV" defer></script>
+
+<style>
+  :root {
+    --bg: #1E1E1F;
+    --fg: #F4F3EF;
+    --fg-dim: rgba(244, 243, 239, 0.55);
+    --fg-faint: rgba(244, 243, 239, 0.18);
+    --orange: #d64916;
+    --sans: "Satoshi", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.65;
+  }
+
+  /* Same grain overlay as the home page, so this reads as the same site. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 5rem 1.75rem 7rem;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin-bottom: 1.25rem;
+  }
+
+  .standfirst {
+    font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+    color: var(--fg-dim);
+    margin-bottom: 1.75rem;
+  }
+
+  .updated {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--fg-faint);
+    margin-bottom: 3.5rem;
+  }
+
+  section { margin-bottom: 3.25rem; }
+
+  h2 {
+    font-size: clamp(1.35rem, 3.2vw, 1.6rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .num {
+    color: var(--fg-faint);
+    font-weight: 700;
+    margin-right: 0.6rem;
+  }
+
+  p { color: var(--fg-dim); margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--fg); font-weight: 700; }
+
+  ul { list-style: none; margin: 1rem 0; }
+
+  li {
+    color: var(--fg-dim);
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 7px;
+    height: 1px;
+    background: var(--orange);
+  }
+
+  .callout {
+    border-left: 2px solid var(--orange);
+    padding: 0.25rem 0 0.25rem 1.5rem;
+    margin: 1.75rem 0;
+  }
+
+  .callout p { color: var(--fg); }
+
+  a { color: var(--orange); text-decoration: none; border-bottom: 1px solid rgba(214, 73, 22, 0.35); }
+  a:hover { border-bottom-color: var(--orange); }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--fg-faint);
+    font-size: 13px;
+    color: var(--fg-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  footer a { color: var(--fg-dim); border-bottom: none; }
+  footer a:hover { color: var(--orange); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 3.5rem 1.25rem 5rem; }
+    section { margin-bottom: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <p class="eyebrow">Motive11</p>
+  <h1>Terms of Service</h1>
+  <p class="standfirst">
+    These are the terms that apply when you buy services from Motive11. They are written to be read,
+    not to be survived. If something here does not work for your situation, say so before we start
+    and we will sort it out.
+  </p>
+  <p class="updated">Last updated August 11, 2026</p>
+
+  <section>
+    <h2><span class="num">1</span>What these terms cover</h2>
+    <p>
+      These terms are between you and <strong>Motive11 LLC</strong>, a Pennsylvania limited liability
+      company. They apply when you pay an invoice, accept a proposal, or purchase services through a
+      payment link or checkout page.
+    </p>
+    <p>
+      For larger or more complex engagements we may sign a separate agreement or statement of work.
+      <strong>Where a signed agreement says something different, the signed agreement wins</strong>
+      and these terms fill in anything it does not address.
+    </p>
+    <p>
+      Your project's proposal or statement of work defines what is being built. These terms define
+      how we work together while it happens.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span>Scope and changes</h2>
+    <p>
+      What is included is what your proposal or statement of work says is included. Work outside that
+      is new scope.
+    </p>
+    <p>
+      New scope is not a problem, and it happens on most good projects. It is quoted and approved
+      before it is built, so nothing is a surprise on an invoice. If a request is small enough that
+      quoting it would cost more than doing it, it just gets done.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span>Payment</h2>
+    <ul>
+      <li>Project work generally requires a deposit before it begins. The balance is invoiced per the schedule in your proposal.</li>
+      <li><strong>Recurring and monthly fees begin at project kickoff</strong>, not at launch. The work starts when the engagement starts.</li>
+      <li>Invoices are due on receipt unless stated otherwise. Work may be paused on accounts more than 15 days past due.</li>
+      <li>Fees paid for work already performed are non-refundable. If we part ways mid-project, you pay for what was done and you keep it.</li>
+      <li>Third-party costs such as hosting, domains, licenses, and API usage are yours, whether billed directly to you or passed through at cost.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span>What I need from you</h2>
+    <p>
+      Projects stall on inputs far more often than on building. To keep yours moving, you agree to
+      provide content, assets, access, and decisions in reasonable time, and to give feedback in
+      consolidated rounds rather than a stream.
+    </p>
+    <p>
+      You confirm you have the right to give me whatever you send, including copy, images, logos, and
+      data. If a project sits idle on your side for more than 30 days, it may be paused and
+      rescheduled, and resuming it may require a new timeline.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span>AI</h2>
+    <p>
+      AI is a core part of how this work is produced. Material you provide may be transmitted to
+      third-party AI providers for processing during your engagement.
+    </p>
+    <div class="callout">
+      <p>
+        The <a href="/ai-policy">AI Policy</a> is part of these terms and is incorporated by
+        reference. It explains what happens to your material, which controls are enabled, what is
+        never transmitted, how to exclude something, and what you own at the end. Please read it.
+      </p>
+    </div>
+    <p>
+      If you want specific material kept out of AI processing, identify it in writing before or when
+      you provide it. It will be handled manually, and where that materially changes the work, the
+      additional time and cost is quoted before proceeding.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span>Confidentiality</h2>
+    <p>
+      Each of us will protect the other's confidential information and use it only for this
+      engagement. Neither of us will disclose it to anyone who does not need it to do the work.
+    </p>
+    <p>
+      <strong>Processing your material through the AI providers and service vendors described in the
+      AI Policy is an agreed part of performing the work and is not a breach of this section.</strong>
+      That is stated plainly here so the two documents do not contradict each other. If your situation
+      requires something stricter, tell me before we begin and we will scope it accordingly.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">7</span>Ownership</h2>
+    <p>
+      <strong>On full payment, the deliverables built specifically for you are yours</strong>, and any
+      rights I hold in them transfer to you. Before full payment, they are not.
+    </p>
+    <p>
+      I keep ownership of the general tools, frameworks, libraries, templates, and methods used to
+      build them, including anything developed before or outside your project. You get a permanent
+      right to keep using those as part of your deliverables. This means I can keep using my own
+      toolkit on other work, and it does not limit what you can do with what I built you.
+    </p>
+    <p>
+      Third-party components such as fonts, plugins, stock assets, and open-source libraries stay
+      under their own licenses.
+    </p>
+    <p>
+      One honest limit, explained in full in the <a href="/ai-policy">AI Policy</a>: under current
+      United States law, material generated purely by AI cannot be copyrighted, because copyright
+      requires human authorship. I transfer every right I actually hold, and I do not claim copyright
+      exists where the law says it does not. Where ownership is the point, such as brand marks, there
+      is real human authorship in the work.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">8</span>Showing the work</h2>
+    <p>
+      I may reference your project in my portfolio, case studies, and content, including screenshots
+      and a description of what was built and what it achieved. Anything you have marked confidential
+      stays out, and I will not publish your private business figures without asking first.
+    </p>
+    <p>
+      If you would rather I did not mention the work at all, just say so and I will not.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">9</span>What I do and do not promise</h2>
+    <p>
+      I promise the work will be performed professionally and competently, and that I will tell you
+      the truth about it, including when something is not working.
+    </p>
+    <p>
+      I do not promise specific business outcomes. No one honestly can. Search rankings, traffic,
+      conversion rates, revenue, and lead volume depend on your market, your offer, your pricing, and
+      your follow-through, most of which sit outside anything I control. Anyone guaranteeing you
+      numbers is selling you something.
+    </p>
+    <p>
+      Beyond that promise, services are provided as-is. Third-party platforms, hosts, and APIs go down,
+      change their pricing, break their integrations, and occasionally shut off entirely. I will help
+      you deal with it, and I am not liable for their behavior.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">10</span>Limitation of liability</h2>
+    <p>
+      To the extent the law allows, total liability for any claim arising out of the work is limited
+      to the amount you paid for the engagement the claim relates to. Neither of us is liable to the
+      other for indirect or consequential losses, including lost profits or lost data.
+    </p>
+    <p>
+      Keep your own backups of anything you cannot afford to lose. I keep backups too, and two is
+      better than one.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">11</span>Ending the engagement</h2>
+    <p>
+      Either of us may end the engagement with written notice. You pay for work performed up to that
+      point and you keep it, subject to the ownership section above.
+    </p>
+    <p>
+      Ongoing and monthly services can be cancelled with 30 days written notice before the next
+      billing date. I will hand over what you need to carry on elsewhere. I am not going to hold your
+      website, your accounts, or your data hostage, and I would rather part on good terms than have
+      you stuck.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">12</span>Changes, law, and the rest</h2>
+    <p>
+      These terms may change, and the date at the top reflects the current version. Changes apply to
+      new work from the date they are posted. Clients with active engagements will be told directly
+      when a change is significant rather than being left to notice.
+    </p>
+    <p>
+      These terms are governed by the laws of the Commonwealth of Pennsylvania. We will try to sort
+      out any dispute directly first, because that is faster and cheaper for both of us. If a
+      provision here turns out to be unenforceable, the rest still stands.
+    </p>
+    <p>
+      Questions about any of this are welcome before you buy, and the answer will be a straight one.
+      Reach me at <a href="mailto:hello@motive11.com">hello@motive11.com</a>.
+    </p>
+  </section>
+
+  <footer>
+    <span>Motive11 LLC &middot; Pittsburgh, PA</span>
+    <span><a href="/">motive11.com</a> &middot; <a href="/ai-policy">AI Policy</a></span>
+  </footer>
+
+</main>
+
+</body>
+</html>
