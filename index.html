@@ -112,6 +112,21 @@
   .footer-mark { bottom: 24px; left: 28px; color: var(--fg-faint); }
   .footer-mark-right { bottom: 24px; right: 28px; color: var(--fg-faint); }
 
+  .footer-mark {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .footer-mark a {
+    color: var(--fg-dim);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  .footer-mark a:hover,
+  .footer-mark a:focus-visible {
+    color: var(--orange);
+  }
+
   .pause-btn {
     position: fixed;
     right: 28px;
@@ -363,7 +378,11 @@
     <img class="logo" src="/images/logo-light.svg" alt="Motive11" />
   </a>
 </div>
-<div class="footer-mark">Motive11, LLC</div>
+<div class="footer-mark">
+  <span>Motive11, LLC</span>
+  <a href="/terms">Terms</a>
+  <a href="/ai-policy">AI Policy</a>
+</div>
 <div class="footer-mark-right">Est. 2018</div>
 <button class="pause-btn" id="pauseBtn" aria-label="Pause" type="button">
   <svg class="icon-pause" viewBox="0 0 12 14" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="3" height="12" rx="0.5"/><rect x="8" y="1" width="3" height="12" rx="0.5"/></svg>
