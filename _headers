@@ -1,0 +1,11 @@
+# Security headers. Standard: AIOS pipelines/web-build/security-headers.md.
+# No includeSubDomains or preload on HSTS (see the standard for why).
+# The CSP allowlist is every third party the site loads, recorded from the live site and
+# crawl-tested September 26, 2026. Adding a new embed or script means adding its origin
+# here in the same change, or it is silently blocked on the live site.
+/*
+  Strict-Transport-Security: max-age=31536000
+  X-Frame-Options: SAMEORIGIN
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.usefathom.com https://static.cloudflareinsights.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://api.fontshare.com; img-src 'self' data: blob: https://cdn.usefathom.com; font-src 'self' data: https://cdn.fontshare.com https://api.fontshare.com; media-src 'self'; connect-src 'self' https://cdn.usefathom.com https://cloudflareinsights.com; frame-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
