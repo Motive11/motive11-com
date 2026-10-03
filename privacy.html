@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy — Motive11</title>
+<meta name="description" content="What Motive11 collects, what it does not, and what happens to your information. This website sets no cookies and collects no personal data." />
+<meta name="theme-color" content="#1E1E1F" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://motive11.com/privacy" />
+<meta property="og:title" content="Privacy Policy — Motive11" />
+<meta property="og:description" content="What Motive11 collects, what it does not, and what happens to your information." />
+<meta property="og:image" content="https://motive11.com/images/icon-512.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Privacy Policy — Motive11" />
+<meta name="twitter:description" content="What Motive11 collects, what it does not, and what happens to your information." />
+<meta name="twitter:image" content="https://motive11.com/images/icon-512.png" />
+
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet">
+
+<!-- Fathom Analytics (motive11.com). Source of truth is AIOS site_traffic; see
+     pipelines/site-analytics. -->
+<script src="https://cdn.usefathom.com/script.js" data-excluded-domains="localhost,127.0.0.1" data-site="UYCRGPKV" defer></script>
+
+<style>
+  :root {
+    --bg: #1E1E1F;
+    --fg: #F4F3EF;
+    --fg-dim: rgba(244, 243, 239, 0.55);
+    --fg-faint: rgba(244, 243, 239, 0.18);
+    --orange: #d64916;
+    --sans: "Satoshi", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.65;
+  }
+
+  /* Same grain overlay as the home page, so this reads as the same site. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 5rem 1.75rem 7rem;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    margin-bottom: 1.25rem;
+  }
+
+  .standfirst {
+    font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+    color: var(--fg-dim);
+    margin-bottom: 1.75rem;
+  }
+
+  .updated {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--fg-faint);
+    margin-bottom: 3.5rem;
+  }
+
+  section { margin-bottom: 3.25rem; }
+
+  h2 {
+    font-size: clamp(1.35rem, 3.2vw, 1.6rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .num {
+    color: var(--fg-faint);
+    font-weight: 700;
+    margin-right: 0.6rem;
+  }
+
+  p { color: var(--fg-dim); margin-bottom: 1rem; }
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--fg); font-weight: 700; }
+
+  ul { list-style: none; margin: 1rem 0; }
+
+  li {
+    color: var(--fg-dim);
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+
+  li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 7px;
+    height: 1px;
+    background: var(--orange);
+  }
+
+  .callout {
+    border-left: 2px solid var(--orange);
+    padding: 0.25rem 0 0.25rem 1.5rem;
+    margin: 1.75rem 0;
+  }
+
+  .callout p { color: var(--fg); }
+
+  a { color: var(--orange); text-decoration: none; border-bottom: 1px solid rgba(214, 73, 22, 0.35); }
+  a:hover { border-bottom-color: var(--orange); }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--fg-faint);
+    font-size: 13px;
+    color: var(--fg-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  footer a { color: var(--fg-dim); border-bottom: none; }
+  footer a:hover { color: var(--orange); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 3.5rem 1.25rem 5rem; }
+    section { margin-bottom: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+
+<main class="wrap">
+
+  <p class="eyebrow">Motive11</p>
+  <h1>Privacy Policy</h1>
+  <p class="standfirst">
+    Most privacy policies are written to cover the company. This one is written to tell you what
+    actually happens. The short version is that this website collects nothing about you personally,
+    and the information that does matter is the material you hand over once you become a client.
+  </p>
+  <p class="updated">Last updated August 16, 2026</p>
+
+  <section>
+    <h2><span class="num">1</span>The short version</h2>
+    <ul>
+      <li><strong>This website sets no cookies and collects no personal data.</strong> There is no form on it, no signup, no tracking pixel, and no advertising network.</li>
+      <li>Analytics are anonymous and aggregate. I can see that a page was viewed. I cannot see who viewed it.</li>
+      <li>The information worth caring about is what you send me directly: emails, files, documents, and access to your systems during an engagement.</li>
+      <li>That material goes through AI providers as part of how the work gets done. The <a href="/ai-policy">AI Policy</a> explains exactly how, and it is worth reading before the rest of this page.</li>
+      <li>Nothing is sold, rented, or handed to advertisers. Ever. There is no version of this business where that makes sense.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span>What this website collects</h2>
+    <p>
+      Almost nothing, and that is deliberate. motive11.com is a single page that points people to
+      <a href="https://markszymanski.co">markszymanski.co</a>. It has no contact form, no newsletter
+      box, and no account system, so there is nothing on it that asks you for information.
+    </p>
+    <p>
+      Traffic is measured with <strong>Fathom Analytics</strong>, which is cookieless by design. It
+      does not set cookies, does not fingerprint you, does not retain IP addresses, and does not
+      follow you to other sites. What it produces is counts: pages viewed, rough referrer, rough
+      country, device type. None of it identifies a person.
+    </p>
+    <div class="callout">
+      <p>
+        Because there are no cookies and no personal data, this site has no cookie banner. That is
+        not an oversight. There is nothing to ask your consent for.
+      </p>
+    </div>
+    <p>
+      Three technical things do see your IP address, because serving you a web page is impossible
+      without it: <strong>Cloudflare</strong>, which hosts the site, and the content delivery
+      networks that serve the typeface and the animation library. That is standard infrastructure
+      logging, it is not used to build a profile of you, and I do not have access to it as an
+      identifiable record.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span>When you contact me</h2>
+    <p>
+      Contact happens by email, or through the form at
+      <a href="https://markszymanski.co/work-with-me">markszymanski.co</a>, which is a separate site
+      with its own policies. If you email me, I have your email, your name, and whatever you chose to
+      put in the message. That sits in my mailbox the way any business correspondence does.
+    </p>
+    <p>
+      I use what you send to answer you and, if it goes somewhere, to scope and quote the work. I do
+      not add you to a marketing list because you emailed me. Motive11 does not run one.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span>When you become a client</h2>
+    <p>
+      This is the part that actually matters, and it is not really about the website at all. During
+      an engagement you hand over real material: documents, spreadsheets, customer data, email
+      threads, analytics, credentials, and access to systems you own.
+    </p>
+    <p>
+      That material is used to do your project and for nothing else. It is not published, not shared
+      with other clients, and not used to build something I sell to someone else. Where work becomes
+      a case study, it goes through you first and gets written the way you approve it.
+    </p>
+    <div class="callout">
+      <p>
+        <strong>Your material is processed by AI providers.</strong> That is central enough to how
+        the work is produced that it has its own page. The <a href="/ai-policy">AI Policy</a> covers
+        what is transmitted, which provider controls are enabled, what is never sent, how to exclude
+        specific material, and what you own at the end. It is part of the
+        <a href="/terms">Terms of Service</a> and is incorporated by reference.
+      </p>
+    </div>
+    <p>
+      If your project involves personal information about <em>your</em> customers, which is common,
+      it is handled as your data and not mine. I do not use it for any purpose outside your project,
+      and if you need a separate data processing agreement in place, ask and we will sign one.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span>What never gets collected</h2>
+    <ul>
+      <li><strong>Card numbers.</strong> Payments run through <strong>Stripe</strong>. Card details go to Stripe directly and I never see or store them. What I get back is the fact that an invoice was paid, and the billing name and email attached to it.</li>
+      <li><strong>Government identifiers.</strong> Social security numbers, tax identifiers, licenses, passports. There is no reason for this business to hold any of it, so it does not.</li>
+      <li><strong>Credentials sent to AI providers.</strong> Passwords, keys, and access tokens are used to operate your systems and are not transmitted to AI providers. This is stated in the AI Policy too, because it is worth saying twice.</li>
+      <li><strong>Anything from a tracking network.</strong> No advertising pixels, no retargeting, no data brokers, no third-party audience tools.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span>Who else touches your information</h2>
+    <p>
+      A one-person business still runs on software built by other people. These are the services that
+      can come into contact with your information, and what each one is for:
+    </p>
+    <ul>
+      <li><strong>Google Workspace</strong> hosts my email, so any correspondence with me lives there.</li>
+      <li><strong>Stripe</strong> processes payments and holds the billing record.</li>
+      <li><strong>Postmark</strong> sends transactional email, meaning things like confirmations and notifications. It is not a marketing platform and is never used as one.</li>
+      <li><strong>Cloudflare</strong> hosts this site and much of what gets built.</li>
+      <li><strong>Fathom Analytics</strong> counts page views, anonymously, as described above.</li>
+      <li><strong>AI providers</strong>, currently Anthropic as the main one, process material during an engagement. See the <a href="/ai-policy">AI Policy</a>.</li>
+    </ul>
+    <p>
+      Each of these has its own terms and its own privacy policy, and those govern what they do with
+      data they hold. I can tell you what Motive11 does and which controls are enabled. I cannot make
+      promises on a third party's behalf, and you should be suspicious of anyone who does.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">7</span>How long things are kept</h2>
+    <p>
+      Working files and correspondence for a project are kept for the life of the engagement and for
+      a reasonable period after it, because clients come back and asking you to re-send everything is
+      a bad experience. Invoices, contracts, and financial records are kept as long as tax and
+      business law requires, which is several years.
+    </p>
+    <p>
+      If you want your material deleted sooner, say so. Anything I am not legally required to keep
+      gets removed, and I will tell you plainly what has to stay and why.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">8</span>Your choices</h2>
+    <p>
+      You can ask me what information I hold about you, ask for it to be corrected, ask for a copy,
+      or ask for it to be deleted. There is no portal and no form for this. Email
+      <a href="mailto:hello@motive11.com">hello@motive11.com</a> and you will get a real answer from
+      the person who actually has the files.
+    </p>
+    <p>
+      If you are somewhere with specific statutory data rights, including the EU and UK under GDPR or
+      California under the CCPA, those rights apply to you and the way to exercise them is the same
+      email. Motive11 does not sell personal information, so there is nothing for you to opt out of
+      on that front.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">9</span>Security</h2>
+    <p>
+      Accounts are protected with strong unique credentials and multi-factor authentication, devices
+      are encrypted, and client credentials are stored in a password manager rather than in a
+      document or an email thread.
+    </p>
+    <p>
+      No one can honestly promise perfect security, and a policy that claims it is telling you
+      something false on the page where it should be most careful. What I can promise is that if
+      something involving your material goes wrong, you hear it from me quickly and directly.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">10</span>Children</h2>
+    <p>
+      This is a business to business service. It is not directed at children, and information about
+      children is not knowingly collected. If you believe a child has sent me information, email me
+      and it will be deleted.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">11</span>Changes</h2>
+    <p>
+      This page gets updated when what I actually do changes, and the date at the top moves with it.
+      If a change is significant and you are a current client, you get told directly rather than left
+      to notice a new date on a web page.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">12</span>Contact</h2>
+    <p>
+      Motive11 LLC is a Pennsylvania limited liability company based in Pittsburgh, and this policy
+      is governed by Pennsylvania law. Questions about any of it are welcome, including the awkward
+      ones, and the answer will be a straight one.
+    </p>
+    <p>
+      <a href="mailto:hello@motive11.com">hello@motive11.com</a>
+    </p>
+  </section>
+
+  <footer>
+    <span>Motive11 LLC &middot; Pittsburgh, PA</span>
+    <span><a href="/">motive11.com</a> &middot; <a href="/terms">Terms</a> &middot; <a href="/ai-policy">AI Policy</a></span>
+  </footer>
+
+</main>
+
+</body>
+</html>
