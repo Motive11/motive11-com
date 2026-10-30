@@ -554,7 +554,28 @@
       renderDurations();
     }
 
+    // The browser's back button goes from the details step back to the calendar instead of leaving
+    // the page: entering details adds one history entry, same URL.
+    let inHistory = false, skipPop = false;
+    function leaveDetailsHistory() { if (inHistory) { inHistory = false; skipPop = true; history.back(); } }
+    window.addEventListener("pagehide", () => { inHistory = false; });
+    window.addEventListener("popstate", () => {
+      if (skipPop) { skipPop = false; return; }
+      if (!inHistory) return;
+      inHistory = false;
+      if ($("submit").disabled) { history.pushState({ bk: true }, ""); inHistory = true; return; }
+      backToPick();
+    });
+
+    function backToPick() {
+      if (!info.multi) chosen = [];
+      $("picked").hidden = true; groupSlots(); renderTray(); renderMonth(); renderTimes();
+      step("pick");
+      root.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     async function toDetails() {
+      if (!inHistory) { history.pushState({ bk: true }, ""); inHistory = true; }
       const picked = $("picked");
       picked.hidden = false;
       picked.innerHTML = chosen.map((c) => `<p>${fullWhen(c.start)}<br><span>${lengthLabel(c.duration)}</span></p>`).join("");
@@ -602,6 +623,7 @@
         if (info.doneText) $("done-text").textContent = info.doneText;
         $("done-list").innerHTML = chosen.map((c) => `<li>${fullWhen(c.start)} &middot; ${lengthLabel(c.duration)}</li>`).join("");
         step("done");
+        leaveDetailsHistory();
         track("Booked " + info.name);
       } catch (e) {
         err.textContent = e.message; err.hidden = false;
@@ -707,7 +729,7 @@
         selectedDay = ""; $("times-wrap").hidden = true;
         return loadMonth();
       }
-      if (act === "back") { if (!info.multi) chosen = []; $("picked").hidden = true; groupSlots(); renderTray(); renderMonth(); renderTimes(); return step("pick"); }
+      if (act === "back") { leaveDetailsHistory(); return backToPick(); }
       if (act === "to-details") return toDetails();
       const rm = t.closest("[data-remove]");
       if (rm) { chosen.splice(Number(rm.dataset.remove), 1); groupSlots(); renderTray(); renderDurations(); renderMonth(); renderTimes(); return; }
