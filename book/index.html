@@ -171,6 +171,13 @@
   .bk-mrow { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem; padding: 0.9rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); }
   .bk-mact { display: flex; gap: 1rem; }
   .bk-link { color: var(--color-accent); font-weight: 700; }
+  .bk-types { display: grid; gap: 0.75rem; }
+  .bk-type { display: block; padding: 1.1rem 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: inherit; text-decoration: none; transition: border-color .15s, background-color .15s; }
+  .bk-type:hover, .bk-type:focus-visible { border-color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 5%, transparent); outline: none; }
+  .bk-type-name { display: flex; justify-content: space-between; gap: 1rem; font-weight: 700; font-size: 1.05rem; }
+  .bk-type-name::after { content: "→"; color: var(--color-accent); }
+  .bk-type-meta { display: block; color: var(--color-muted); font-size: 0.85rem; margin-top: 0.2rem; }
+  .bk-type-desc { display: block; color: var(--color-muted); font-size: 0.9rem; line-height: 1.5; margin-top: 0.6rem; }
   @media (max-width: 860px) {
     .bk-card { grid-template-columns: 1fr; }
     .bk-info { border-right: 0; border-bottom: 1px solid var(--color-border); padding: 1.5rem 1.25rem; }
@@ -264,6 +271,11 @@
         <h2 class="bk-h2">Your booking</h2>
         <ul class="bk-manage-list" data-el="manage-list"></ul>
         <p class="bk-status" data-el="manage-status"></p>
+      </div>
+
+      <div data-step="list" hidden>
+        <h2 class="bk-h2">Pick a meeting</h2>
+        <ul class="bk-types" data-el="types"></ul>
       </div>
 
       <div data-step="missing" hidden>
@@ -616,6 +628,23 @@
       }).join("");
     }
 
+    async function showList() {
+      const out = await api("/types?entity=motive11").catch(() => null);
+      if (!out?.types?.length) {
+        return missing("Looking to work with me?", `Everything starts at <a href="https://markszymanski.co/work-with-me">markszymanski.co</a>. If I sent you a booking link, use that one.`);
+      }
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+      const blurb = (d) => { const p = (d || "").split(/\n\s*\n/)[0].replace(/\s+/g, " ").trim(); return p.length > 170 ? p.slice(0, 167).trimEnd() + "…" : p; };
+      $("title").textContent = "Book a time";
+      $("types").innerHTML = out.types.map((t) => `<li><a class="bk-type" href="/book/${encodeURIComponent(t.slug)}">
+        <span class="bk-type-name">${esc(t.name)}</span>
+        <span class="bk-type-meta">${t.durations.map(lengthLabel).join(", ")}${t.location ? ` · ${esc(t.location)}` : ""}</span>
+        ${blurb(t.description) ? `<span class="bk-type-desc">${esc(blurb(t.description))}</span>` : ""}
+      </a></li>`).join("");
+      root.classList.remove("is-loading");
+      step("list");
+    }
+
     function showInfo() {
       $("title").textContent = info.label || info.name;
       $("desc").innerHTML = descHtml(info.description || "");
@@ -677,9 +706,7 @@
     (async () => {
       fillTimezones();
       if ("manage" in route) return loadManage(route.manage);
-      if (!route.type && !("link" in route)) {
-        return missing("Looking to work with me?", `Everything starts at <a href="https://markszymanski.co/work-with-me">markszymanski.co</a>. If I sent you a booking link, use that one.`);
-      }
+      if (!route.type && !("link" in route)) return showList();
       const path = "link" in route ? `/l/${route.link}` : `/t/${route.type}`;
       info = await api(path).catch(() => null);
       // Szymanski Media types book on markszymanski.co, so a Motive11 page never offers one.
