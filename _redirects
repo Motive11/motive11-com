@@ -4,3 +4,6 @@
 /case-studies       https://markszymanski.co/success-stories    301
 /case-studies/*     https://markszymanski.co/success-stories    301
 /work-with-me       https://markszymanski.co/work-with-me       301
+/book/l/:token      /book/   200
+/book/manage/:token /book/   200
+/book/:slug         /book/   200
