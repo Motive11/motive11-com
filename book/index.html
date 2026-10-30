@@ -163,6 +163,8 @@
   .bk-field { display: grid; gap: 0.4rem; margin-bottom: 1.1rem; font-weight: 700; max-width: 520px; }
   .bk-field input, .bk-field textarea, .bk-field select { font-weight: 400; border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 0.75rem 1rem; background: var(--color-paper); color: var(--color-ink); font-size: 0.875rem; }
   .bk-field input:focus, .bk-field textarea:focus, .bk-field select:focus { outline: none; border-color: var(--color-accent); }
+  .bk-names { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; max-width: 520px; }
+  @media (max-width: 480px) { .bk-names { grid-template-columns: 1fr; } }
   .bk-hp { position: absolute; left: -9999px; }
   .bk-error { color: var(--color-accent); font-weight: 700; margin-bottom: 1rem; }
   .bk-done-text { line-height: 1.6; margin-bottom: 1rem; color: var(--color-muted); }
@@ -251,7 +253,10 @@
       <form data-step="details" hidden novalidate>
         <button type="button" class="bk-back" data-act="back">&#8249; Back</button>
         <h2 class="bk-h2">Enter Details</h2>
-        <label class="bk-field"><span>Name *</span><input name="name" autocomplete="name" required /></label>
+        <div class="bk-names">
+          <label class="bk-field"><span>First name *</span><input name="first" autocomplete="given-name" required /></label>
+          <label class="bk-field"><span>Last name *</span><input name="last" autocomplete="family-name" required /></label>
+        </div>
         <label class="bk-field"><span>Email *</span><input name="email" type="email" autocomplete="email" required /></label>
         <div data-el="questions"></div>
         <input name="website" class="bk-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
@@ -565,7 +570,9 @@
       err.hidden = true;
       const answers = {};
       for (const q of info.questions) answers[q.id] = String(data.get(`q_${q.id}`) || "");
-      const missingFields = [!data.get("name") && "your name", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.get("email"))) && "a valid email",
+      const first = String(data.get("first") || "").trim(), last = String(data.get("last") || "").trim();
+      data.set("name", `${first} ${last}`.trim());
+      const missingFields = [!first && "your first name", !last && "your last name", !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(data.get("email"))) && "a valid email",
         ...info.questions.filter((q) => q.required && !answers[q.id].trim()).map((q) => q.label)].filter(Boolean);
       if (missingFields.length) { err.textContent = `Please add ${missingFields.join(", ")}.`; err.hidden = false; return; }
       const ts = window.turnstile;
