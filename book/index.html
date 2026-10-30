@@ -122,6 +122,7 @@
   .bk-d.is-sel { background: var(--color-accent); color: var(--color-paper); }
   .bk-d.is-today::after { content: ""; position: absolute; bottom: 0.3rem; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 999px; background: currentColor; }
   .bk-tzrow { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.75rem 1.25rem; margin-top: 1.5rem; }
+  .bk-tzlock { font-weight: 500; color: var(--color-muted); }
   .bk-tz { display: grid; gap: 0.35rem; font-weight: 700; font-size: 0.9rem; min-width: 0; }
   /* A select is always as wide as its longest option, which parks the arrow far from the text, so
      the chosen zone is shown as text with the arrow beside it and the real select laid over it. */
@@ -227,7 +228,8 @@
             <div class="bk-grid" data-el="days"></div>
             <p class="bk-status" data-el="status"></p>
             <div class="bk-tzrow">
-              <label class="bk-tz">
+              <p class="bk-tz bk-tzlock" data-el="tzlock" hidden></p>
+              <label class="bk-tz" data-el="tzpicker">
                 <span>Time zone</span>
                 <span class="bk-tzpick">
                   <span data-el="tzlabel"></span>
@@ -355,6 +357,17 @@
 
     let info;
     let tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "America/New_York";
+
+    // In-person types show times where the meeting happens, Mark's time zone, with no picker.
+    function applyTzLock() {
+      const locked = !!info.lockTimezone;
+      $("tzlock").hidden = !locked; $("tzpicker").hidden = locked;
+      if (locked) {
+        tz = info.timezone;
+        $("tzlock").textContent = `Times are in ${zoneName(tz)}, where we'll meet.`;
+        fillTimezones();
+      }
+    }
     let duration = 0;
     let month = new Date();
     let byDay = new Map();
@@ -657,6 +670,7 @@
     }
 
     function showInfo() {
+      applyTzLock();
       $("title").textContent = info.label || info.name;
       $("desc").innerHTML = descHtml(info.description || "");
       if (info.location) { $("location").hidden = false; $("location").textContent = info.location; }
