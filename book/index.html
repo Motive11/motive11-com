@@ -138,6 +138,7 @@
   .bk-sk-d { aspect-ratio: 1; max-width: 2.9rem; width: 100%; margin: 0 auto; border-radius: 999px; }
   .bk-sk-t { height: 2.9rem; }
   .bk-sk-line { height: 1.1rem; width: 70%; }
+  .bk-sk-card { height: 5.25rem; }
   @keyframes bk-pulse { 50% { opacity: 0.45; } }
   @media (prefers-reduced-motion: reduce) { .bk.is-loading .bk-sk { animation: none; } }
   .bk-day { font-weight: 500; margin-bottom: 1rem; }
@@ -280,7 +281,7 @@
 
       <div data-step="list" hidden>
         <h2 class="bk-h2">Pick a meeting</h2>
-        <ul class="bk-types" data-el="types"></ul>
+        <ul class="bk-types" data-el="types"><li><span class="bk-sk bk-sk-card"></span></li><li><span class="bk-sk bk-sk-card"></span></li></ul>
       </div>
 
       <div data-step="missing" hidden>
@@ -608,7 +609,7 @@
       step("manage");
       $("manage-list").innerHTML = m.sessions.map((s) => `<li class="bk-mrow">
         <span>${fullWhen(s.start)} &middot; ${lengthLabel(s.duration)}${s.status === "cancelled" ? " (cancelled)" : ""}</span>
-        ${s.canChange ? `<span class="bk-mact"><button type="button" class="bk-link" data-resched="${s.id}" data-dur="${s.duration}">Reschedule</button><button type="button" class="bk-link" data-cancel="${s.id}">Cancel</button></span>` : ""}
+        ${s.canChange ? `<span class="bk-mact"><button type="button" class="bk-link" data-resched="${s.id}" data-dur="${s.duration}">Reschedule</button>${s.canCancel ? `<button type="button" class="bk-link" data-cancel="${s.id}">Cancel</button>` : ""}</span>` : ""}
       </li>`).join("");
       if (m.sessions.some((s) => s.status === "confirmed" && !s.canChange)) $("manage-status").textContent = `Within ${m.cutoffHours} hours of a session, reply to your confirmation email to change it.`;
     }
@@ -636,6 +637,9 @@
     }
 
     async function showList() {
+      // Card placeholders, not the calendar, while the list loads.
+      $("title").textContent = "Book a time";
+      step("list");
       const out = await api("/types?entity=motive11").catch(() => null);
       if (!out?.types?.length) {
         return missing("Looking to work with me?", `Everything starts at <a href="https://markszymanski.co/work-with-me">markszymanski.co</a>. If I sent you a booking link, use that one.`);
