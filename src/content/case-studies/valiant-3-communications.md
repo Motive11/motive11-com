@@ -12,6 +12,7 @@ cover: "../../assets/case-studies/valiant-3-communications/new-home-desktop.webp
 coverAlt: "The new Valiant 3 homepage: 'Sports. Entertainment. Philanthropy.' over golf and event photography."
 coverBg: "sand"
 logo: "/images/clients/v3-on-light.webp"
+logoDark: "/images/clients/v3-on-dark.webp"
 services:
   - "Platform migration"
   - "Ongoing care plan"

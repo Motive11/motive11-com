@@ -6,27 +6,33 @@ interface Props {
 const { caption = "Firms around Pittsburgh running on something I built" } = Astro.props;
 
 const logos = [
-  { src: "/images/clients/sheffler-on-light.png", alt: "Sheffler & Company", h: 34 },
-  { src: "/images/clients/pw-on-light.webp", alt: "Polverini & Wiater", h: 38 },
-  { src: "/images/clients/valor-on-light.svg", alt: "Valor PGH", h: 42 },
-  { src: "/images/clients/v3-on-light.webp", alt: "Valiant 3", h: 30 },
-  { src: "/images/clients/qcl-on-light.webp", alt: "Quality Choice Landscaping", h: 40 },
+  { light: "/images/clients/sheffler-on-light.png", dark: "/images/clients/sheffler-on-dark.webp", alt: "Sheffler & Company", h: 38 },
+  { light: "/images/clients/pw-on-light.webp", dark: "/images/clients/pw-on-dark.webp", alt: "Polverini & Wiater", h: 42 },
+  { light: "/images/clients/valor-on-light.svg", dark: "/images/clients/valor-on-dark.svg", alt: "Valor PGH", h: 44 },
+  { light: "/images/clients/v3-on-light.webp", dark: "/images/clients/v3-on-dark.webp", alt: "Valiant 3", h: 34 },
+  { light: "/images/clients/qcl-on-light.webp", dark: "/images/clients/qcl-on-dark.png", alt: "Quality Choice Landscaping", h: 44 },
 ];
 ---
 
 <div class="logos">
   <p>{caption}</p>
   <div class="row">
-    {logos.map((l) => <img class="client-logo" src={l.src} alt={l.alt} style={`height:${l.h}px`} loading="lazy" />)}
+    {logos.map((l) => (
+      <span class="logo" style={`--h:${l.h}px`}>
+        <img class="theme-light-only" src={l.light} alt={l.alt} loading="lazy" />
+        <img class="theme-dark-only" src={l.dark} alt={l.alt} loading="lazy" />
+      </span>
+    ))}
   </div>
 </div>
 
 <style>
   .logos { text-align: center; }
   p { color: var(--faint); font-size: 15px; }
-  .row { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 26px clamp(36px, 5vw, 72px); margin-top: 26px; }
+  .row { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 28px clamp(36px, 5vw, 64px); margin-top: 26px; }
+  .logo img { height: var(--h); width: auto; }
   @media (max-width: 560px) {
-    .row { gap: 22px 32px; }
-    .row img { max-height: 30px; }
+    .row { gap: 24px 32px; }
+    .logo img { height: calc(var(--h) * 0.75); }
   }
 </style>

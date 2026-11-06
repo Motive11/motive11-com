@@ -15,6 +15,7 @@ cover: "../../assets/case-studies/polverini-and-wiater/new-home-desktop.webp"
 coverAlt: "The Polverini & Wiater homepage: Ohio Valley Criminal and Civil Litigation Law Firm, over an aerial photo of a river bridge."
 coverBg: "charcoal"
 logo: "/images/clients/pw-on-light.webp"
+logoDark: "/images/clients/pw-on-dark.webp"
 services:
   - "Strategy and positioning"
   - "Website design and build"

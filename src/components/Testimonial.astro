@@ -1,0 +1,49 @@
+---
+import { Image } from "astro:assets";
+import { initials, quoteParagraphs, type Testimonial } from "../lib/testimonials";
+
+interface Props {
+  q: Testimonial;
+  variant?: "feature" | "card";
+}
+
+const { q, variant = "card" } = Astro.props;
+const paragraphs = quoteParagraphs(q.text);
+const role = [q.customer_tagline, q.customer_company].filter(Boolean).join(", ");
+---
+
+<figure class:list={["t", variant]}>
+  {variant === "feature" && <span class="mark" aria-hidden="true">&ldquo;</span>}
+  {variant === "card" && q.title && <p class="title">{q.title}</p>}
+  <blockquote>
+    {paragraphs.map((p) => <p>{p}</p>)}
+  </blockquote>
+  <figcaption>
+    {q.customer_avatar
+      ? <Image class="face" src={q.customer_avatar} alt={q.customer_name} width={112} height={112} />
+      : <span class="face initials" aria-hidden="true">{initials(q.customer_name)}</span>}
+    <span class="who"><b>{q.customer_name}</b>{role && <span>{role}</span>}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .t { margin: 0; }
+  blockquote { margin: 0; }
+  blockquote p + p { margin-top: 0.9em; }
+  figcaption { display: flex; align-items: center; gap: 14px; margin-top: 28px; text-align: left; }
+  .face { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex: none; border: 1px solid var(--line); }
+  .initials { display: grid; place-items: center; background: var(--surface-2); color: var(--accent-text); font-weight: 500; font-size: 17px; }
+  .who { display: grid; gap: 1px; font-size: 16px; }
+  .who b { font-weight: 500; }
+  .who span { color: var(--faint); }
+
+  .feature { text-align: center; }
+  .feature .mark { display: block; color: var(--orange); font-size: 72px; line-height: 0.6; font-weight: 500; height: 34px; }
+  .feature blockquote { margin: 26px auto 0; font-weight: 500; font-size: clamp(26px, 3vw, 40px); line-height: 1.22; letter-spacing: -0.035em; max-width: 22em; text-wrap: balance; }
+  .feature figcaption { justify-content: center; margin-top: 34px; }
+
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 18px; padding: clamp(26px, 3.5vw, 40px); display: flex; flex-direction: column; }
+  .card .title { color: var(--fg); font-weight: 500; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 18px; }
+  .card blockquote { color: var(--muted); font-size: 17px; line-height: 1.65; flex: 1; }
+  .card figcaption { padding-top: 22px; border-top: 1px solid var(--line); }
+</style>

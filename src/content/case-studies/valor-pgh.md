@@ -15,6 +15,7 @@ cover: "../../assets/case-studies/valor-pgh/new-home-desktop.webp"
 coverAlt: "The new Valor PGH homepage: 'One team for your whole life.' under the line Insurance, Real Estate, Renovations, beside a photo of the Valor team."
 coverBg: "clay"
 logo: "/images/clients/valor-on-light.svg"
+logoDark: "/images/clients/valor-on-dark.svg"
 services:
   - "Strategy and positioning"
   - "Website design and build"

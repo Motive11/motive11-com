@@ -25,6 +25,7 @@ const caseStudies = defineCollection({
       coverBg: z.enum(["orange", "charcoal", "clay", "sand"]),
       coverStyle: z.enum(["screenshot", "art"]).default("screenshot"),
       logo: z.string().optional(),
+      logoDark: z.string().optional(),
       services: z.array(z.string()),
       testimonialIds: z.array(z.string()).default([]),
       order: z.number(),

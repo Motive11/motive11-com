@@ -7,7 +7,8 @@ import ClientLogos from "../components/ClientLogos.astro";
 import ClosingCta from "../components/ClosingCta.astro";
 import { site } from "../lib/site";
 import { offers } from "../lib/offers";
-import { fetchTestimonial, plainQuote } from "../lib/testimonials";
+import Testimonial from "../components/Testimonial.astro";
+import { fetchTestimonial } from "../lib/testimonials";
 import avatar from "../assets/mark/avatar.webp";
 import portrait from "../assets/mark/portrait.webp";
 import portal from "../assets/case-studies/sheffler-and-company/portal-leads-queue.webp";
@@ -113,9 +114,7 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
   {quote && (
     <section class="quote">
       <div class="wrap">
-        <span class="mark" aria-hidden="true">&ldquo;</span>
-        <blockquote>{plainQuote(quote.text)}</blockquote>
-        <div class="who"><b>{quote.customer_name}</b><span>{[quote.customer_tagline, quote.customer_company].filter(Boolean).join(", ")}</span></div>
+        <Testimonial q={quote} variant="feature" />
       </div>
     </section>
   )}
@@ -194,11 +193,6 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
   #work { padding-top: 0; }
 
   .quote { background: var(--surface); border-block: 1px solid var(--line); text-align: center; padding-block: clamp(80px, 10vw, 120px); }
-  .quote .mark { display: block; color: var(--orange); font-size: 72px; line-height: 0.6; font-weight: 500; height: 34px; }
-  .quote blockquote { margin: 26px auto 0; font-weight: 500; font-size: clamp(26px, 3vw, 42px); line-height: 1.2; letter-spacing: -0.035em; max-width: 21em; text-wrap: balance; }
-  .quote .who { margin-top: 34px; font-size: 16px; display: grid; gap: 2px; }
-  .quote .who b { font-weight: 500; }
-  .quote .who span { color: var(--faint); }
 
   .fit { display: grid; gap: 16px; margin-top: 48px; }
   .fit > div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 28px 28px 32px; }

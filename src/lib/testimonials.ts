@@ -7,6 +7,7 @@ export interface Testimonial {
   title: string | null;
   text: string;
   customer_name: string;
+  customer_avatar: string | null;
   customer_tagline: string | null;
   customer_company: string | null;
 }
@@ -26,7 +27,15 @@ export async function fetchTestimonial(id: string): Promise<Testimonial | null> 
   }
 }
 
-// The API keeps highlight markup (<mark>) inside the text; this site shows quotes plain.
-export function plainQuote(text: string): string {
-  return text.replace(/<\/?mark>/g, "").replace(/\s+/g, " ").trim();
+// The API keeps highlight markup (<mark>) inside the text; this site shows quotes without it.
+export function quoteParagraphs(text: string): string[] {
+  return text
+    .replace(/<\/?mark>/g, "")
+    .split(/\n+/)
+    .map((p) => p.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
+
+export function initials(name: string): string {
+  return name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 }

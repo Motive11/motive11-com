@@ -84,10 +84,6 @@ h2 { font-weight: 500; font-size: clamp(32px, 3.6vw, 50px); line-height: 1.08; l
 
 section.block { padding-block: clamp(88px, 11vw, 140px); }
 
-/* Client logos are colored files; one filter makes them a single quiet tone in either theme. */
-.client-logo { width: auto; opacity: 0.7; filter: grayscale(1) brightness(0); }
-.dark .client-logo { filter: grayscale(1) brightness(0) invert(1); }
-
 .theme-dark-only { display: none; }
 .dark .theme-dark-only { display: revert; }
 .dark .theme-light-only { display: none; }

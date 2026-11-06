@@ -17,6 +17,9 @@ export default defineConfig({
       fallbacks: ["sans-serif"],
     },
   ],
+  image: {
+    domains: ["cdn.markszymanski.co"],
+  },
   vite: {
     plugins: [tailwindcss()],
   },

@@ -15,6 +15,7 @@ cover: "../../assets/case-studies/quality-choice-landscaping/new-home-desktop.we
 coverAlt: "The Quality Choice Landscaping homepage: 'Your Local Landscaping Experts In Harrison City/Level Green' over a photo of a stone retaining wall."
 coverBg: "charcoal"
 logo: "/images/clients/qcl-on-light.webp"
+logoDark: "/images/clients/qcl-on-dark.png"
 services:
   - "Strategy and positioning"
   - "Business infrastructure setup"

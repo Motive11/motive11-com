@@ -15,6 +15,7 @@ cover: "../../assets/case-studies/sheffler-and-company/portal-leads-queue.webp"
 coverAlt: "The lead queue in the Sheffler & Company portal, shown with demo data."
 coverBg: "orange"
 logo: "/images/clients/sheffler-on-light.png"
+logoDark: "/images/clients/sheffler-on-dark.webp"
 services:
   - "Website design and build"
   - "Discovery and solution design"
