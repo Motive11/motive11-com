@@ -8,7 +8,7 @@ his content, and builders; this site links there and never copies its prices.
 
 - Astro 7 (static output), Tailwind v4 via `@tailwindcss/vite`, `@astrojs/sitemap`
 - Satoshi, self-hosted by Astro's Fonts API from Fontshare at build time
-- Cloudflare Pages, git-connected (`Motive11/motive11-com` → Pages project `motive11-com`)
+- Cloudflare Pages, git-connected (`Motive11/motive11-website` → Pages project `motive11-website`, which holds motive11.com and www)
 - No forms and no Pages Functions. Booking is the shared widget from the AIOS booking Worker
 
 ## Pages
@@ -41,7 +41,7 @@ npx wrangler pages dev dist --port 8811   # serves dist with the real headers an
 Pushing `main` deploys. Pages build settings: build command `npm install --no-audit --no-fund && npm run build`,
 output `dist`, env `NODE_VERSION=24` and `SKIP_DEPENDENCY_INSTALL=1` (production and preview).
 
-**Order for the first Astro deploy (November 2026):** the Pages project was set up for the old static
+**Order for the first Astro deploy (November 2026):** the Pages project is still set up for the old static
 site (no build command, output = repo root). Change the build settings above BEFORE merging the Astro
 branch to `main`. Merging first publishes a repo root with no `index.html`, and every page, booking
 links included, 404s until the settings are fixed. Changing the settings first is safe: a failed build
