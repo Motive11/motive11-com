@@ -1,0 +1,61 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"case-studies">;
+  flip?: boolean;
+}
+
+const { entry, flip = false } = Astro.props;
+const d = entry.data;
+const href = `/case-studies/${entry.id}`;
+---
+
+<article class:list={["case reveal", { flip }]}>
+  <a class:list={["media", `bg-${d.coverBg}`, { art: d.coverStyle === "art" }]} href={href} aria-label={`${d.client.name} case study`}>
+    <Image src={d.cover} alt={d.coverAlt} widths={[640, 1100, 1600]} sizes="(min-width: 1024px) 640px, 100vw" />
+  </a>
+  <div>
+    <div class="meta"><b>{d.client.name}</b> &middot; {d.client.industry}</div>
+    <h3>{d.title}</h3>
+    <p>{d.summary}</p>
+    {d.metric && <div class="stat"><b>{d.metric.value}</b><span>{d.metric.label}</span></div>}
+    <a class="text-link" href={href}>Read the case study <svg class="arrow"><use href="#arrow" /></svg></a>
+  </div>
+</article>
+
+<style>
+  .case { display: grid; gap: 32px; align-items: center; }
+  .case + :global(.case) { margin-top: clamp(80px, 10vw, 130px); }
+  .media { display: block; aspect-ratio: 5 / 3; overflow: hidden; border-radius: 18px; padding: clamp(22px, 4.2vw, 56px) clamp(22px, 4.2vw, 56px) 0; }
+  .media :global(img) { width: 100%; height: auto; border-radius: 8px 8px 0 0; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5); transition: transform 0.35s ease; }
+  .media:hover :global(img) { transform: translateY(-6px); }
+  .media.art { padding: 0; }
+  .media.art :global(img) { height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; }
+  .media.art:hover :global(img) { transform: scale(1.02); }
+  .meta { color: var(--faint); font-size: 15px; font-weight: 500; }
+  .meta b { color: var(--fg); font-weight: 500; }
+  h3 { font-weight: 500; font-size: clamp(25px, 2.4vw, 33px); line-height: 1.15; letter-spacing: -0.032em; margin: 14px 0 16px; text-wrap: balance; }
+  p { color: var(--muted); font-size: 18px; text-wrap: pretty; }
+  .stat { display: flex; align-items: baseline; gap: 14px; margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  .stat b { font-weight: 500; font-size: 46px; letter-spacing: -0.05em; line-height: 1; color: var(--accent-text); white-space: nowrap; }
+  .stat span { color: var(--muted); font-size: 16px; line-height: 1.35; }
+  .text-link { margin-top: 26px; }
+  @media (min-width: 1024px) {
+    .case { grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr); gap: clamp(40px, 6vw, 88px); }
+    .case.flip { grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr); }
+    .case.flip .media { order: 2; }
+  }
+  @media (max-width: 560px) {
+    p { font-size: 17px; }
+    .stat b { font-size: 38px; }
+  }
+</style>
+
+<style is:global>
+  .bg-orange { background: linear-gradient(160deg, #FF7A30, #F25E10); }
+  .bg-charcoal { background: linear-gradient(160deg, #46464B, #313134); }
+  .bg-clay { background: linear-gradient(160deg, #BFA68F, #A88E77); }
+  .bg-sand { background: linear-gradient(160deg, #E9E1D6, #D8CDBF); }
+</style>

@@ -1,0 +1,55 @@
+---
+import { site } from "../lib/site";
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="top">
+      <div class="about">
+        <a href="/" aria-label="Motive11 home">
+          <img class="theme-dark-only" src="/images/logo-light.svg" alt="Motive11" width="102" height="20" />
+          <img class="theme-light-only" src="/images/logo-dark.svg" alt="Motive11" width="102" height="20" />
+        </a>
+        <p>Custom software, AI systems, and websites for established firms. Built by Mark Szymanski in Pittsburgh.</p>
+      </div>
+      <nav aria-label="Footer">
+        <div>
+          <span>Work</span>
+          <a href="/case-studies">Case studies</a>
+          <a href="/services">Services</a>
+          <a href={site.introCall}>Book a call</a>
+        </div>
+        <div>
+          <span>Company</span>
+          <a href="/about">About</a>
+          <a href={site.founder.url}>Mark Szymanski</a>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </div>
+      </nav>
+    </div>
+    <div class="bottom">
+      <span>{site.legalName} &middot; Est. {site.founded} &middot; {site.city}, {site.region}</span>
+      <span class="legal"><a href="/terms">Terms</a><a href="/ai-policy">AI Policy</a></span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { border-top: 1px solid var(--line); font-size: 15px; }
+  .top { display: grid; gap: 40px; padding-block: 56px 40px; }
+  .about img { height: 20px; width: auto; }
+  .about p { color: var(--muted); margin-top: 16px; max-width: 26em; }
+  nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+  nav div { display: grid; gap: 10px; align-content: start; }
+  nav span { color: var(--faint); font-size: 14px; margin-bottom: 4px; }
+  nav a { color: var(--muted); text-decoration: none; overflow-wrap: anywhere; }
+  nav a:hover { color: var(--fg); }
+  .bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; padding-block: 22px 32px; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
+  .legal { display: flex; gap: 22px; }
+  .legal a { color: var(--faint); text-decoration: none; }
+  .legal a:hover { color: var(--fg); }
+  @media (min-width: 1024px) {
+    .top { grid-template-columns: 1fr auto; }
+    nav { gap: 72px; }
+  }
+</style>

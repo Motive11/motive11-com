@@ -1,5 +1,10 @@
-# Local-only project context, not for the public repo
-CONTEXT.md
+node_modules/
+dist/
+.astro/
+.wrangler/
+.env
+.env.*
+!.env.example
 
 # OS
 .DS_Store

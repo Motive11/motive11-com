@@ -1,0 +1,58 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ClientLogos from "../components/ClientLogos.astro";
+import ClosingCta from "../components/ClosingCta.astro";
+import { breadcrumb } from "../lib/schema";
+import { site } from "../lib/site";
+import portrait from "../assets/mark/portrait.webp";
+
+const title = "About | Motive11";
+const description = "Motive11 is Mark Szymanski's company. One person plus AI, building custom software, AI systems, and websites for established firms.";
+---
+
+<BaseLayout title={title} description={description} schema={[breadcrumb([{ name: "Home", url: site.url }, { name: "About", url: `${site.url}/about` }])]}>
+  <section class="about">
+    <div class="wrap grid">
+      <div class="panel">
+        <Image src={portrait} alt="Mark Szymanski" widths={[480, 800, 1100]} sizes="(min-width: 1024px) 440px, 90vw" loading="eager" />
+        <div class="cap"><b>Mark Szymanski</b><span>Founder, Motive11</span></div>
+      </div>
+      <div class="copy">
+        <span class="label">About</span>
+        <h1>Motive11 is my company. It's just me, plus AI.</h1>
+        <div class="prose-m11">
+          <p>I'm Mark Szymanski. I build custom software, AI systems, and websites for established firms, most of them around Pittsburgh. Motive11, formerly FindIT Tech, is the company you hire, and I'm the person who does the work.</p>
+          <p>There's no account manager and no handoff. The person on the first call is the person who designs the system, builds it, and makes the change when your team asks for one.</p>
+          <p>It works because AI does the work a team used to. I spend my time on the part that needs a person: learning how your business actually runs, finding the job that's costing the most time, and deciding what to build. The building goes faster than it ever has.</p>
+          <h2>How I work</h2>
+          <p>I start by asking about the business, not the technology. Then I tell you what I'd fix first and why. For custom software, you click through a working prototype before anything gets built, so you see the thing before you commit to it.</p>
+          <p>Once it's live, I stay on. Several of my clients have been with me for years, and the work tends to grow from one project into the system the whole office runs on.</p>
+          <h2>Where else you'll find me</h2>
+          <p>I also teach other builders through my YouTube channel and my community, Modern Builders Society. That side of my work lives at <a href={site.founder.url}>markszymanski.co</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap proof"><ClientLogos /></div>
+
+  <ClosingCta />
+</BaseLayout>
+
+<style>
+  .about { padding-block: clamp(56px, 8vw, 104px) clamp(72px, 9vw, 112px); }
+  .grid { display: grid; gap: 48px; align-items: start; }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 14px 14px 18px; max-width: 440px; }
+  .panel :global(img) { width: 100%; height: auto; border-radius: 12px; }
+  .cap { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; padding-inline: 4px; font-size: 15px; }
+  .cap b { font-weight: 500; }
+  .cap span { color: var(--faint); }
+  h1 { font-size: clamp(36px, 4.4vw, 58px); max-width: 13em; margin-bottom: 32px; }
+  .prose-m11 { max-width: 36em; }
+  .proof { padding-bottom: clamp(24px, 4vw, 48px); }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(48px, 6vw, 96px); }
+    .panel { position: sticky; top: 100px; }
+  }
+</style>

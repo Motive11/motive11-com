@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CaseRow from "../../components/CaseRow.astro";
+import ClosingCta from "../../components/ClosingCta.astro";
+import { breadcrumb } from "../../lib/schema";
+import { site } from "../../lib/site";
+
+const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order);
+const title = "Case studies | Motive11";
+const description = "Custom software, AI systems, and websites I've built for engineering firms, law firms, agencies, and local businesses.";
+---
+
+<BaseLayout title={title} description={description} schema={[breadcrumb([{ name: "Home", url: site.url }, { name: "Case studies", url: `${site.url}/case-studies` }])]}>
+  <section class="intro">
+    <div class="wrap">
+      <span class="label">Case studies</span>
+      <h1>The work, and what it changed for the firm.</h1>
+      <p class="lead">Each of these is a business I built something for. What the problem was, what I built, and what's different now.</p>
+    </div>
+  </section>
+
+  <section class="list">
+    <div class="wrap">
+      {cases.map((entry, i) => <CaseRow entry={entry} flip={i % 2 === 1} />)}
+    </div>
+  </section>
+
+  <ClosingCta />
+</BaseLayout>
+
+<style>
+  .intro { padding-block: clamp(64px, 9vw, 112px) clamp(56px, 7vw, 96px); }
+  .intro h1 { max-width: 13em; }
+  .list { padding-bottom: clamp(40px, 6vw, 72px); }
+</style>

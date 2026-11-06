@@ -1,0 +1,88 @@
+---
+import { site } from "../lib/site";
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="site-header">
+  <div class="wrap row">
+    <a class="logo" href="/" aria-label="Motive11 home">
+      <img class="theme-dark-only" src="/images/logo-light.svg" alt="Motive11" width="112" height="22" />
+      <img class="theme-light-only" src="/images/logo-dark.svg" alt="Motive11" width="112" height="22" />
+    </a>
+    <nav class="desktop" aria-label="Main">
+      {site.nav.map((item) => (
+        <a class:list={["navlink", { active: isActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>{item.label}</a>
+      ))}
+    </nav>
+    <div class="tools">
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch to light mode">
+        <svg class="theme-dark-only" width="20" height="20"><use href="#sun" /></svg>
+        <svg class="theme-light-only" width="20" height="20"><use href="#moon" /></svg>
+      </button>
+      <a class="btn small" href={site.introCall}>Book a call</a>
+      <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-expanded="false" aria-controls="mobile-nav" aria-label="Open menu">
+        <svg width="22" height="22"><use href="#menu" /></svg>
+      </button>
+    </div>
+  </div>
+  <nav id="mobile-nav" class="mobile" aria-label="Main" hidden>
+    <div class="wrap">
+      {site.nav.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? "page" : undefined}>{item.label}</a>
+      ))}
+      <a href={site.introCall}>Book a call</a>
+    </div>
+  </nav>
+</header>
+
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    var themeBtn = document.querySelector("[data-theme-toggle]");
+    function label() {
+      themeBtn.setAttribute("aria-label", root.classList.contains("dark") ? "Switch to light mode" : "Switch to dark mode");
+    }
+    label();
+    themeBtn.addEventListener("click", function () {
+      var dark = root.classList.toggle("dark");
+      try { localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) {}
+      label();
+    });
+
+    var menuBtn = document.querySelector("[data-menu-toggle]");
+    var menu = document.getElementById("mobile-nav");
+    menuBtn.addEventListener("click", function () {
+      var opening = menu.hasAttribute("hidden");
+      if (opening) menu.removeAttribute("hidden"); else menu.setAttribute("hidden", "");
+      menuBtn.setAttribute("aria-expanded", opening ? "true" : "false");
+      menuBtn.setAttribute("aria-label", opening ? "Close menu" : "Open menu");
+      menuBtn.querySelector("use").setAttribute("href", opening ? "#close" : "#menu");
+    });
+  })();
+</script>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 30; background: var(--header-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .row { display: flex; align-items: center; gap: 24px; height: 68px; }
+  .logo img { height: 22px; width: auto; }
+  .desktop { display: none; gap: 30px; margin-left: auto; }
+  .navlink { color: var(--muted); text-decoration: none; font-weight: 500; font-size: 15px; }
+  .navlink:hover, .navlink.active { color: var(--fg); }
+  .tools { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .icon-btn { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+  .icon-btn:hover { color: var(--fg); background: var(--surface); }
+  .btn.small { font-size: 15px; padding: 9px 16px; box-shadow: none; }
+  .mobile { border-top: 1px solid var(--line); background: var(--bg); }
+  .mobile .wrap { display: grid; padding-block: 8px 18px; }
+  .mobile a { padding: 14px 0; text-decoration: none; font-size: 19px; font-weight: 500; border-bottom: 1px solid var(--line); }
+  .mobile a:last-child { border-bottom: 0; color: var(--accent-text); }
+  @media (min-width: 1024px) {
+    .desktop { display: flex; }
+    .tools { margin-left: 18px; }
+    .menu-btn, .mobile { display: none; }
+  }
+  @media (max-width: 420px) {
+    .btn.small { display: none; }
+  }
+</style>

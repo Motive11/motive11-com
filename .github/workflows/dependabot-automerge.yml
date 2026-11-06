@@ -1,0 +1,43 @@
+# Copy to <site repo>/.github/workflows/dependabot-automerge.yml. See README "Keeping a site patched".
+#
+# Mark's call (October 23, 2026): updates ship without a preview, major versions included, because
+# a content site that might have a small break beats one with known holes, and git can undo it.
+# The guardrail is the build: it must pass on a clean runner with no secrets.
+#
+# GitHub's native auto-merge needs branch protection, which private repos only get on a paid plan
+# (the Motive11 org is on Free), so this job builds and merges in one place. Cloudflare Pages
+# deploys the merge on its own; no deploy hook is needed (unlike Vercel, it builds any author).
+#
+# Only PUBLIC_ values may go under env below, and only if the build needs them. They ship to every
+# visitor's browser anyway. Never put a secret here.
+
+name: Dependabot auto-merge
+
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-and-merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm install --no-audit --no-fund
+
+      - run: npm run build
+        env: {}
+
+      - name: Merge
+        run: gh pr merge "$PR_URL" --squash --delete-branch
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

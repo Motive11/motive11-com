@@ -1,0 +1,12 @@
+# Old motive11.com paths, from before November 2026 when the site only pointed at markszymanski.co.
+/work-with-me       /services                         301
+/work-with-me/*     /services                         301
+/pricing            /services                         301
+/about-us           /about                            301
+/contact            /book/intro                       301
+/start              https://markszymanski.co/         301
+
+# Every booking link is served by the one /book page, which reads the path itself.
+/book/l/:token      /book/   200
+/book/manage/:token /book/   200
+/book/:slug         /book/   200

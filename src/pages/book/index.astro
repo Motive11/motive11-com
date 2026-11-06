@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<!-- One page serves every booking link: public/_redirects rewrites /book/<slug>, /book/l/<token>, and
+     /book/manage/<token> here, and the shared widget reads the path. The form itself is the copy the
+     AIOS booking Worker serves (state/booking-worker/public/widget.js), the same file markszymanski.co
+     loads, so the two sites can't drift; changes to the form go in that file. This page only supplies
+     the Motive11 colors through the --color-* properties below. -->
+<BaseLayout title="Book a time | Motive11" description="Book a time with Mark at Motive11." noindex>
+  <div class="booking">
+    <div data-booking data-variant="full" data-photo="/images/mark-szymanski.webp" data-list="motive11"
+         data-entity-only="motive11" data-title-suffix="Motive11"></div>
+  </div>
+  <script is:inline src="https://book.motive11.com/widget.js" defer></script>
+</BaseLayout>
+
+<style is:global>
+  /* On :root, not the wrapper: the widget reads these from the document root for Stripe's card form. */
+  :root {
+    --color-ink: var(--fg);
+    --color-paper: var(--bg);
+    --color-surface: var(--surface);
+    --color-border: var(--line);
+    --color-muted: var(--muted);
+    --color-accent: var(--orange);
+    --color-accent-hover: var(--orange-hover);
+    --radius-sm: 6px;
+  }
+  .booking {
+    padding-block: clamp(24px, 4vw, 48px) clamp(48px, 6vw, 80px);
+  }
+  /* Reserves the form's height until it loads, so the footer doesn't jump. */
+  [data-booking]:not([data-bk-ready]) { display: block; min-height: 34rem; }
+  /* Motive11's orange is light, so text on it is the dark ground in both themes, not the page color. */
+  .booking .bk .bk-d.is-sel, .booking .bk .bk-next, .booking .bk .bk-btn { color: #1E1E1F; }
+</style>

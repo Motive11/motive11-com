@@ -1,0 +1,26 @@
+# Copy to <site repo>/.github/dependabot.yml. See README "Keeping a site patched".
+#
+# Mark's call (October 23, 2026): every site stays on the newest packages, and nobody previews the
+# updates. One grouped PR a week, so a site gets at most one build and one deploy for the lot.
+
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/New_York
+    groups:
+      everything:
+        patterns: ["*"]
+    open-pull-requests-limit: 3
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

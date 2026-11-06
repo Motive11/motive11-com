@@ -1,18 +1,33 @@
 <!-- AIOS pointer -->
-# motive11.com — micro-site
+# motive11.com
 
-Deliverable repo at `~/projects/motive11/motive11-com/` (own git → GitHub
-`Motive11/motive11-com` → Cloudflare Pages). **This is the live motive11.com.** Owning
-entity: `motive11`. Project context/spec is in [`CONTEXT.md`](CONTEXT.md) — self-contained,
-no separate AIOS context folder.
+Deliverable repo for Motive11's own marketing site, aimed at operators. Brain/context lives in AIOS,
+read it before doing work:
 
-Convention: AIOS `C:\Users\marks\AIOS\CLAUDE.md` → "Projects".
+**Context:** `C:\Users\marks\AIOS\entities\motive11\` (brand in `brand/`, offers in `context/offers/`,
+who the site is for in `C:\Users\marks\AIOS\entities\szymanski-media\context\offer-stack\icps.md`).
+Why this site exists separately from markszymanski.co: `C:\Users\marks\AIOS\entities\motive11\context\site-split-map.html`
+(November 6, 2026). Build method: `C:\Users\marks\AIOS\pipelines\web-build\`.
 
-## Content-Security-Policy: new outside domains go in `_headers`
+## Stack & deploy
 
-`_headers` sends a Content-Security-Policy that allowlists every outside domain the site loads.
-**Anything new from another domain (a map, reviews widget, booking or chat embed, video host,
-font service, form service) needs its origin added there in the same commit, or it is silently
-blocked on the live site.** Opening the HTML files directly ignores `_headers`, so it looks fine locally. Test with
-`npx wrangler pages dev .` plus AIOS `pipelines/web-build/check_csp.py`. Standard: AIOS
+Astro + Tailwind on Cloudflare Pages, git-connected, push to `main` deploys. Live at https://motive11.com.
+Details in `README.md`.
+
+## Rules for this repo
+
+- **No prices on this site.** Operator prices live in the markszymanski.co repo (`src/lib/pricing.ts`).
+  A second copy here would drift. Link to the page that holds the price instead.
+- **Case studies are written for operators** (problem, what I built, what changed), first person,
+  buttoned up. markszymanski.co keeps the longer builder versions; never sync one from the other.
+- **Brand colors mirror `AIOS entities/motive11/brand/brand.json`** in `src/styles/global.css`. Change both
+  in the same task.
+
+## Content-Security-Policy: new outside domains go in `public/_headers`
+
+`public/_headers` sends a Content-Security-Policy that allowlists every outside domain the site loads.
+**Anything new from another domain (a map, reviews widget, booking or chat embed, video host, font
+service, form service) needs its origin added there in the same commit, or it is silently blocked on
+the live site.** `astro dev` ignores `_headers`, so it looks fine locally. Test with
+`npx wrangler pages dev dist` plus AIOS `pipelines/web-build/check_csp.py`. Standard: AIOS
 `pipelines/web-build/security-headers.md`.

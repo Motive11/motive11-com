@@ -1,0 +1,135 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ClosingCta from "../../components/ClosingCta.astro";
+import { breadcrumb } from "../../lib/schema";
+import { site } from "../../lib/site";
+import { fetchTestimonial, plainQuote } from "../../lib/testimonials";
+
+export async function getStaticPaths() {
+  const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order);
+  return cases.map((entry, i) => ({ params: { slug: entry.id }, props: { entry, next: cases[(i + 1) % cases.length] } }));
+}
+
+const { entry, next } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const quotes = (await Promise.all(d.testimonialIds.map(fetchTestimonial))).filter((q) => q !== null);
+const url = `${site.url}/case-studies/${entry.id}`;
+const schema = [
+  breadcrumb([
+    { name: "Home", url: site.url },
+    { name: "Case studies", url: `${site.url}/case-studies` },
+    { name: d.client.name, url },
+  ]),
+];
+---
+
+<BaseLayout title={`${d.client.name} case study | Motive11`} description={d.summary} ogType="article" schema={schema}>
+  <article>
+    <header class="top">
+      <div class="wrap">
+        <a class="back" href="/case-studies"><svg class="arrow"><use href="#arrow" /></svg>All case studies</a>
+        {d.logo && <span class="top-logo"><img src={d.logo} alt={d.client.name} /></span>}
+        <div class="meta"><b>{d.client.name}</b> &middot; {d.client.industry} &middot; {d.client.location}</div>
+        <h1>{d.title}</h1>
+        <p class="lead">{d.summary}</p>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class:list={["cover", `bg-${d.coverBg}`, { art: d.coverStyle === "art" }]}>
+        <Image src={d.cover} alt={d.coverAlt} widths={[800, 1400, 2200]} sizes="(min-width: 1240px) 1100px, 100vw" loading="eager" />
+      </div>
+    </div>
+
+    <div class="wrap body">
+      <aside class="facts">
+        <dl>
+          <div><dt>Client</dt><dd>{d.client.website ? <a href={d.client.website} rel="noopener">{d.client.name}</a> : d.client.name}</dd></div>
+          <div><dt>Industry</dt><dd>{d.client.industry}</dd></div>
+          <div><dt>The work</dt><dd>{d.work}</dd></div>
+          <div><dt>When</dt><dd>{d.year}</dd></div>
+          {d.metric && <div class="metric"><dt>{d.metric.label}</dt><dd>{d.metric.value}</dd></div>}
+        </dl>
+        <div class="services">
+          <span>What I did</span>
+          <ul>{d.services.map((s) => <li>{s}</li>)}</ul>
+        </div>
+      </aside>
+      <div class="prose-m11 content">
+        <Content />
+      </div>
+    </div>
+
+    {quotes.length > 0 && (
+      <section class="quotes">
+        <div class="wrap">
+          {quotes.map((q) => (
+            <figure>
+              <span class="mark" aria-hidden="true">&ldquo;</span>
+              <blockquote>{plainQuote(q.text)}</blockquote>
+              <figcaption><b>{q.customer_name}</b><span>{[q.customer_tagline, q.customer_company].filter(Boolean).join(", ")}</span></figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {next && next.id !== entry.id && (
+      <div class="wrap next">
+        <span>Next case study</span>
+        <a href={`/case-studies/${next.id}`}>{next.data.client.name}<svg class="arrow"><use href="#arrow" /></svg></a>
+      </div>
+    )}
+  </article>
+
+  <ClosingCta />
+</BaseLayout>
+
+<style>
+  .top { padding-block: clamp(48px, 7vw, 88px) clamp(36px, 5vw, 56px); }
+  .back { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); text-decoration: none; font-weight: 500; font-size: 15px; margin-bottom: 32px; }
+  .back .arrow { transform: rotate(180deg); }
+  .back:hover { color: var(--fg); }
+  .top-logo { display: inline-flex; align-items: center; background: #FFFFFF; border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; margin-bottom: 24px; }
+  .top-logo img { height: 36px; width: auto; max-width: 200px; object-fit: contain; }
+  .meta { color: var(--faint); font-weight: 500; font-size: 15px; }
+  .meta b { color: var(--fg); font-weight: 500; }
+  h1 { font-size: clamp(34px, 4.4vw, 58px); max-width: 17em; margin-top: 16px; }
+  .cover { border-radius: 20px; overflow: hidden; padding: clamp(20px, 5vw, 64px) clamp(20px, 5vw, 64px) 0; }
+  .cover :global(img) { width: 100%; height: auto; border-radius: 10px 10px 0 0; box-shadow: 0 30px 70px -24px rgba(0, 0, 0, 0.5); }
+  .cover.art { padding: 0; }
+  .cover.art :global(img) { border-radius: 0; box-shadow: none; aspect-ratio: 16 / 7; object-fit: cover; }
+  .body { display: grid; gap: 40px; padding-block: clamp(56px, 7vw, 96px); }
+  .facts dl { margin: 0; display: grid; border-top: 1px solid var(--line); }
+  .facts dl > div { display: grid; gap: 2px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .facts dt { color: var(--faint); font-size: 14px; }
+  .facts dd { margin: 0; font-weight: 500; }
+  .facts dd a { color: var(--fg); text-decoration: none; border-bottom: 1px solid rgba(255, 106, 26, 0.6); }
+  .facts .metric dd { color: var(--accent-text); font-size: 34px; letter-spacing: -0.04em; line-height: 1.1; order: -1; }
+  .facts .metric { display: flex; flex-direction: column; }
+  .services { margin-top: 28px; }
+  .services span { color: var(--faint); font-size: 14px; }
+  .services ul { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .services li { font-size: 14px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); }
+  .content { max-width: 40em; }
+  .content > :global(h2:first-child) { margin-top: 0; }
+  .quotes { background: var(--surface); border-block: 1px solid var(--line); padding-block: clamp(72px, 9vw, 112px); }
+  .quotes .wrap { display: grid; gap: 64px; }
+  figure { margin: 0; text-align: center; }
+  .mark { display: block; color: var(--orange); font-size: 64px; line-height: 0.6; font-weight: 500; height: 30px; }
+  blockquote { margin: 22px auto 0; font-weight: 500; font-size: clamp(22px, 2.4vw, 32px); line-height: 1.3; letter-spacing: -0.03em; max-width: 26em; text-wrap: pretty; }
+  figcaption { margin-top: 26px; display: grid; gap: 2px; }
+  figcaption b { font-weight: 500; }
+  figcaption span { color: var(--faint); }
+  .next { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px 24px; padding-block: 48px; border-bottom: 1px solid var(--line); }
+  .next span { color: var(--faint); }
+  .next a { display: inline-flex; align-items: center; gap: 10px; color: var(--fg); text-decoration: none; font-weight: 500; font-size: clamp(22px, 2.4vw, 30px); letter-spacing: -0.03em; }
+  .next a:hover { color: var(--accent-text); }
+  @media (min-width: 1024px) {
+    .body { grid-template-columns: 300px minmax(0, 1fr); gap: clamp(48px, 6vw, 96px); align-items: start; }
+    .facts { position: sticky; top: 100px; }
+  }
+</style>

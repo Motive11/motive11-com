@@ -1,0 +1,32 @@
+---
+interface Props {
+  caption?: string;
+}
+
+const { caption = "Firms around Pittsburgh running on something I built" } = Astro.props;
+
+const logos = [
+  { src: "/images/clients/sheffler-on-light.png", alt: "Sheffler & Company", h: 34 },
+  { src: "/images/clients/pw-on-light.webp", alt: "Polverini & Wiater", h: 38 },
+  { src: "/images/clients/valor-on-light.svg", alt: "Valor PGH", h: 42 },
+  { src: "/images/clients/v3-on-light.webp", alt: "Valiant 3", h: 30 },
+  { src: "/images/clients/qcl-on-light.webp", alt: "Quality Choice Landscaping", h: 40 },
+];
+---
+
+<div class="logos">
+  <p>{caption}</p>
+  <div class="row">
+    {logos.map((l) => <img class="client-logo" src={l.src} alt={l.alt} style={`height:${l.h}px`} loading="lazy" />)}
+  </div>
+</div>
+
+<style>
+  .logos { text-align: center; }
+  p { color: var(--faint); font-size: 15px; }
+  .row { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 26px clamp(36px, 5vw, 72px); margin-top: 26px; }
+  @media (max-width: 560px) {
+    .row { gap: 22px 32px; }
+    .row img { max-height: 30px; }
+  }
+</style>

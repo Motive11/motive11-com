@@ -1,0 +1,29 @@
+// @ts-check
+import { defineConfig, fontProviders } from "astro/config";
+import tailwindcss from "@tailwindcss/vite";
+import sitemap from "@astrojs/sitemap";
+
+export default defineConfig({
+  site: "https://motive11.com",
+  // Astro 7 defaults to 'jsx', which drops the space between adjacent inline elements.
+  compressHTML: true,
+  fonts: [
+    {
+      provider: fontProviders.fontshare(),
+      name: "Satoshi",
+      cssVariable: "--font-satoshi",
+      weights: [400, 500, 700],
+      styles: ["normal"],
+      fallbacks: ["sans-serif"],
+    },
+  ],
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  integrations: [
+    sitemap({
+      // /book is a booking tool reached from links, not a page to rank.
+      filter: (page) => !page.includes("/book"),
+    }),
+  ],
+});

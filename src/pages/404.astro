@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page not found | Motive11" description="That page doesn't exist." noindex>
+  <section class="nf">
+    <div class="wrap">
+      <span class="label">404</span>
+      <h1>That page isn't here.</h1>
+      <p class="lead">It may have moved when the site was rebuilt. These are the places most people are looking for.</p>
+      <div class="links">
+        <a class="btn" href="/">Home <svg class="arrow"><use href="#arrow" /></svg></a>
+        <a class="btn ghost" href="/case-studies">Case studies</a>
+        <a class="btn ghost" href="/services">Services</a>
+        <a class="btn ghost" href="/book/intro">Book a call</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf { padding-block: clamp(80px, 12vw, 160px); }
+  .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+</style>

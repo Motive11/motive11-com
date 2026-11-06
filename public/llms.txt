@@ -1,0 +1,15 @@
+# Motive11
+
+> Motive11 is Mark Szymanski's company in Pittsburgh, PA. One person plus AI, building custom software, AI systems, and websites for established firms whose people lose hours every week to busywork.
+
+## Pages
+
+- [Home](https://motive11.com/): what Motive11 does and who it's for
+- [Services](https://motive11.com/services): Partnership, the AI Onboarding Day, Website + Care, and custom software
+- [Case studies](https://motive11.com/case-studies): engineering, law, insurance, landscaping, nonprofit, and software clients
+- [About](https://motive11.com/about): Mark Szymanski and how he works
+- [Book an intro call](https://motive11.com/book/intro): a 20-minute first call
+
+## Elsewhere
+
+- [Mark Szymanski](https://markszymanski.co): Mark's personal site, his YouTube channel, and Modern Builders Society, his community for builders

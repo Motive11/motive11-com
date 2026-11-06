@@ -1,0 +1,59 @@
+---
+import { Font } from "astro:assets";
+import { site } from "../lib/site";
+import { graph, webPage } from "../lib/schema";
+
+interface Props {
+  title: string;
+  description: string;
+  ogType?: string;
+  noindex?: boolean;
+  schema?: object[];
+}
+
+const { title, description, ogType = "website", noindex = false, schema = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = `${site.url}/images/icon-512.png`;
+const jsonLd = graph(webPage(canonical, title, description), ...schema);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex" />}
+<meta name="theme-color" content="#1E1E1F" />
+
+<!-- Dark is the default; a visitor's own choice wins after that. Runs before paint so nothing flashes. -->
+<script is:inline>
+  (function () {
+    var stored = null;
+    try { stored = localStorage.getItem("theme"); } catch (e) {}
+    if (stored !== "light") document.documentElement.classList.add("dark");
+  })();
+</script>
+
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<Font cssVariable="--font-satoshi" preload />
+
+<!-- Fathom Analytics (motive11.com). Source of truth is AIOS site_traffic; see
+     pipelines/site-analytics. -->
+<script is:inline src="https://cdn.usefathom.com/script.js" data-excluded-domains="localhost,127.0.0.1" data-site="UYCRGPKV" defer></script>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
