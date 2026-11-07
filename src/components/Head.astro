@@ -120,6 +120,32 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
     };
 
     var q = new URLSearchParams(location.search), ref = "";
+    // One visitor across both sites (AIOS state/VISITORS.md, "One visitor across both sites"): a
+    // link to the other site carries a one-time pass (?vh=) the landing page trades for this same
+    // ID. The pass is asked for only after the page loads and only if it links there. It goes on the
+    // link during the click itself and comes off right after, so a long-press "copy link" or a
+    // shared URL never carries it. Same on both sites; change both together.
+    var SISTER = /^(www\.)?markszymanski\.co$/i, hand = "";
+    function toSister(a) {
+      try { return SISTER.test(new URL(a.href, location.href).hostname); } catch (e) { return false; }
+    }
+    function askHand() {
+      if (![].some.call(document.querySelectorAll("a[href]"), toSister)) return;
+      send({ t: "handoff", p: location.pathname }, function (r) { hand = r.headers.get("X-Hand") || ""; });
+    }
+    function stamp(e) {
+      if (!hand || (e.type === "auxclick" && e.button !== 1)) return;
+      try {
+        var a = e.target.closest && e.target.closest("a[href]");
+        if (!a || !toSister(a)) return;
+        var was = a.getAttribute("href"), u = new URL(a.href, location.href);
+        u.searchParams.set("vh", hand);
+        a.href = u.toString();
+        setTimeout(function () { a.setAttribute("href", was); }, 0);
+      } catch (err) {}
+    }
+    addEventListener("click", stamp, true);
+    addEventListener("auxclick", stamp, true);
     try {
       ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : "";
       if (ref === location.hostname.replace(/^www\./, "")) ref = "";
@@ -158,8 +184,13 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
       tm: q.get("utm_term") || "",
       r: ref,
       k: q.get("k") || "",
+      vh: q.get("vh") || "",
     }, function (r) {
       tracked = r.headers.get("X-Track") === "1";
+      if (tracked) {
+        if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", askHand);
+        else askHand();
+      }
       if (tracked && alive) engage();
     });
     function measure() {
@@ -190,9 +221,10 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
     });
     // ?k= is a subscriber's private code from a newsletter link (AIOS state/visitor_keys.py).
     // Taken out of the address bar once sent, so a copied or bookmarked URL never carries it on.
-    if (q.has("k")) {
+    if (q.has("k") || q.has("vh")) {
       try {
         q.delete("k");
+        q.delete("vh");
         history.replaceState(history.state, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
       } catch (e) {}
     }
@@ -256,6 +288,7 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
         if (a) {
           var u = new URL(a.href, location.href);
           if (/^https?:$/.test(u.protocol) && u.hostname.replace(/^www\./, "") !== location.hostname.replace(/^www\./, "")) {
+            u.searchParams.delete("vh");
             window.mjsEvent("Clicked off site", u.href.slice(0, 200));
             return;
           }

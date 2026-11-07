@@ -9,8 +9,9 @@
  *
  * The visitor's random ID lives in a cookie this function sets (m11_vid, HttpOnly), not in
  * localStorage, because Safari erases script-written storage after 7 days without a visit and a
- * buying journey runs for months. Its own name because it is a different domain anyway, and a
- * shared name would suggest one ID spans both sites when it never can.
+ * buying journey runs for months. Its own name because it is a different domain anyway. The ID
+ * inside it can be the same as markszymanski.co's: a click between the sites carries it over with
+ * a one-time pass (../_shared/handoff.ts).
  *
  * Europe (and an unknown country) is never stored and its cookie is cleared (../_shared/no-track.ts).
  * Unlike markszymanski.co, a European page view is not turned into an anonymous page_hits count:
@@ -29,6 +30,7 @@
  */
 
 import { mayTrack } from "../_shared/no-track";
+import { HANDOFF_RE, mintHandoff, redeemHandoff } from "../_shared/handoff";
 import { machineLabel, deviceOf, browserOf, osOf } from "../_shared/ua";
 
 interface Env {
@@ -67,10 +69,11 @@ function cookieId(request: Request): string | null {
 
 // X-Track tells the page this visitor is recorded, so the page only reads device details (screen,
 // language, time zone) for visitors outside Europe.
-function done(setCookie?: string, tracked = false): Response {
+function done(setCookie?: string, tracked = false, hand?: string): Response {
   const headers: Record<string, string> = { "Cache-Control": "no-store" };
   if (setCookie) headers["Set-Cookie"] = setCookie;
   if (tracked) headers["X-Track"] = "1";
+  if (hand) headers["X-Hand"] = hand;
   return new Response(null, { status: 204, headers });
 }
 
@@ -80,6 +83,7 @@ async function sweep(db: D1Database) {
     db.prepare(`DELETE FROM visitor_events WHERE visitor_id IN (SELECT id FROM visitors WHERE email IS NULL AND last_seen < ${cutoff} LIMIT 500)`),
     db.prepare(`DELETE FROM visitors WHERE email IS NULL AND last_seen < ${cutoff} AND NOT EXISTS (SELECT 1 FROM visitor_events e WHERE e.visitor_id = visitors.id)`),
     db.prepare("DELETE FROM visitor_hourly WHERE hour < strftime('%Y-%m-%dT%H', 'now', '-2 days')"),
+    db.prepare("DELETE FROM visitor_handoffs WHERE created_at < datetime('now', '-1 day')"),
   ]);
 }
 
@@ -109,9 +113,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
 
   const existing = cookieId(request);
   // An engage update belongs to a page view already recorded, so it never starts a new visitor.
-  if (type === "engage" && !existing) return done();
-  const id = existing || crypto.randomUUID();
-  const setCookie = `${COOKIE}=${id}; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Lax`;
+  // An engage update or a handoff request belongs to a page view already recorded, so neither
+  // ever starts a new visitor.
+  if ((type === "engage" || type === "handoff") && !existing) return done();
+  let id = existing || crypto.randomUUID();
+  const cookieFor = (v: string) => `${COOKIE}=${v}; Path=/; Max-Age=31536000; Secure; HttpOnly; SameSite=Lax`;
+  let setCookie = cookieFor(id);
 
   try {
     // Its own counter in visitor_hourly ('YYYY-MM-DDTHHm'), apart from markszymanski.co's
@@ -130,6 +137,25 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
     const counter = env.DB.prepare(
       "INSERT INTO visitor_hourly (hour, n) VALUES (?, 1) ON CONFLICT(hour) DO UPDATE SET n = n + 1"
     ).bind(hour);
+
+    // A page that links to the other site asks for a pass once it has loaded, so a click there
+    // carries this ID over (../_shared/handoff.ts). Not an event: nothing is recorded but the pass.
+    if (type === "handoff") {
+      if (label) return done(setCookie, true);
+      const m = await mintHandoff(env.DB, id, request);
+      await env.DB.batch([counter, m.stmt]);
+      return done(setCookie, true, m.token);
+    }
+
+    let joins: D1PreparedStatement[] = [];
+    const vh = type === "view" ? clip(body.vh, 32) : "";
+    if (HANDOFF_RE.test(vh)) {
+      const r = await redeemHandoff(env.DB, vh, existing, request);
+      if (r) {
+        joins = r.stmts;
+        if (r.id !== id) { id = r.id; setCookie = cookieFor(id); }
+      }
+    }
 
     if (type === "engage") {
       const pv = clip(body.pv, 24);
@@ -152,16 +178,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env, waitUnti
 
     const stmts = [
       counter,
+      ...joins,
       env.DB.prepare(
         "INSERT INTO visitors (id, country, device, bot, ua, browser, os) VALUES (?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET last_seen = datetime('now'), country = excluded.country, device = excluded.device, bot = CASE WHEN visitors.bot IS NULL THEN nullif(excluded.bot, 'hosting-network') WHEN visitors.bot = 'hosting-network' THEN excluded.bot ELSE visitors.bot END, ua = excluded.ua, browser = excluded.browser, os = excluded.os"
       ).bind(id, clip(cf.country, 2) || null, device, label, clip(ua, 300) || null, browserOf(ua), osOf(ua)),
     ];
     let detail = clip(body.d, 200);
+    // A browser can arrive here carrying a markszymanski.co ID (../_shared/handoff.ts), so the same
+    // rule as there: a form's email never replaces one proven by a Stripe purchase.
     if (type === "identify") {
       const email = clip(body.e, 200).trim().toLowerCase();
       if (!EMAIL_RE.test(email)) return done(setCookie);
       stmts.push(env.DB.prepare(
-        "UPDATE visitors SET email = ?, identified_at = datetime('now'), identified_via = ? WHERE id = ?"
+        "UPDATE visitors SET email = ?, identified_at = datetime('now'), identified_via = ? WHERE id = ? AND (email IS NULL OR identified_via <> 'mbs-join')"
       ).bind(email, detail || null, id));
       detail = `${email} via ${detail}`.slice(0, 200);
     }
