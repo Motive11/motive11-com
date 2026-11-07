@@ -88,7 +88,7 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
       </div>
       <div class="offer-grid">
         {offers.map((o) => (
-          <a class:list={["offer reveal", { featured: o.featured }]} href={`/services#${o.id}`}>
+          <a class:list={["offer reveal", { featured: o.featured }]} href={o.page}>
             <h3>{o.name}</h3>
             <span class="price">{o.price}</span>
             <p>{o.short}</p>

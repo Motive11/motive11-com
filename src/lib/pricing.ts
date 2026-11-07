@@ -14,7 +14,7 @@ export const pricing = {
     from: 10000,
   },
   fractional: {
-    monthly: "5,000",
+    monthly: "6,000",
     earlyMonthly: "4,000",
     earlySpots: 2,
     totalSpots: 6,

@@ -11,6 +11,7 @@ export interface Offer {
   includes: string[];
   starts: string;
   cta: { label: string; href: string };
+  page: string;
   featured?: boolean;
 }
 
@@ -31,7 +32,8 @@ export const offers: Offer[] = [
       "One number I set at kickoff to prove it's working, measured every month",
     ],
     starts: "A 20-minute intro call. If it's a fit, kickoff is where I learn the business and tell you what I'd fix first and why.",
-    cta: { label: "See how it works", href: "/fractional" },
+    cta: { label: "See How It Works", href: "/fractional" },
+    page: "/fractional",
     featured: true,
   },
   {
@@ -49,9 +51,11 @@ export const offers: Offer[] = [
     ],
     starts: "Paid up front, scheduled as one day. It stands on its own, and it's the natural first step toward having me on every month.",
     cta: { label: "See How It Works", href: "/ai-onboarding-day" },
+    page: "/ai-onboarding-day",
   },
   {
     id: "websites",
+    page: "/services#websites",
     name: "Website + Care",
     short: "A fast, modern website built for what you actually sell, then hosted and kept running so you never touch the technical side.",
     price: `From ${usd(pricing.website.small)}`,
@@ -68,6 +72,7 @@ export const offers: Offer[] = [
   },
   {
     id: "custom-software",
+    page: "/services#custom-software",
     name: "Custom Software",
     short: "One specific tool your team uses every day, like a client portal or a proposal system, built around how your people already work.",
     price: `From ${usd(pricing.build.from)}`,

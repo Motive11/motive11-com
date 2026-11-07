@@ -88,7 +88,17 @@ const hires = [
     lines: ["$135,980 salary (the national median)", "+ $58,300 benefits and payroll taxes", "+ $20,000 to $40,000 to a recruiter"],
     note: "Can build the systems. A senior one costs more, and still needs you to tell them what moves the business.",
   },
+  {
+    name: "A consultant who only advises",
+    total: "$36K to $120K",
+    lines: ["$3,000 to $10,000/month (published fractional AI officer rates)", "Strategy, tool choices, and policy", "Building it is extra: your staff or another firm"],
+    note: "Tells you what to build. Someone still has to build it, run it, and fix it when it breaks.",
+  },
 ];
+
+const timesWords = ["", "one", "two", "three", "four", "five", "six"];
+const monthlyN = Number(p.monthly.replace(/,/g, ""));
+const timesMore = timesWords[Math.round(215000 / (monthlyN * 12))] ?? String(Math.round(215000 / (monthlyN * 12)));
 
 const hidden = [
   "One to three months to find them, then more months while they learn your business.",
@@ -498,8 +508,8 @@ const schema = [
       <div class="wide reveal">
       <div class="col">
         <span class="label">The math</span>
-        <h2>Adding an employee to do this costs up to four times as much.</h2>
-        <p class="lead">The usual way to get this done is adding someone to your payroll. Here's what a full-time employee costs in the first year, before they've built anything.</p>
+        <h2>Adding an employee to do this costs up to {timesMore} times as much.</h2>
+        <p class="lead">The usual way to get this done is adding someone to your payroll, or paying a consultant to tell you what to build. Here's what each costs in the first year, before anything is built.</p>
       </div>
       <div class="hires">
         {hires.map((h) => (
@@ -523,7 +533,7 @@ const schema = [
             <li>No recruiter</li>
             <li>Starts the day we kick off</li>
           </ul>
-          <p class="hire-note">Your website, your systems, your AI, and deciding what's worth building. Month to month after three months.</p>
+          <p class="hire-note">Deciding what's worth building, then building it and running it: your website, your systems, and your AI. Month to month after three months.</p>
         </div>
       </div>
       <div class="col">
@@ -535,7 +545,7 @@ const schema = [
           Or flip it around: what's one more {industry?.win ?? "signed job"} worth to you? If it's ${p.monthly}, one extra {industry?.winNoun ?? "job"}/month covers this.
         </p>
         <p class="source">
-          Salaries: U.S. Bureau of Labor Statistics median annual pay for web developers and for software developers, May 2025. Benefits and payroll taxes: BLS, 30% of total compensation in private industry, June 2026. Recruiter fees: the typical agency range of 15 to 30% of first-year salary.
+          Salaries: U.S. Bureau of Labor Statistics median annual pay for web developers and for software developers, May 2025. Benefits and payroll taxes: BLS, 30% of total compensation in private industry, June 2026. Recruiter fees: the typical agency range of 15 to 30% of first-year salary. Consultant rates: published 2026 pricing guides for fractional AI officers, from firms that sell the service.
         </p>
       </div>
       </div>
@@ -913,7 +923,7 @@ const schema = [
     .said-head span + span { border-left: 0; }
     .who { grid-template-columns: 280px minmax(0, 1fr); gap: 56px; }
     .portrait { width: 100%; }
-    .hires { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .hires { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .stories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .wall { columns: 2; }
   }
