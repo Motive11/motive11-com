@@ -1,6 +1,6 @@
 import { pricing, usd } from "./pricing";
 
-const p = pricing.partnership;
+const p = pricing.fractional;
 export interface Offer {
   id: string;
   name: string;
@@ -16,12 +16,12 @@ export interface Offer {
 
 export const offers: Offer[] = [
   {
-    id: "partnership",
-    name: "Partnership",
+    id: "fractional",
+    name: "Fractional AI and Systems Lead",
     short: "I run your website, your systems, and your AI, and every month I work on more revenue or a more organized team.",
     price: `${usd(p.monthly)}/month`,
     priceNote: p.earlySpotsLeft > 0
-      ? `${usd(p.earlyMonthly)}/month for my next ${p.earlySpotsLeft === 1 ? "partner" : `${p.earlySpotsLeft} partners`}. Three-month minimum.`
+      ? `${usd(p.earlyMonthly)}/month for my next ${p.earlySpotsLeft === 1 ? "client" : `${p.earlySpotsLeft} clients`}. Three-month minimum.`
       : "Three-month minimum, then month to month.",
     forWho: "Established firms with staff, where the owner wants one person accountable for the website, the systems, and the AI.",
     includes: [
@@ -31,7 +31,7 @@ export const offers: Offer[] = [
       "One number I set at kickoff to prove it's working, measured every month",
     ],
     starts: "A 20-minute intro call. If it's a fit, kickoff is where I learn the business and tell you what I'd fix first and why.",
-    cta: { label: "See how Partnership works", href: "/partnership" },
+    cta: { label: "See how it works", href: "/fractional" },
     featured: true,
   },
   {
@@ -47,7 +47,7 @@ export const offers: Offer[] = [
       "Your AI connected to the tools you already use",
       "Training for you and anyone on the team who joins",
     ],
-    starts: "Paid up front, scheduled as one day. It stands on its own, and it's the natural first step toward a Partnership.",
+    starts: "Paid up front, scheduled as one day. It stands on its own, and it's the natural first step toward having me on every month.",
     cta: { label: "See the day", href: "/ai-onboarding-day" },
   },
   {

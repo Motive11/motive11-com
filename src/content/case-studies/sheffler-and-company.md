@@ -22,7 +22,7 @@ services:
   - "Custom software"
   - "Site research automation"
   - "Proposal generation"
-  - "Ongoing partnership"
+  - "Fractional AI and systems lead"
 testimonialIds:
   - "a85e6793-5b63-4dc5-99d5-f6c18eadd6d6"
   - "14f2a233-d338-43b8-9bee-c9317ab1b2b6"

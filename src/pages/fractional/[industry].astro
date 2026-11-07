@@ -1,5 +1,5 @@
 ---
-import PartnershipPage from "../../components/partnership/PartnershipPage.astro";
+import FractionalPage from "../../components/fractional/FractionalPage.astro";
 import { industries, type Industry } from "../../lib/industries";
 
 export function getStaticPaths() {
@@ -9,4 +9,4 @@ export function getStaticPaths() {
 const { industry } = Astro.props as { industry: Industry };
 ---
 
-<PartnershipPage industry={industry} />
+<FractionalPage industry={industry} />

@@ -17,7 +17,7 @@ his content, and builders; this site links there and never copies its prices.
 |---|---|
 | `/` | `src/pages/index.astro` |
 | `/services` | `src/pages/services.astro`, offers from `src/lib/offers.ts`, prices from `src/lib/pricing.ts` |
-| `/partnership`, `/partnership/<industry>` | `src/components/partnership/PartnershipPage.astro`, industries in `src/lib/industries.ts` |
+| `/fractional`, `/fractional/<industry>` | `src/components/fractional/FractionalPage.astro`, industries in `src/lib/industries.ts`. `/partnership` and old `/work-with-me` links redirect here |
 | `/ai-onboarding-day` | `src/pages/ai-onboarding-day.astro` |
 | `/privacy` | `src/pages/privacy.astro` via `src/layouts/LegalLayout.astro` |
 | `/case-studies`, `/case-studies/<slug>` | `src/content/case-studies/*.md` (schema in `src/content.config.ts`) |

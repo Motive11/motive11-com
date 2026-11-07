@@ -13,7 +13,7 @@ export const pricing = {
   build: {
     from: 10000,
   },
-  partnership: {
+  fractional: {
     monthly: "5,000",
     earlyMonthly: "4,000",
     earlySpots: 2,

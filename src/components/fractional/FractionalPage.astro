@@ -1,6 +1,6 @@
 ---
 /**
- * The Partnership page, /partnership and its industry versions /partnership/<slug>. A copy of
+ * The Fractional AI and Systems Lead page, /fractional and its industry versions /fractional/<slug>. A copy of
  * markszymanski.co's /work-with-me (that repo's src/components/WorkWithMe.astro) in Motive11's look,
  * made November 6, 2026 at Mark's request: same sections, order, copy, video, and pricing logic.
  * Prices come from src/lib/pricing.ts, industry wording from src/lib/industries.ts.
@@ -51,7 +51,23 @@ const recentWork = [
   ...cases.filter((c) => !leadStories.includes(c.id)),
 ].slice(0, 4);
 
-const p = pricing.partnership;
+const p = pricing.fractional;
+
+const takeover = [
+  { name: "Your website", text: "Built for what you actually sell, hosted, kept current, and changed when you ask, with forms that send every lead to the right person." },
+  { name: "Winning work", text: "Lead tracking that replaces the spreadsheet, follow-up that doesn't depend on someone remembering, and a pipeline you can see at a glance." },
+  { name: "Quotes and proposals", text: "Proposals that draft themselves from your own past work, in your format, with the exhibits and fee rules built in." },
+  { name: "Research before you quote", text: "The digging someone does on every job, like property records, zoning, or a client's background, done in one report with every source cited." },
+  { name: "Booking and scheduling", text: "Booking pages that check your real calendar, take payment when it's needed, and send the reminders for you." },
+  { name: "Running the work", text: "Job and project tracking, schedules and materials lists that turn into a clean PDF, and lookups your crew uses in the field." },
+  { name: "Hiring", text: "A pipeline that finds candidates, sorts them, and keeps track of where each one is." },
+  { name: "Money and reporting", text: "Bookkeeping that categorizes itself, a weekly scorecard, and one dashboard that shows where the business stands without asking anyone." },
+  { name: "Your team and AI", text: "AI set up around your business, your team trained on it, and an assistant they can message that already knows how you work." },
+  { name: "What the business knows", text: "How you price, how you do the work, and who your clients are, written down once where your people and your AI can both use it." },
+  { name: "Staying in front of clients", text: "Newsletters drafted for you, testimonials collected and kept in one place, and personal video pages for the prospects that matter." },
+  { name: "Keeping it safe", text: "Nightly backups, domains watched so nothing lapses, and every system documented so it never depends on one person." },
+];
+
 const yearly = (monthly: string) => (Number(monthly.replace(/,/g, "")) * 12).toLocaleString("en-US");
 
 // Verified on bls.gov October 27, 2026: OEWS May 2025 medians (web developers $99,520, software
@@ -187,7 +203,7 @@ const faqs = [
   },
   {
     q: "I'm already a client. What happens to what I pay now?",
-    a: "It rolls in. While you're a partner, your website care and anything else I run for you is covered by the one fee. If you ever stop, we just go back to billing those pieces separately, like before.",
+    a: "It rolls in. While I'm your fractional lead, your website care and anything else I run for you is covered by the one fee. If you ever stop, we just go back to billing those pieces separately, like before.",
   },
   {
     q: "Do I tell you what to build?",
@@ -215,15 +231,15 @@ const faqs = [
   },
   {
     q: "What if we want to run it ourselves someday?",
-    a: "Tell me on the first call, and I'll plan for it from day one. Everything I build is yours, and all of it is documented. The three-month minimum is how long it takes to learn your business and move your number, not a lock-in. After that, stay as long as it's worth it, or I'll train your team to run it while you're still a partner and step back. I'd much rather know up front than find out later.",
+    a: "Tell me on the first call, and I'll plan for it from day one. Everything I build is yours, and all of it is documented. The three-month minimum is how long it takes to learn your business and move your number, not a lock-in. After that, stay as long as it's worth it, or I'll train your team to run it while I'm still on and then step back. I'd much rather know up front than find out later.",
   },
 ];
 
-const path = industry ? `/partnership/${industry.slug}` : "/partnership";
+const path = industry ? `/fractional/${industry.slug}` : "/fractional";
 const schema = [
   breadcrumb([
     { name: "Home", url: site.url },
-    { name: "Partnership", url: `${site.url}/partnership` },
+    { name: "Fractional AI and Systems Lead", url: `${site.url}/fractional` },
     ...(industry ? [{ name: industry.eyebrow, url: `${site.url}${path}` }] : []),
   ]),
   { "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
@@ -231,14 +247,14 @@ const schema = [
 ---
 
 <BaseLayout
-  title={industry?.metaTitle ?? "Partnership | Motive11"}
+  title={industry?.metaTitle ?? "Fractional AI and Systems Lead | Motive11"}
   description={industry?.metaDescription ?? "The AI and systems person your business is missing, without the full-time hire. I run your website and systems, and every month I work on more revenue or less busywork for your team."}
   schema={schema}
 >
   <section class="hero">
     <div class="wrap">
       <div class="col">
-        <span class="label">{industry?.eyebrow ?? "Partnership"}</span>
+        <span class="label">{industry?.eyebrow ?? "Fractional AI and Systems Lead"}</span>
         <!-- The emphasis is a weight step plus the orange underline, not a color: dimming the setup
              failed contrast in light mode on markszymanski.co. -->
         <h1>{industry?.h1Setup ?? "The AI and systems person your business is missing,"} <span class="payoff">without the full-time hire.</span></h1>
@@ -249,7 +265,7 @@ const schema = [
         <figure class="stage" data-stage data-play-src={videoPlaySrc}>
           <iframe
             src={videoPreviewSrc}
-            title="Partnership"
+            title="Fractional AI and Systems Lead"
             loading="eager"
             allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
             allowfullscreen
@@ -258,7 +274,7 @@ const schema = [
             tabindex="-1"
             aria-hidden="true"></iframe>
           <video class="loop" src={videoLoop} poster={videoPoster} autoplay muted loop playsinline preload="auto" aria-hidden="true" data-loop></video>
-          <button type="button" class="play" data-play data-overlap-ok aria-label="Play the Partnership video with sound">
+          <button type="button" class="play" data-play data-overlap-ok aria-label="Play the video with sound">
             <span class="play-row">
               <span class="play-dot">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
@@ -288,7 +304,7 @@ const schema = [
           <a class="btn ghost" href="#details" data-scroll-to="details">See the details</a>
         </div>
         <p class="note">
-          Doing under $3M a year? <a class="inline" href="/ai-onboarding-day" data-track="Partnership onboarding day clicked (top)">Start with the AI Onboarding Day</a>.
+          Doing under $3M a year? <a class="inline" href="/ai-onboarding-day" data-track="Fractional onboarding day clicked (top)">Start with the AI Onboarding Day</a>.
         </p>
         {p.earlySpotsLeft === 0 && (
           <p class="note">${p.monthly}/month. I work with {inWords(p.totalSpots)} businesses at a time.</p>
@@ -437,6 +453,25 @@ const schema = [
     </div>
   </section>
 
+  <section class="block ruled" id="takeover">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="label">What I take over</span>
+        <h2>Anything on the digital side of your business, built around how you work.</h2>
+        <p class="take-lead">Every one of these is something I've already built, for clients or for my own business. Yours gets built for your business, starting with whatever costs your team the most time.</p>
+      </div>
+      <div class="take-grid">
+        {takeover.map((t) => (
+          <div class="take reveal">
+            <h3>{t.name}</h3>
+            <p>{t.text}</p>
+          </div>
+        ))}
+      </div>
+      <p class="not-it reveal"><b>This isn't IT support.</b> I don't fix laptops or reset passwords. I build and run the systems that win work and save your team time.</p>
+    </div>
+  </section>
+
   <section class="block">
     <div class="wrap">
       <div class="col reveal">
@@ -513,7 +548,7 @@ const schema = [
         {p.earlySpotsLeft > 0 ? (
           <>
             <p class="price">${p.earlyMonthly}<span>/month</span></p>
-            <p class="price-l strong">For my next {p.earlySpotsLeft === 1 ? "partner" : `${inWords(p.earlySpotsLeft)} partners`}, your rate locked in for 12 months.</p>
+            <p class="price-l strong">For my next {p.earlySpotsLeft === 1 ? "client" : `${inWords(p.earlySpotsLeft)} clients`}, your rate locked in for 12 months.</p>
             <p class="price-l accent">{p.earlySpotsLeft} of {p.earlySpots} spots left at this price.</p>
             <p class="price-l muted">After that, the price goes up to ${p.monthly}/month.</p>
           </>
@@ -610,7 +645,7 @@ const schema = [
         data-title-suffix="Motive11"
         data-photo="/images/mark-szymanski.webp"
         data-tag={industry?.formTag}
-        data-track="Partnership submitted"
+        data-track="Fractional submitted"
       ></div>
     </div>
   </section>
@@ -644,8 +679,8 @@ const schema = [
         var el = e.target.closest("[data-scroll-to]");
         if (!el) return;
         if (el.dataset.cta) {
-          track("Partnership call clicked");
-          track("Partnership call clicked (" + el.dataset.cta + ")");
+          track("Fractional call clicked");
+          track("Fractional call clicked (" + el.dataset.cta + ")");
         }
         var target = document.getElementById(el.dataset.scrollTo);
         if (!target) return;
@@ -655,7 +690,7 @@ const schema = [
 
       // How far down people read: each fires once per visit, so Fathom's counts are visitors.
       if ("IntersectionObserver" in window) {
-        [["price", "Partnership saw price"], ["start", "Partnership saw form"]].forEach(function (pair) {
+        [["price", "Fractional saw price"], ["start", "Fractional saw form"]].forEach(function (pair) {
           var el = document.getElementById(pair[0]);
           if (!el) return;
           var io = new IntersectionObserver(function (entries) {
@@ -697,7 +732,7 @@ const schema = [
         frame.classList.remove("is-hidden");
         frame.removeAttribute("tabindex");
         frame.removeAttribute("aria-hidden");
-        track("Partnership video played");
+        track("Fractional video played");
         if (!player) {
           frame.src = stage.dataset.playSrc;
           return;
@@ -918,4 +953,13 @@ const schema = [
   .booking [data-booking]:not([data-bk-ready]) { display: block; min-height: 30rem; }
   /* Motive11's orange is light, so text on it is the dark ground in both themes, not the page color. */
   .booking .bk .bk-d.is-sel, .booking .bk .bk-next, .booking .bk .bk-btn { color: #1E1E1F; }
+  .take-lead { color: var(--muted); font-size: 19px; margin-top: 20px; max-width: 38em; }
+  .take-grid { display: grid; gap: 14px; margin-top: 44px; }
+  .take { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px 24px 26px; }
+  .take h3 { font-weight: 500; font-size: 20px; letter-spacing: -0.02em; }
+  .take p { color: var(--muted); margin-top: 8px; font-size: 16px; line-height: 1.55; }
+  .not-it { margin-top: 32px; color: var(--muted); max-width: 46em; }
+  .not-it b { color: var(--fg); font-weight: 500; }
+  @media (min-width: 640px) { .take-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .take-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 </style>

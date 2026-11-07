@@ -12,8 +12,8 @@ import portrait from "../assets/mark/portrait.webp";
 
 // Copy and structure mirror markszymanski.co/ai-onboarding-day on purpose (Mark, November 6, 2026).
 const rate = usd(pricing.onboardingDay.rate);
-const p = pricing.partnership;
-const partnershipRate = p.earlySpotsLeft > 0 ? p.earlyMonthly : p.monthly;
+const p = pricing.fractional;
+const fractionalRate = p.earlySpotsLeft > 0 ? p.earlyMonthly : p.monthly;
 const inWords = (n: number) => ["zero", "one", "two", "three", "four", "five", "six"][n] ?? String(n);
 
 const title = "AI Onboarding Day | Motive11";
@@ -68,7 +68,7 @@ const notForYou = [
   "Custom software built for your team (that's a bigger project, and this is a good place to start it)",
   "An army of AI agents talking to each other (you probably don't need one, and I'll tell you why)",
   "Everything fixed in one day (nobody can do that, and I won't pretend to)",
-  "Someone to run it for you every week (that's a partnership)",
+  "Someone to run it for you every week (that's Fractional)",
 ];
 
 const faqs = [
@@ -94,7 +94,7 @@ const faqs = [
   },
   {
     q: "What happens after the day?",
-    a: "It's yours and it runs without me. Nothing is included after the day, so a question later is an advisory call. If you want me working on your business every month, that's a partnership.",
+    a: "It's yours and it runs without me. Nothing is included after the day, so a question later is an advisory call. If you want me working on your business every month, that's Fractional, where I'm your AI and systems lead.",
   },
 ];
 
@@ -259,7 +259,7 @@ const schema = [
       <h2>One day won't fix everything. Anyone who tells you it will is selling you something.</h2>
       <div class="prose-m11 body">
         <p>You've run your business for years, and how it really works lives in your head and across a dozen apps. One day gets it out, written down, and working on a couple of real jobs. That's a head start, not the finish line.</p>
-        <p>After that, somebody has to keep it going: adding to it, putting it to work on the next thing, and making sure your team actually uses it. That's either someone on your team who champions it (I'll train them on the day), or it's me, from the outside, as a <a href="/partnership">partnership</a>.</p>
+        <p>After that, somebody has to keep it going: adding to it, putting it to work on the next thing, and making sure your team actually uses it. That's either someone on your team who champions it (I'll train them on the day), or it's me, from the outside, as your <a href="/fractional">fractional AI and systems lead</a>.</p>
       </div>
     </div>
   </section>
@@ -329,10 +329,10 @@ const schema = [
   <section class="longer">
     <div class="wrap col reveal">
       <h2>Looking for something longer term?</h2>
-      <p class="longer-lead">One day is the start. If you want me on your business every month, that's a partnership.</p>
-      <a class="pcard" href="/partnership">
-        <span class="pcard-name">Partnership</span>
-        <span class="pcard-price">${partnershipRate}/month{p.earlySpotsLeft > 0 && ` for the next ${p.earlySpotsLeft === 1 ? "partner" : `${inWords(p.earlySpotsLeft)} partners`}`}</span>
+      <p class="longer-lead">One day is the start. If you want me on your business every month, that's Fractional, where I'm your AI and systems lead.</p>
+      <a class="pcard" href="/fractional">
+        <span class="pcard-name">Fractional AI and Systems Lead</span>
+        <span class="pcard-price">${fractionalRate}/month{p.earlySpotsLeft > 0 && ` for the next ${p.earlySpotsLeft === 1 ? "client" : `${inWords(p.earlySpotsLeft)} clients`}`}</span>
         <span class="pcard-body">Your website, your systems, and your AI, run by me, working on whatever moves your business most.</span>
       </a>
     </div>

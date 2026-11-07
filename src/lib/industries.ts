@@ -1,7 +1,7 @@
 /**
- * The industry versions of /partnership (/partnership/<slug>). Same offer, price, spots, and
+ * The industry versions of /fractional (/fractional/<slug>). Same offer, price, spots, and
  * terms as the general page; only the wording and the proof order change. Rendered by
- * src/components/partnership/PartnershipPage.astro via src/pages/partnership/[industry].astro.
+ * src/components/fractional/FractionalPage.astro via src/pages/fractional/[industry].astro.
  * Copied from the markszymanski.co repo's src/lib/industries.ts (its /work-with-me pages), November
  * 6, 2026; the two copies are not synced, so a wording change goes in both until one page retires.
  * storyOrder holds case study slugs, which match markszymanski.co's success story slugs.
@@ -36,7 +36,7 @@ export type Industry = {
 export const industries: Industry[] = [
   {
     slug: "engineering-firms",
-    metaTitle: "Partnership: Engineering and Surveying Firms | Motive11",
+    metaTitle: "Fractional AI and Systems Lead: Engineering and Surveying Firms | Motive11",
     metaDescription:
       "For engineering and surveying firms: one person to run your proposals, your website, and your systems, without the full-time hire.",
     eyebrow: "For engineering and surveying firms",
@@ -66,7 +66,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "law-firms",
-    metaTitle: "Partnership: Law Firms | Motive11",
+    metaTitle: "Fractional AI and Systems Lead: Law Firms | Motive11",
     metaDescription:
       "For law firms: one person to run your intake, your website, and your systems, without the full-time hire.",
     eyebrow: "For law firms",
@@ -95,7 +95,7 @@ export const industries: Industry[] = [
   },
   {
     slug: "home-services",
-    metaTitle: "Partnership: Contractors and Home Service Companies | Motive11",
+    metaTitle: "Fractional AI and Systems Lead: Contractors and Home Service Companies | Motive11",
     metaDescription:
       "For contractors and home service companies: one person to run your website, your leads, and your office systems, without the full-time hire.",
     eyebrow: "For contractors and home service companies",
