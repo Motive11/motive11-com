@@ -310,16 +310,19 @@ const schema = [
             </span>
           </div>
         )}
+        {p.earlySpotsLeft === 0 && (
+          <div class="hero-price">
+            <p class="hero-price-row"><span class="hero-amount">${p.monthly}<span>/month</span></span><span class="hero-for">one person on your website, systems, and AI</span></p>
+            <p class="hero-cap">I work with {inWords(p.totalSpots)} businesses at a time.</p>
+          </div>
+        )}
         <div class="actions">
           <a class="btn" href="#start" data-scroll-to="start" data-cta="top">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a>
           <a class="btn ghost" href="#details" data-scroll-to="details">See the details</a>
         </div>
         <p class="note">
-          Doing under $3M a year? <a class="inline" href="/ai-onboarding-day" data-track="Fractional onboarding day clicked (top)">Start with the AI Onboarding Day</a>.
+          Don't want a monthly commitment? <a class="inline" href="/ai-onboarding-day" data-track="Fractional onboarding day clicked (top)">Start with the AI Onboarding Day</a>.
         </p>
-        {p.earlySpotsLeft === 0 && (
-          <p class="note">${p.monthly}/month. I work with {inWords(p.totalSpots)} businesses at a time.</p>
-        )}
       </div>
     </div>
   </section>
@@ -458,7 +461,7 @@ const schema = [
           <h2>Me. Not a team you'll never meet.</h2>
           <p class="who-lead">I'm Mark. I run my own business on the same kind of AI setup I'd build for yours.</p>
           <p class="muted">You work with me directly, from the first call on, and I'm the one who answers when something needs to change. Before we talk, read how I work. If it sounds right to you, we'll get along.</p>
-          <a class="text-link who-link" href="https://markszymanski.co/how-i-work">How I work <svg class="arrow"><use href="#arrow" /></svg></a>
+          <a class="text-link who-link" href="https://markszymanski.co/how-i-work" target="_blank" rel="noopener">How I work <svg class="arrow"><use href="#arrow" /></svg></a>
         </div>
       </div>
     </div>
@@ -806,6 +809,12 @@ const schema = [
   @media (prefers-reduced-motion: reduce) { .pulse i:first-child { animation: none; } }
   .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; margin-top: 32px; }
   .note { color: var(--muted); font-size: 16px; margin-top: 22px; }
+  .hero-price { margin-top: 34px; }
+  .hero-price-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+  .hero-amount { font-weight: 500; font-size: clamp(38px, 4vw, 48px); letter-spacing: -0.04em; line-height: 1; }
+  .hero-amount span { color: var(--muted); font-size: 0.45em; letter-spacing: -0.02em; }
+  .hero-for { color: var(--muted); }
+  .hero-cap { color: var(--faint); font-size: 15px; margin-top: 10px; }
 
   .logos { padding-bottom: clamp(56px, 7vw, 88px); }
   .logos-line { color: var(--muted); font-size: 16px; text-align: center; margin: 34px auto 0; max-width: 40em; }
