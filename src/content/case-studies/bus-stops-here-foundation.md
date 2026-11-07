@@ -14,7 +14,8 @@ metric:
 cover: "../../assets/case-studies/bus-stops-here-foundation/new-home-desktop.webp"
 coverAlt: "The Bus Stops Here Foundation homepage: 'Building Brighter Futures for the Next Generation,' with Donate Now and Explore Our Programs buttons."
 coverBg: "sand"
-logo: "/images/clients/bshf.webp"
+logo: "/images/clients/bshf-on-light.png"
+logoDark: "/images/clients/bshf-on-dark.png"
 services:
   - "Platform migration"
   - "Website design and build"

@@ -29,7 +29,7 @@ import { site } from "../lib/site";
     </div>
     <div class="bottom">
       <span>{site.legalName} &middot; Est. {site.founded} &middot; {site.city}, {site.region}</span>
-      <span class="legal"><a href="/terms">Terms</a><a href="/ai-policy">AI Policy</a></span>
+      <span class="legal-links"><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/ai-policy">AI Policy</a></span>
     </div>
   </div>
 </footer>
@@ -45,9 +45,9 @@ import { site } from "../lib/site";
   nav a { color: var(--muted); text-decoration: none; overflow-wrap: anywhere; }
   nav a:hover { color: var(--fg); }
   .bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; padding-block: 22px 32px; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
-  .legal { display: flex; gap: 22px; }
-  .legal a { color: var(--faint); text-decoration: none; }
-  .legal a:hover { color: var(--fg); }
+  .legal-links { display: flex; gap: 22px; }
+  .legal-links a { color: var(--faint); text-decoration: none; }
+  .legal-links a:hover { color: var(--fg); }
   @media (min-width: 1024px) {
     .top { grid-template-columns: 1fr auto; }
     nav { gap: 72px; }

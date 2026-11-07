@@ -33,7 +33,7 @@ const schema = [
       <div class="wrap">
         <a class="back" href="/case-studies"><svg class="arrow"><use href="#arrow" /></svg>All case studies</a>
         {d.logo && (
-          <span class:list={["top-logo", { tile: !d.logoDark }]}>
+          <span class="top-logo">
             <img class:list={{ "theme-light-only": !!d.logoDark }} src={d.logo} alt={d.client.name} />
             {d.logoDark && <img class="theme-dark-only" src={d.logoDark} alt={d.client.name} />}
           </span>
@@ -98,7 +98,6 @@ const schema = [
   .back:hover { color: var(--fg); }
   .top-logo { display: flex; width: fit-content; align-items: center; margin-bottom: 26px; }
   .top-logo img { height: 44px; width: auto; max-width: 240px; object-fit: contain; object-position: left center; }
-  :global(.dark) .top-logo.tile { background: #F4F3EF; border-radius: 12px; padding: 10px 16px; }
   .meta { color: var(--faint); font-weight: 500; font-size: 15px; }
   .meta b { color: var(--fg); font-weight: 500; }
   h1 { font-size: clamp(34px, 4.4vw, 58px); max-width: 17em; margin-top: 16px; }
