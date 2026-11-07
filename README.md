@@ -25,7 +25,7 @@ his content, and builders; this site links there and never copies its prices.
 | `/fractional`, `/fractional/<industry>` | `src/components/fractional/FractionalPage.astro`, industries in `src/lib/industries.ts`. `/partnership` and old `/work-with-me` links redirect here |
 | `/ai-onboarding-day` | `src/pages/ai-onboarding-day.astro` |
 | `/testimonials` | `src/pages/testimonials.astro`: every Motive11 testimonial from the testimonials API (entity `motive11` only), linked from the footer |
-| `/privacy` | `src/pages/privacy.astro` via `src/layouts/LegalLayout.astro` |
+| `/privacy`, `/cookie-policy`, `/disclaimer` | Termageddon embeds (license motive11.com in Motive11's Termageddon account) in `src/pages/*.astro` via `src/layouts/LegalLayout.astro`. The text is edited in Termageddon, never in the repo |
 | `/case-studies`, `/case-studies/<slug>` | `src/content/case-studies/*.md` (schema in `src/content.config.ts`) |
 | `/about` | `src/pages/about.astro` |
 | `/book`, `/book/<slug>` | `src/pages/book/index.astro`; `public/_redirects` rewrites every booking path to it |
@@ -57,8 +57,11 @@ form the server refuses records `Form not accepted` instead and names nobody.
   180-day sweep of anonymous visitors. Not carried over: the server-side page count (`_middleware.ts`,
   `page_hits`), because its daily tables have no site column and Motive11 rows would land in
   markszymanski.co's numbers. Fathom counts this site's totals.
-- **`src/pages/privacy.astro` must change in the same commit whenever what the ledger records, how long it
-  keeps it, or where it skips changes.**
+- **The privacy and cookie policies must change in the same task whenever what the ledger records, how long
+  it keeps it, or where it skips changes.** Since November 7, 2026 both are Termageddon embeds, so the edit is
+  in Termageddon's Review and Override: the Privacy Policy's custom "Visit history" section and the Cookie
+  Policy's Essential, Functional, Marketing, and "Your choices" sections are overridden by hand there (they
+  no longer auto-update). The hand-written policy this replaced is in git history.
 
 ## Develop
 
