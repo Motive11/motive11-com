@@ -11,6 +11,7 @@ import Testimonial from "../components/Testimonial.astro";
 import { fetchTestimonial } from "../lib/testimonials";
 import portrait from "../assets/mark/portrait.webp";
 import shefflerPortal from "../assets/case-studies/sheffler-and-company/portal-leads-queue.webp";
+import shefflerSite from "../assets/case-studies/sheffler-and-company/new-home-desktop.webp";
 import pwSite from "../assets/case-studies/polverini-and-wiater/new-home-desktop.webp";
 import valorSite from "../assets/case-studies/valor-pgh/new-home-desktop.webp";
 import v3Site from "../assets/case-studies/valiant-3-communications/new-home-desktop.webp";
@@ -18,10 +19,13 @@ import qclSite from "../assets/case-studies/quality-choice-landscaping/new-home-
 import bshfSite from "../assets/case-studies/bus-stops-here-foundation/new-home-desktop.webp";
 
 const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
-const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
+// Bud Sheffler's, because it has his photo. The excerpt is his own words, the same lines the Fractional page uses.
+const bud = await fetchTestimonial("8b67a481-a547-4d8f-a6e1-c4554bb6f0fe");
+const quote = bud && { ...bud, text: "When my team finds something that needs to change, Mark fixes it fast, often the same day. At this point he knows how our business runs as well as anyone in the building." };
 
 const showcase = [
   { img: shefflerPortal, addr: "Sheffler & Company portal", alt: "The lead queue in the portal I built for Sheffler & Company, shown with demo data", caption: "A proposal portal for Sheffler & Company, an engineering and surveying firm", href: "/case-studies/sheffler-and-company" },
+  { img: shefflerSite, addr: "shefflerco.com", alt: "The Sheffler & Company website", caption: "The Sheffler & Company website, rebuilt before the portal", href: "/case-studies/sheffler-and-company" },
   { img: pwSite, addr: "pw-legal.com", alt: "The Polverini & Wiater website", caption: "A new website for Polverini & Wiater, a law firm in the middle of a rebrand", href: "/case-studies/polverini-and-wiater" },
   { img: valorSite, addr: "valorpgh.com", alt: "The Valor PGH website", caption: "A website and lead system for Valor PGH, an insurance and real estate agency", href: "/case-studies/valor-pgh" },
   { img: v3Site, addr: "valiant3communications.com", alt: "The Valiant 3 website", caption: "A rebuilt website for Valiant 3, a sports agency", href: "/case-studies/valiant-3-communications" },
@@ -139,7 +143,7 @@ const showcase = [
   {quote && (
     <section class="quote">
       <div class="wrap">
-        <Testimonial q={quote} variant="feature" />
+        <Testimonial q={quote} variant="feature" link="/case-studies/sheffler-and-company" />
       </div>
     </section>
   )}
@@ -147,13 +151,13 @@ const showcase = [
   <section class="block">
     <div class="wrap">
       <span class="label">Who I build for</span>
-      <h2>It's a pretty specific kind of firm.</h2>
+      <h2>Established businesses doing $3 million or more a year.</h2>
       <div class="fit">
-        <div><span class="label">The team</span><p>Ten or more people, with some of them in an office keeping the business running.</p></div>
-        <div><span class="label">The problem</span><p>A named person losing real time every week to proposals, research, intake, scheduling, or data entry.</p></div>
-        <div><span class="label">The owner</span><p>Wants it fixed for good, not another app for the team to learn.</p></div>
+        <div><span class="label">The business</span><p>Ten or more people on payroll, with an office that keeps the work moving.</p></div>
+        <div><span class="label">The problem</span><p>A specific person losing real hours every week to proposals, research, intake, scheduling, or data entry.</p></div>
+        <div><span class="label">The owner</span><p>Knows the numbers, like how many leads come in and how many close, and wants the problem fixed for good.</p></div>
       </div>
-      <p class="smaller">Smaller team, or just want AI set up right? <a class="text-link" href="/ai-onboarding-day">The AI Onboarding Day <svg class="arrow"><use href="#arrow" /></svg></a></p>
+      <p class="smaller">Under $3 million a year and already using AI? <a class="text-link" href="/ai-onboarding-day">Start with the AI Onboarding Day <svg class="arrow"><use href="#arrow" /></svg></a></p>
     </div>
   </section>
 
