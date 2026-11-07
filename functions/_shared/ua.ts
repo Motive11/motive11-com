@@ -11,7 +11,7 @@ export const BOT_UA = /bot|crawl|spider|slurp|headless|lighthouse|preview|puppet
 // Hosting networks, a short copy of the mjs.link Worker's list (AIOS state/links-worker). Akamai
 // (20940) is on it and also carries some iCloud Private Relay traffic, which is why a match is a
 // label and not a drop: a real person on it still shows signs of life.
-export const DC_ASNS = new Set([24940, 213230, 16276, 14061, 16509, 14618, 8075, 63949, 20940, 51167, 20473, 12876, 9009, 396982, 31898, 45102, 132203]);
+export const DC_ASNS = new Set([24940, 213230, 16276, 14061, 16509, 14618, 8075, 63949, 20940, 51167, 20473, 12876, 9009, 396982, 31898, 45102, 132203, 202053, 25697]);
 
 // Crawlers that name themselves, most AI first. Checked before BOT_UA so each gets its own name.
 const CRAWLERS: [RegExp, string][] = [

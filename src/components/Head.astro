@@ -82,8 +82,8 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
 
 <!--
   The visitor ledger (functions/api/v.ts, AIOS state/VISITORS.md): every page view, every mjsTrack
-  moment, every click, the first focus in a form, and the email from any form submitted, sent to
-  /api/v. The visitor's ID is a cookie /api/v sets, so this script never sees or stores it.
+  moment, every click, the first focus in a form, and the email from any form the site accepts,
+  sent to /api/v. The visitor's ID is a cookie /api/v sets, so this script never sees or stores it.
 
   Forms are caught by one capture-phase submit listener, not per form, so the booking widget's form
   (served into the page by book.motive11.com) and any form added later are covered without anyone
@@ -92,7 +92,8 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
   Each page view carries a random pv id; later "engage" posts update that same row with signs of
   life, time visible, scroll depth, and load time. Device details (screen, window, language, time
   zone) are read only after /api/v answers X-Track: 1, so a visitor in Europe never has them read.
-  Never recorded: what anyone types (other than the email on submit), mouse paths, or replays.
+  Never recorded: what anyone types (other than the email from an accepted form), mouse paths, or
+  replays.
 
   Sent only from motive11.com itself, never from a local build or a preview deploy.
 -->
@@ -196,13 +197,49 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
       } catch (e) {}
     }
 
+    // A form's email names the visitor only once the site accepts the form. On November 6, 2026 a
+    // bot that Turnstile turned away on markszymanski.co's /contact/ still showed on the Visitors
+    // tab as a known person, because the email was sent the moment Send was clicked. So it waits
+    // for the next POST the page makes (the booking widget sends one with fetch): an ok answer
+    // names them, anything else records "Form not accepted". A form that sends nothing within 15
+    // seconds, or whose page is left first, names them as before. Same as markszymanski.co's
+    // Head.astro; change both together.
+    var pending = null;
+    function settle(ok) {
+      var p = pending;
+      if (!p) return;
+      pending = null;
+      clearTimeout(p.timer);
+      if (ok) window.mjsIdentify(p.email, p.via);
+      else window.mjsEvent("Form not accepted", p.via);
+    }
+    var nativeFetch = window.fetch;
+    window.fetch = function (input, init) {
+      var res = nativeFetch.apply(this, arguments);
+      try {
+        var p = pending;
+        var method = String((init && init.method) || (input && input.method) || "GET").toUpperCase();
+        var url = new URL(typeof input === "string" ? input : (input && input.url) || String(input), location.href);
+        if (p && !p.claimed && method === "POST" && !(url.origin === location.origin && url.pathname === "/api/v")) {
+          p.claimed = true;
+          clearTimeout(p.timer);
+          res.then(function (r) { if (pending === p) settle(r.ok); }, function () { if (pending === p) settle(false); });
+        }
+      } catch (e) {}
+      return res;
+    };
     document.addEventListener("submit", function (e) {
       try {
         var field = e.target.querySelector('input[type="email"], input[name="email"]');
         var email = field && field.value.trim();
-        if (email) window.mjsIdentify(email, location.pathname);
+        if (!email) return;
+        if (pending) clearTimeout(pending.timer);
+        var p = { email: email, via: location.pathname, claimed: false };
+        p.timer = setTimeout(function () { if (pending === p) settle(true); }, 15000);
+        pending = p;
       } catch (err) {}
     }, true);
+    addEventListener("pagehide", function () { if (pending && !pending.claimed) settle(true); });
 
     // Capped per page so a stuck button or a script cannot flood the ledger. The label is the
     // page's own text, never anything typed.

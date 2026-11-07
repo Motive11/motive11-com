@@ -35,8 +35,9 @@ Dark mode is the default; the header toggle stores `light` or `dark` in `localSt
 ## Visitor ledger
 
 The same visitor ledger markszymanski.co runs (AIOS `state/VISITORS.md`): every page view (with utm tags and
-the referring site), click, outbound click, form start, and Fathom moment, plus the email from any submitted
-form, the booking widget's included, so a visitor is tied to a person once they give an email.
+the referring site), click, outbound click, form start, and Fathom moment, plus the email from any form the
+site accepts, the booking widget's included, so a visitor is tied to a person once they give an email. A
+form the server refuses records `Form not accepted` instead and names nobody.
 
 - The browser half is in `src/components/Head.astro` (`mjsTrack`, `mjsEvent`, `mjsIdentify`). It only sends from
   motive11.com itself. Pages fire conversion moments with `window.mjsTrack("Name")`, which reaches Fathom and the
