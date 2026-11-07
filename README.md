@@ -50,6 +50,11 @@ branch to `main`. Merging first publishes a repo root with no `index.html`, and 
 links included, 404s until the settings are fixed. Changing the settings first is safe: a failed build
 leaves the current production deploy live.
 
+The Fractional and AI Onboarding Day videos live in Szymanski Media's Bunny Stream library 572643,
+which only plays on allowed sites. motive11.com is on that list. **127.0.0.1 and localhost were added
+November 6, 2026 for the local preview; remove them after launch** (AIOS `connectors/bunny_net`,
+`removeAllowedReferrer`).
+
 Before launch and after any header, hero, or layout change, run from AIOS:
 `pipelines/web-build/check_widths.py` on the main pages and `pipelines/web-build/check_csp.py dist`,
 and after a push `pipelines/web-build/check_live.py https://motive11.com`.
