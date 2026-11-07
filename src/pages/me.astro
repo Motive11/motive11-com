@@ -2,17 +2,16 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<!-- Mark opens this once in each new browser so his own visits stop counting (step one of two: the
-     button sends him on to markszymanski.co/me/, whose Fathom flag is separate, and the click carries
-     this browser's ID across with the cross-site handoff). Fathom: blockTrackingForMe
-     stores a flag in this browser for motive11.com only (markszymanski.co has its own, set August 27,
-     2026). The visitor ledger: open it as /me/?k=<code> with his visitor_keys code (AIOS
-     state/VISITORS.md), and Head.astro ties the browser to him, which hides it in Mission Control. -->
-<BaseLayout title="This browser | Motive11" description="This browser is marked as Mark's own." noindex>
+<!-- Mark opens this once in each of his browsers as /me/?k=<his visitor_keys code> (AIOS
+     state/VISITORS.md): Head.astro sends the ?k=, which ties the browser to him in the visitor ledger
+     and so hides it on Mission Control's Visitors tab. The button carries that same ID to
+     markszymanski.co with the cross-site handoff. Fathom's own skip runs too, only while Fathom is
+     still on the site. -->
+<BaseLayout title="This browser - Motive11" description="This browser is marked as Mark's own." noindex>
   <section class="me">
     <div class="wrap">
-      <h1>This browser is yours now.</h1>
-      <p class="lead" data-me-status>Turning off Fathom for this browser.</p>
+      <h1>This browser is you now.</h1>
+      <p class="lead">Your visits from this browser won't show on the Visitors tab. One more tap does the same on markszymanski.co.</p>
       <p class="next"><a class="btn" href="https://markszymanski.co/me/">Now markszymanski.co</a></p>
     </div>
   </section>
@@ -20,17 +19,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 <script is:inline>
   (function () {
-    var out = document.querySelector("[data-me-status]");
+    // Fathom is on its way out (AIOS state/VISITORS.md); while it still runs here, skip Mark too.
     var tries = 0;
     (function block() {
-      if (window.fathom && typeof window.fathom.blockTrackingForMe === "function") {
-        window.fathom.blockTrackingForMe();
-        out.textContent = "Done on motive11.com. One more tap does markszymanski.co, in this same browser.";
-      } else if (tries++ < 40) {
-        setTimeout(block, 250);
-      } else {
-        out.textContent = "Fathom didn't load, so nothing changed. An ad blocker is the usual reason; try again with it off.";
-      }
+      if (window.fathom && typeof window.fathom.blockTrackingForMe === "function") window.fathom.blockTrackingForMe();
+      else if (tries++ < 40) setTimeout(block, 250);
     })();
   })();
 </script>
