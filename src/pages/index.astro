@@ -10,36 +10,61 @@ import { offers } from "../lib/offers";
 import Testimonial from "../components/Testimonial.astro";
 import { fetchTestimonial } from "../lib/testimonials";
 import portrait from "../assets/mark/portrait.webp";
-import portal from "../assets/case-studies/sheffler-and-company/portal-leads-queue.webp";
+import shefflerPortal from "../assets/case-studies/sheffler-and-company/portal-leads-queue.webp";
+import pwSite from "../assets/case-studies/polverini-and-wiater/new-home-desktop.webp";
+import valorSite from "../assets/case-studies/valor-pgh/new-home-desktop.webp";
+import v3Site from "../assets/case-studies/valiant-3-communications/new-home-desktop.webp";
+import qclSite from "../assets/case-studies/quality-choice-landscaping/new-home-desktop.webp";
+import bshfSite from "../assets/case-studies/bus-stops-here-foundation/new-home-desktop.webp";
 
 const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
 const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
+
+const showcase = [
+  { img: shefflerPortal, addr: "Sheffler & Company portal", alt: "The lead queue in the portal I built for Sheffler & Company, shown with demo data", caption: "A proposal portal for Sheffler & Company, an engineering and surveying firm", href: "/case-studies/sheffler-and-company" },
+  { img: pwSite, addr: "pw-legal.com", alt: "The Polverini & Wiater website", caption: "A new website for Polverini & Wiater, a law firm in the middle of a rebrand", href: "/case-studies/polverini-and-wiater" },
+  { img: valorSite, addr: "valorpgh.com", alt: "The Valor PGH website", caption: "A website and lead system for Valor PGH, an insurance and real estate agency", href: "/case-studies/valor-pgh" },
+  { img: v3Site, addr: "valiant3communications.com", alt: "The Valiant 3 website", caption: "A rebuilt website for Valiant 3, a sports agency", href: "/case-studies/valiant-3-communications" },
+  { img: qclSite, addr: "qualitychoicelandscaping.com", alt: "The Quality Choice Landscaping website", caption: "A website and back office for Quality Choice Landscaping", href: "/case-studies/quality-choice-landscaping" },
+  { img: bshfSite, addr: "thebusstopsherefoundation.org", alt: "The Bus Stops Here Foundation website", caption: "One website for The Jerome Bettis Bus Stops Here Foundation", href: "/case-studies/bus-stops-here-foundation" },
+];
 ---
 
 <BaseLayout
-  title="Motive11 | Custom software and AI systems by Mark Szymanski"
+  title="Motive11 | AI and systems for established businesses, by Mark Szymanski"
   description={site.description}
 >
   <div class="hero">
     <div class="wrap">
       <a class="pill" href="/case-studies/sheffler-and-company"><span class="dot"></span>How I built an engineering firm's proposal portal in 44 days<svg class="arrow"><use href="#arrow" /></svg></a>
-      <h1>Custom software for firms whose people are buried in busywork.</h1>
-      <p class="sub">I'm <span class="name">Mark Szymanski</span>, and Motive11 is my company. I find where your team's time goes, build the system that gives it back, and stay on to keep it running. <b>It's just me, plus AI doing the work a team used to.</b></p>
+      <h1>I build the systems your business runs on.</h1>
+      <p class="sub">I'm <span class="name">Mark Szymanski</span>. I find the expensive, repetitive work inside a business and build the system that does it instead, then I stay on to keep it running. Motive11 is my company, and <b>it's just me, plus AI doing the work a team used to.</b></p>
       <div class="actions">
         <a class="btn" href="/fractional">Work With Me <svg class="arrow"><use href="#arrow" /></svg></a>
         <a class="text-link" href="/case-studies">See the Work <svg class="arrow"><use href="#arrow" /></svg></a>
       </div>
 
-      <div class="stage">
+      <div class="stage" data-showcase>
         <div class="browser">
           <div class="bar">
             <div class="lights"><i></i><i></i><i></i></div>
-            <div class="addr">Sheffler &amp; Company portal</div>
+            <div class="addr" data-addr>{showcase[0].addr}</div>
             <div class="spacer"></div>
           </div>
-          <Image src={portal} alt="The lead queue in the portal I built for Sheffler & Company, shown with demo data" widths={[800, 1400, 2200]} sizes="(min-width: 1140px) 1100px, 100vw" loading="eager" />
+          <div class="screens">
+            {showcase.map((s, i) => (
+              <Image class:list={["screen", { "is-on": i === 0 }]} src={s.img} alt={s.alt} widths={[800, 1400, 2200]} sizes="(min-width: 1140px) 1100px, 100vw" loading={i === 0 ? "eager" : "lazy"} data-screen data-addr-text={s.addr} data-caption={s.caption} data-href={s.href} />
+            ))}
+          </div>
         </div>
-        <p class="caption">The lead queue in the portal I built for Sheffler &amp; Company, a 50-year-old engineering and surveying firm. <a href="/case-studies/sheffler-and-company">Read the case study</a></p>
+        <div class="showcase-foot">
+          <p class="caption"><span data-cap>{showcase[0].caption}</span>. <a href={showcase[0].href} data-caption-link>Read the Case Study</a></p>
+          <div class="dots" role="tablist" aria-label="Projects">
+            {showcase.map((s, i) => (
+              <button type="button" class:list={["dot", { "is-on": i === 0 }]} aria-label={s.addr} aria-selected={i === 0 ? "true" : "false"} data-dot={i}></button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -135,6 +160,33 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
   <ClosingCta />
 </BaseLayout>
 
+<script is:inline>
+  (function () {
+    var root = document.querySelector("[data-showcase]");
+    if (!root) return;
+    var screens = root.querySelectorAll("[data-screen]");
+    var dots = root.querySelectorAll("[data-dot]");
+    var addr = root.querySelector("[data-addr]");
+    var cap = root.querySelector("[data-cap]");
+    var link = root.querySelector("[data-caption-link]");
+    var i = 0, timer = null;
+    function show(n) {
+      screens[i].classList.remove("is-on"); dots[i].classList.remove("is-on"); dots[i].setAttribute("aria-selected", "false");
+      i = (n + screens.length) % screens.length;
+      screens[i].classList.add("is-on"); dots[i].classList.add("is-on"); dots[i].setAttribute("aria-selected", "true");
+      addr.textContent = screens[i].dataset.addrText;
+      cap.textContent = screens[i].dataset.caption;
+      link.setAttribute("href", screens[i].dataset.href);
+    }
+    function start() { if (!timer) timer = setInterval(function () { show(i + 1); }, 4500); }
+    function stop() { clearInterval(timer); timer = null; }
+    dots.forEach(function (d) { d.addEventListener("click", function () { stop(); show(Number(d.dataset.dot)); start(); }); });
+    root.addEventListener("mouseenter", stop);
+    root.addEventListener("mouseleave", start);
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) start();
+  })();
+</script>
+
 <style>
   .hero { text-align: center; padding-top: clamp(64px, 9vw, 120px); overflow-x: clip; }
   .pill { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px 7px 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; color: var(--muted); font-size: 14px; font-weight: 500; text-decoration: none; transition: border-color 0.15s ease, color 0.15s ease; }
@@ -160,7 +212,14 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
   .lights i { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
   .addr { flex: 1; max-width: 340px; margin: 0 auto; height: 24px; border-radius: 6px; background: var(--surface-2); color: var(--faint); font-size: 12px; display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; padding-inline: 10px; }
   .spacer { width: 47px; }
-  .browser :global(img) { width: 100%; height: auto; border-radius: 7px; }
+  .screens { position: relative; aspect-ratio: 16 / 10; border-radius: 7px; overflow: hidden; background: var(--surface-2); }
+  .screens :global(.screen) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0; transition: opacity 0.7s ease; }
+  .screens :global(.screen.is-on) { opacity: 1; }
+  .showcase-foot { position: relative; display: grid; justify-items: center; gap: 14px; margin-top: 22px; }
+  .showcase-foot .caption { margin: 0; min-height: 3em; }
+  .dots { display: flex; gap: 8px; }
+  .dot { width: 8px; height: 8px; padding: 0; border-radius: 999px; border: 0; background: var(--faint); cursor: pointer; transition: width 0.3s ease, background 0.3s ease; }
+  .dot.is-on { width: 24px; background: var(--orange); }
   .caption { position: relative; margin: 22px auto 0; max-width: 40em; color: var(--muted); font-size: 15px; }
   .caption a { color: var(--fg); text-decoration: none; font-weight: 500; border-bottom: 1px solid rgba(255, 106, 26, 0.6); }
   .caption a:hover { color: var(--accent-text); }

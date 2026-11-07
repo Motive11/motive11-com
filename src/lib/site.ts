@@ -7,7 +7,7 @@ export const site = {
   region: "PA",
   email: "hello@motive11.com",
   description:
-    "Motive11 is Mark Szymanski's company. Custom software, AI systems, and websites for established firms whose people are buried in busywork.",
+    "Motive11 is Mark Szymanski's company. He finds the expensive, repetitive work inside established businesses and builds the systems that do it instead.",
   founder: {
     name: "Mark Szymanski",
     url: "https://markszymanski.co",
