@@ -18,6 +18,20 @@ import v3Site from "../assets/case-studies/valiant-3-communications/new-home-des
 import qclSite from "../assets/case-studies/quality-choice-landscaping/new-home-desktop.webp";
 import bshfSite from "../assets/case-studies/bus-stops-here-foundation/new-home-desktop.webp";
 
+// Owners' own words, from the symptom map in AIOS entities/szymanski-media/context/offer-stack/
+// sales-map.html. One per kind of pain, and mostly not the six the Fractional page already pairs with
+// what I did about them.
+const familiar = [
+  "Nothing gets quoted unless I do it, so in our busy season jobs just sit there.",
+  "She re-enters the same numbers every single day so the scorecards stay current.",
+  "If he left, we'd be in real trouble.",
+  "We've got six systems and none of them talk.",
+  "We bought the tool and we still do it by hand.",
+  "Every time I want a small change to the website I have to email somebody and wait.",
+  "We get the leads, we just don't call them back fast enough.",
+  "Our stuff is confidential, so AI is off the table for us.",
+];
+
 const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
 // Bud Sheffler's, because it has his photo. The excerpt is his own words, the same lines the Fractional page uses.
 const bud = await fetchTestimonial("8b67a481-a547-4d8f-a6e1-c4554bb6f0fe");
@@ -74,6 +88,18 @@ const showcase = [
   </div>
 
   <div class="wrap logos-wrap"><ClientLogos /></div>
+
+  <section class="block familiar-sec">
+    <div class="wrap">
+      <span class="label">Sound familiar?</span>
+      <h2>If you've said one of these, I can help.</h2>
+      <p class="lead">Real things owners have told me. None of them sounds like a technology problem, and every one is the kind of thing I fix.</p>
+      <ul class="familiar">
+        {familiar.map((line) => <li class="reveal"><p>{line}</p></li>)}
+      </ul>
+      <div class="familiar-cta"><a class="btn" href="/fractional/">See how I fix them <svg class="arrow"><use href="#arrow" /></svg></a></div>
+    </div>
+  </section>
 
   <section class="block">
     <div class="wrap how">
@@ -246,6 +272,14 @@ const showcase = [
 
   .logos-wrap { padding-top: clamp(64px, 8vw, 96px); }
 
+  .familiar-sec h2 { max-width: 16em; }
+  .familiar-sec .lead { margin-top: 20px; max-width: 34em; color: var(--muted); font-size: 19px; line-height: 1.55; }
+  .familiar { list-style: none; margin: 48px 0 0; padding: 0; display: grid; gap: 14px; }
+  .familiar li { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px 26px 24px 54px; }
+  .familiar li::before { content: "\201C"; position: absolute; left: 22px; top: 14px; color: var(--accent-text); font-size: 36px; line-height: 1; font-weight: 500; }
+  .familiar p { font-size: 19px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.4; color: var(--fg); }
+  .familiar-cta { margin-top: 40px; }
+
   .how { display: grid; gap: 48px; align-items: center; }
   .portrait { margin: 0; max-width: 460px; background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 14px 14px 18px; }
   .portrait :global(img) { width: 100%; height: auto; aspect-ratio: 1591 / 1989; object-fit: cover; border-radius: 12px; }
@@ -283,6 +317,7 @@ const showcase = [
     .how { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(48px, 6vw, 96px); }
     .offer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .fit { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .familiar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 1023px) {
     .screens { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
@@ -299,5 +334,8 @@ const showcase = [
     .addr { height: 18px; font-size: 10px; }
     .spacer { width: 0; }
     .fit p { font-size: 18px; }
+    .familiar p { font-size: 17px; }
+    .familiar li { padding: 20px 20px 20px 46px; }
+    .familiar li::before { left: 16px; top: 12px; }
   }
 </style>
