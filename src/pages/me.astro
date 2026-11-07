@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<!-- Mark opens this once in each new browser so his own visits stop counting. Fathom: blockTrackingForMe
+     stores a flag in this browser for motive11.com only (markszymanski.co has its own, set August 27,
+     2026). The visitor ledger: open it as /me/?k=<code> with his visitor_keys code (AIOS
+     state/VISITORS.md), and Head.astro ties the browser to him, which hides it in Mission Control. -->
+<BaseLayout title="This browser | Motive11" description="This browser is marked as Mark's own." noindex>
+  <section class="me">
+    <div class="wrap">
+      <h1>This browser is yours now.</h1>
+      <p class="lead" data-me-status>Turning off Fathom for this browser.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var out = document.querySelector("[data-me-status]");
+    var tries = 0;
+    (function block() {
+      if (window.fathom && typeof window.fathom.blockTrackingForMe === "function") {
+        window.fathom.blockTrackingForMe();
+        out.textContent = "Fathom won't count this browser on motive11.com anymore. If you opened this from your private link, the visitor ledger knows it's you too.";
+      } else if (tries++ < 40) {
+        setTimeout(block, 250);
+      } else {
+        out.textContent = "Fathom didn't load, so nothing changed. An ad blocker is the usual reason; try again with it off.";
+      }
+    })();
+  })();
+</script>
+
+<style>
+  .me { padding-block: clamp(96px, 12vw, 160px); }
+  .lead { margin-top: 20px; max-width: 32em; }
+</style>
