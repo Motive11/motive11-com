@@ -54,12 +54,19 @@ export async function fetchTestimonials(options: {
   }
 }
 
-// The API keeps highlight markup (<mark>) inside the text; this site shows quotes without it.
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
+// Paragraphs as HTML: everything escaped except the <mark> highlight the API carries (set in AIOS with
+// state/testimonial_highlight.py, which guarantees a highlight never changes a word).
 export function quoteParagraphs(text: string): string[] {
   return text
-    .replace(/<\/?mark>/g, "")
     .split(/\n+/)
-    .map((p) => p.replace(/\s+/g, " ").trim())
+    .map((p) =>
+      escapeHtml(p.replace(/\s+/g, " ").trim())
+        .replace(/&lt;mark&gt;/g, "<mark>")
+        .replace(/&lt;\/mark&gt;/g, "</mark>"),
+    )
     .filter(Boolean);
 }
 

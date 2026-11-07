@@ -1,14 +1,16 @@
 ---
-import { site } from "../lib/site";
-
 interface Props {
   heading?: string;
   body?: string;
+  href?: string;
+  label?: string;
 }
 
 const {
   heading = "Bring me the job that eats your team's week.",
-  body = "The first call is 20 minutes. If I can help, I'll tell you how. If I can't, I'll tell you that too.",
+  body = "See how I'd work inside your business, what it costs, and what changes in the first three months.",
+  href = "/fractional",
+  label = "Work With Me",
 } = Astro.props;
 ---
 
@@ -17,7 +19,7 @@ const {
     <span class="label">Start here</span>
     <h2>{heading}</h2>
     <p>{body}</p>
-    <a class="btn" href={site.introCall}>Book a 20-minute intro call <svg class="arrow"><use href="#arrow" /></svg></a>
+    <a class="btn" href={href}>{label} <svg class="arrow"><use href="#arrow" /></svg></a>
   </div>
 </section>
 

@@ -5,18 +5,19 @@ import { initials, quoteParagraphs, type Testimonial } from "../lib/testimonials
 interface Props {
   q: Testimonial;
   variant?: "feature" | "card";
+  link?: string;
 }
 
-const { q, variant = "card" } = Astro.props;
+const { q, variant = "card", link } = Astro.props;
 const paragraphs = quoteParagraphs(q.text);
 const role = [q.customer_tagline, q.customer_company].filter(Boolean).join(", ");
 ---
 
 <figure class:list={["t", variant]}>
-  {variant === "feature" && <span class="mark" aria-hidden="true">&ldquo;</span>}
+  {variant === "feature" && <span class="qmark" aria-hidden="true">&ldquo;</span>}
   {variant === "card" && q.title && <p class="title">{q.title}</p>}
   <blockquote>
-    {paragraphs.map((p) => <p>{p}</p>)}
+    {paragraphs.map((p) => <p set:html={p} />)}
   </blockquote>
   <figcaption>
     {q.customer_avatar
@@ -24,6 +25,7 @@ const role = [q.customer_tagline, q.customer_company].filter(Boolean).join(", ")
       : <span class="face initials" aria-hidden="true">{initials(q.customer_name)}</span>}
     <span class="who"><b>{q.customer_name}</b>{role && <span>{role}</span>}</span>
   </figcaption>
+  {link && <a class="text-link t-link" href={link}>Read the Case Study <svg class="arrow"><use href="#arrow" /></svg></a>}
 </figure>
 
 <style>
@@ -36,11 +38,13 @@ const role = [q.customer_tagline, q.customer_company].filter(Boolean).join(", ")
   .who { display: grid; gap: 1px; font-size: 16px; }
   .who b { font-weight: 500; }
   .who span { color: var(--faint); }
+  .t-link { margin-top: 20px; font-size: 15px; }
 
   .feature { text-align: center; }
-  .feature .mark { display: block; color: var(--orange); font-size: 72px; line-height: 0.6; font-weight: 500; height: 34px; }
+  .feature .qmark { display: block; color: var(--orange); font-size: 72px; line-height: 0.6; font-weight: 500; height: 34px; }
   .feature blockquote { margin: 26px auto 0; font-weight: 500; font-size: clamp(26px, 3vw, 40px); line-height: 1.22; letter-spacing: -0.035em; max-width: 22em; text-wrap: balance; }
   .feature figcaption { justify-content: center; margin-top: 34px; }
+  .feature .t-link { margin-top: 24px; }
 
   .card { background: var(--bg); border: 1px solid var(--line); border-radius: 18px; padding: clamp(26px, 3.5vw, 40px); display: flex; flex-direction: column; }
   .card .title { color: var(--fg); font-weight: 500; font-size: clamp(22px, 2.2vw, 28px); line-height: 1.2; letter-spacing: -0.03em; margin-bottom: 18px; }

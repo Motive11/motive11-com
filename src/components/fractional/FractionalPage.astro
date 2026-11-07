@@ -21,7 +21,8 @@ import portrait from "../../assets/mark/portrait.webp";
 const { industry } = Astro.props as { industry?: Industry };
 
 const services = await fetchTestimonials({ tags: ["Services"], sort: "date", order: "desc", limit: 500 });
-const testimonials = services.slice(0, 9);
+// Only work Motive11 did: Szymanski Media advisory quotes (Huemor) stay on markszymanski.co.
+const testimonials = services.filter((t) => t.entity === "motive11").slice(0, 9);
 
 const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order);
 const storyFor = new Map<string, string>();
@@ -592,10 +593,7 @@ const schema = [
         <div class="wall">
           {testimonials.map((t) => (
             <div class="wall-item">
-              <Testimonial q={t} />
-              {storyFor.get(t.id) && (
-                <a class="text-link wall-link" href={storyFor.get(t.id)}>Read the case study <svg class="arrow"><use href="#arrow" /></svg></a>
-              )}
+              <Testimonial q={t} link={storyFor.get(t.id)} />
             </div>
           ))}
         </div>
@@ -882,7 +880,6 @@ const schema = [
   .wall { columns: 1; column-gap: 20px; margin-top: 48px; }
   .wall-item { break-inside: avoid; margin-bottom: 20px; }
   .wall-item :global(.t.card) { background: var(--surface); }
-  .wall-link { font-size: 15px; margin: 12px 0 0 6px; }
 
   .faqs { margin-top: 40px; border-top: 1px solid var(--line); }
   details { border-bottom: 1px solid var(--line); }
