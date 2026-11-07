@@ -14,7 +14,6 @@ export const site = {
   },
   introCall: "/book/intro",
   nav: [
-    { label: "Fractional", href: "/fractional" },
     { label: "Case studies", href: "/case-studies" },
     { label: "Services", href: "/services" },
     { label: "About", href: "/about" },

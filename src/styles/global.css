@@ -120,7 +120,7 @@ section.block { padding-block: clamp(88px, 11vw, 140px); }
 
 /* Mark's rule (November 6, 2026): buttons and links read in capitalized words, never sentence case
    or all caps. One rule here, the same approach markszymanski.co uses, so no label needs hand-casing. */
-.btn, .text-link, .site-header nav a, #mobile-nav a, .site-footer nav a:not([href^="mailto:"]) {
+.btn, .text-link, .label, .legal .eyebrow, .site-header nav a, #mobile-nav a, .site-footer nav a:not([href^="mailto:"]) {
   text-transform: capitalize;
 }
 

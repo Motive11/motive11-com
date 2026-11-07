@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Testimonial from "../components/Testimonial.astro";
+import ClosingCta from "../components/ClosingCta.astro";
+import { fetchTestimonials } from "../lib/testimonials";
+import { breadcrumb } from "../lib/schema";
+import { site } from "../lib/site";
+
+// Motive11 clients only. Szymanski Media quotes (advisory, the community, the channel) belong to markszymanski.co.
+const all = await fetchTestimonials({ sort: "date", order: "desc", limit: 1000 });
+const testimonials = all.filter((t) => t.entity === "motive11");
+
+const cases = await getCollection("case-studies");
+const storyFor = new Map<string, string>();
+for (const c of cases) for (const id of c.data.testimonialIds) storyFor.set(id, `/case-studies/${c.id}`);
+
+const title = "Testimonials | Motive11";
+const description = "What the firms I've built websites, software, and AI systems for say about working with me.";
+---
+
+<BaseLayout title={title} description={description} schema={[breadcrumb([{ name: "Home", url: site.url }, { name: "Testimonials", url: `${site.url}/testimonials` }])]}>
+  <section class="intro">
+    <div class="wrap">
+      <span class="label">Testimonials</span>
+      <h1>In their words.</h1>
+      <p class="lead">Every quote here is from a business I've built something for, in the words they used.</p>
+    </div>
+  </section>
+
+  <section class="list">
+    <div class="wrap">
+      <div class="wall">
+        {testimonials.map((t) => (
+          <div class="wall-item">
+            <Testimonial q={t} link={storyFor.get(t.id)} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ClosingCta />
+</BaseLayout>
+
+<style>
+  .intro { padding-block: clamp(64px, 9vw, 112px) clamp(40px, 5vw, 64px); }
+  .intro h1 { max-width: 12em; }
+  .list { padding-bottom: clamp(48px, 6vw, 80px); }
+  .wall { columns: 1; column-gap: 20px; }
+  .wall-item { break-inside: avoid; margin-bottom: 20px; }
+  .wall-item :global(.t.card) { background: var(--surface); }
+  @media (min-width: 640px) { .wall { columns: 2; } }
+  @media (min-width: 1024px) { .wall { columns: 3; } }
+</style>

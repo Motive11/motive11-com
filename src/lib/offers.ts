@@ -48,7 +48,7 @@ export const offers: Offer[] = [
       "Training for you and anyone on the team who joins",
     ],
     starts: "Paid up front, scheduled as one day. It stands on its own, and it's the natural first step toward having me on every month.",
-    cta: { label: "See the day", href: "/ai-onboarding-day" },
+    cta: { label: "See How It Works", href: "/ai-onboarding-day" },
   },
   {
     id: "websites",
@@ -68,7 +68,7 @@ export const offers: Offer[] = [
   },
   {
     id: "custom-software",
-    name: "Custom software",
+    name: "Custom Software",
     short: "One specific tool your team uses every day, like a client portal or a proposal system, built around how your people already work.",
     price: `From ${usd(pricing.build.from)}`,
     priceNote: "Quoted on its own, paid for once.",
