@@ -2,7 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<!-- Mark opens this once in each new browser so his own visits stop counting. Fathom: blockTrackingForMe
+<!-- Mark opens this once in each new browser so his own visits stop counting (step one of two: the
+     button sends him on to markszymanski.co/me/, whose Fathom flag is separate, and the click carries
+     this browser's ID across with the cross-site handoff). Fathom: blockTrackingForMe
      stores a flag in this browser for motive11.com only (markszymanski.co has its own, set August 27,
      2026). The visitor ledger: open it as /me/?k=<code> with his visitor_keys code (AIOS
      state/VISITORS.md), and Head.astro ties the browser to him, which hides it in Mission Control. -->
@@ -11,6 +13,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <div class="wrap">
       <h1>This browser is yours now.</h1>
       <p class="lead" data-me-status>Turning off Fathom for this browser.</p>
+      <p class="next"><a class="btn" href="https://markszymanski.co/me/">Now markszymanski.co</a></p>
     </div>
   </section>
 </BaseLayout>
@@ -22,7 +25,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     (function block() {
       if (window.fathom && typeof window.fathom.blockTrackingForMe === "function") {
         window.fathom.blockTrackingForMe();
-        out.textContent = "Fathom won't count this browser on motive11.com anymore. If you opened this from your private link, the visitor ledger knows it's you too.";
+        out.textContent = "Done on motive11.com. One more tap does markszymanski.co, in this same browser.";
       } else if (tries++ < 40) {
         setTimeout(block, 250);
       } else {
@@ -35,4 +38,5 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <style>
   .me { padding-block: clamp(96px, 12vw, 160px); }
   .lead { margin-top: 20px; max-width: 32em; }
+  .next { margin-top: 32px; }
 </style>
