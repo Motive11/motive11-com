@@ -55,7 +55,7 @@ const showcase = [
             <div class="addr" data-addr>{showcase[0].addr}</div>
             <div class="spacer"></div>
           </div>
-          <div class="screens">
+          <div class="screens" data-track>
             {showcase.map((s, i) => (
               <Image class:list={["screen", { "is-on": i === 0 }]} src={s.img} alt={s.alt} widths={[800, 1400, 2200]} sizes="(min-width: 1140px) 1100px, 100vw" loading={i === 0 ? "eager" : "lazy"} data-screen data-addr-text={s.addr} data-caption={s.caption} data-href={s.href} />
             ))}
@@ -173,20 +173,34 @@ const showcase = [
     var addr = root.querySelector("[data-addr]");
     var cap = root.querySelector("[data-cap]");
     var link = root.querySelector("[data-caption-link]");
-    var i = 0, timer = null;
-    function show(n) {
+    var track = root.querySelector("[data-track]");
+    // Below 1024px the screens are a native scroll-snap row so a finger can swipe them; above it they crossfade.
+    var swipe = matchMedia("(max-width: 1023px)");
+    var i = 0, timer = null, settle = null;
+    function show(n, fromScroll) {
       screens[i].classList.remove("is-on"); dots[i].classList.remove("is-on"); dots[i].setAttribute("aria-selected", "false");
       i = (n + screens.length) % screens.length;
       screens[i].classList.add("is-on"); dots[i].classList.add("is-on"); dots[i].setAttribute("aria-selected", "true");
       addr.textContent = screens[i].dataset.addrText;
       cap.textContent = screens[i].dataset.caption;
       link.setAttribute("href", screens[i].dataset.href);
+      if (swipe.matches && !fromScroll) track.scrollTo({ left: i * track.clientWidth, behavior: "smooth" });
     }
     function start() { if (!timer) timer = setInterval(function () { show(i + 1); }, 4500); }
     function stop() { clearInterval(timer); timer = null; }
     dots.forEach(function (d) { d.addEventListener("click", function () { stop(); show(Number(d.dataset.dot)); start(); }); });
     root.addEventListener("mouseenter", stop);
     root.addEventListener("mouseleave", start);
+    track.addEventListener("touchstart", stop, { passive: true });
+    track.addEventListener("touchend", start, { passive: true });
+    track.addEventListener("scroll", function () {
+      if (!swipe.matches) return;
+      clearTimeout(settle);
+      settle = setTimeout(function () {
+        var n = Math.round(track.scrollLeft / track.clientWidth);
+        if (n !== i) show(n, true);
+      }, 90);
+    }, { passive: true });
     if (!matchMedia("(prefers-reduced-motion: reduce)").matches) start();
   })();
 </script>
@@ -267,6 +281,11 @@ const showcase = [
     .how { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(48px, 6vw, 96px); }
     .offer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .fit { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 1023px) {
+    .screens { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; touch-action: pan-x pan-y; }
+    .screens::-webkit-scrollbar { display: none; }
+    .screens :global(.screen) { position: static; flex: 0 0 100%; opacity: 1; transition: none; scroll-snap-align: start; scroll-snap-stop: always; }
   }
   @media (max-width: 560px) {
     .sub { font-size: 18px; }
