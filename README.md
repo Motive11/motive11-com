@@ -77,9 +77,9 @@ links included, 404s until the settings are fixed. Changing the settings first i
 leaves the current production deploy live.
 
 The Fractional and AI Onboarding Day videos live in Szymanski Media's Bunny Stream library 572643,
-which only plays on allowed sites. motive11.com is on that list. **127.0.0.1 and localhost were added
-November 6, 2026 for the local preview; remove them after launch** (AIOS `connectors/bunny_net`,
-`removeAllowedReferrer`).
+which only plays on allowed sites. motive11.com is on that list, so a local preview shows the player but
+the video refuses to play. To test video locally, add `127.0.0.1` with `addAllowedReferrer` (AIOS
+`connectors/bunny_net`, account key) and remove it again with `removeAllowedReferrer` when done.
 
 Before launch and after any header, hero, or layout change, run from AIOS:
 `pipelines/web-build/check_widths.py` on the main pages and `pipelines/web-build/check_csp.py dist`,
