@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import NewsletterForm from "../components/NewsletterForm.astro";
+import { breadcrumb } from "../lib/schema";
+import { site } from "../lib/site";
+
+const title = "Newsletter | Motive11";
+const description = "A weekly email for people who run a business: what I built for a client, what it took, and what it changed. No code, nothing technical.";
+---
+
+<BaseLayout title={title} description={description} schema={[breadcrumb([{ name: "Home", url: site.url }, { name: "Newsletter", url: `${site.url}/newsletter` }])]}>
+  <section class="nl-page">
+    <div class="wrap inner">
+      <span class="label">Newsletter</span>
+      <h1>A weekly email for people who run a business.</h1>
+      <p class="lead">Every Tuesday morning I write up something I built for a client: the problem, what it took, and what it changed. It's written for owners, so there's no code and nothing technical to follow.</p>
+      <p class="lead">When it's something you could set up yourself, I'll show you how. It's new, so it'll keep changing as I figure out what's most useful to you.</p>
+      <div class="form"><NewsletterForm id="nl-page" button="Subscribe" /></div>
+      <p class="fine">Free, every Tuesday. Unsubscribe from any issue.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nl-page { padding-block: clamp(72px, 10vw, 128px) clamp(80px, 10vw, 128px); }
+  .inner { max-width: 760px; }
+  h1 { max-width: 14em; }
+  .lead + .lead { margin-top: 16px; }
+  .form { margin-top: 36px; max-width: 520px; }
+  .fine { color: var(--faint); font-size: 15px; margin-top: 14px; }
+</style>

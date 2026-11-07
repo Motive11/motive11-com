@@ -1,0 +1,139 @@
+---
+/**
+ * The operator newsletter signup: first name and email, posted to functions/api/newsletter.ts.
+ * Used on /newsletter and in the footer, so it can appear twice on one page; every id hangs off
+ * the `id` prop. Turnstile renders only on submit (execution "execute") because a token expires
+ * after five minutes and someone reading the page can easily take longer than that.
+ */
+import { site } from "../lib/site";
+
+interface Props {
+  id: string;
+  variant?: "page" | "footer";
+  button?: string;
+}
+
+const { id, variant = "page", button = "Subscribe" } = Astro.props;
+---
+
+<div class:list={["nl", variant]} data-newsletter={id} data-sitekey={site.turnstileSiteKey}>
+  <form class="nl-form" name="newsletter" novalidate>
+    <label class="sr" for={`${id}-name`}>First name</label>
+    <input id={`${id}-name`} name="first_name" type="text" autocomplete="given-name" placeholder="First name" maxlength="60" />
+    <label class="sr" for={`${id}-email`}>Email</label>
+    <input id={`${id}-email`} name="email" type="email" autocomplete="email" placeholder="Email" required />
+    <button class="btn" type="submit">{button}</button>
+    <div class="nl-ts" aria-hidden="true"></div>
+  </form>
+  <p class="nl-error" role="alert" hidden></p>
+  <p class="nl-done" role="status" hidden>You're in. It comes out Tuesday mornings, and you can unsubscribe from any issue.</p>
+</div>
+
+<script is:inline>
+  (function () {
+    if (window.__m11Newsletter) return;
+    window.__m11Newsletter = true;
+
+    var loading = null;
+    function turnstileReady() {
+      if (window.turnstile) return Promise.resolve(window.turnstile);
+      if (!loading) {
+        loading = new Promise(function (resolve, reject) {
+          var s = document.createElement("script");
+          s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+          s.async = true;
+          s.onload = function () { resolve(window.turnstile); };
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+      return loading;
+    }
+
+    function token(box) {
+      return turnstileReady().then(function (ts) {
+        return new Promise(function (resolve, reject) {
+          var slot = box.querySelector(".nl-ts");
+          if (slot.dataset.wid) ts.remove(slot.dataset.wid);
+          slot.dataset.wid = ts.render(slot, {
+            sitekey: box.dataset.sitekey,
+            execution: "execute",
+            appearance: "interaction-only",
+            theme: document.documentElement.classList.contains("dark") ? "dark" : "light",
+            callback: resolve,
+            "error-callback": function () { reject(new Error("verification")); },
+          });
+          ts.execute(slot);
+        });
+      });
+    }
+
+    // Delegated, because this script is emitted once per form and the first copy can run before
+    // a later form (the footer) is in the page.
+    document.addEventListener("submit", function (e) {
+      var box = e.target.closest && e.target.closest("[data-newsletter]");
+      if (!box) return;
+      e.preventDefault();
+      var form = e.target;
+      var err = box.querySelector(".nl-error");
+      var btn = form.querySelector("button");
+      if (btn.disabled) return;
+      var label = btn.textContent;
+      var email = form.email.value.trim();
+      err.hidden = true;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        err.textContent = "That email doesn't look right.";
+        err.hidden = false;
+        form.email.focus();
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = "One sec";
+      token(box)
+        .then(function (t) {
+          return fetch("/api/newsletter", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email, first_name: form.first_name.value.trim(), token: t }),
+          });
+        })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (d) {
+            if (!r.ok) throw new Error(d.error || "Something went wrong. Please try again.");
+          });
+        })
+        .then(function () {
+          form.hidden = true;
+          box.querySelector(".nl-done").hidden = false;
+          if (window.mjsTrack) window.mjsTrack("Newsletter signup");
+        })
+        .catch(function (x) {
+          err.textContent = x && x.message && x.message !== "verification" ? x.message : "Something went wrong. Please try again.";
+          err.hidden = false;
+          btn.disabled = false;
+          btn.textContent = label;
+        });
+    });
+  })();
+</script>
+
+<style>
+  .nl-form { display: grid; gap: 12px; }
+  .nl input {
+    width: 100%; min-width: 0; font: inherit; font-size: 16px; color: var(--fg); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 10px; padding: 13px 16px;
+  }
+  .nl input::placeholder { color: var(--faint); }
+  .nl input:focus { outline: none; border-color: var(--orange); }
+  .nl .btn { justify-content: center; }
+  .nl-ts:empty { display: none; }
+  .nl-error { color: var(--accent-text); font-size: 15px; margin-top: 12px; }
+  .nl-done { color: var(--fg); font-weight: 500; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .footer .nl-form { grid-template-columns: 1fr; }
+  .footer input { padding: 11px 14px; font-size: 15px; }
+  .footer .btn { font-size: 15px; padding: 11px 18px; box-shadow: none; }
+  @media (min-width: 640px) {
+    .footer .nl-form { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr) auto; }
+  }
+</style>

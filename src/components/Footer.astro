@@ -1,5 +1,6 @@
 ---
 import { site } from "../lib/site";
+import NewsletterForm from "./NewsletterForm.astro";
 ---
 
 <footer class="site-footer">
@@ -10,7 +11,7 @@ import { site } from "../lib/site";
           <img class="theme-dark-only" src="/images/logo-light.svg" alt="Motive11" width="102" height="20" />
           <img class="theme-light-only" src="/images/logo-dark.svg" alt="Motive11" width="102" height="20" />
         </a>
-        <p>Custom software, AI systems, and websites for established firms. Built by Mark Szymanski in Pittsburgh.</p>
+        <p>Custom software, AI systems, and websites for established firms. Built by Mark Szymanski in Pittsburgh, PA.</p>
       </div>
       <nav aria-label="Footer">
         <div>
@@ -25,10 +26,18 @@ import { site } from "../lib/site";
         <div>
           <span>Company</span>
           <a href="/about">About</a>
+          <a href="/newsletter">Newsletter</a>
           <a href={site.founder.url}>Mark Szymanski</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>
         </div>
       </nav>
+    </div>
+    <div class="news">
+      <div class="news-copy">
+        <b>A weekly email for people who run a business.</b>
+        <span>What I built for a client, what it took, and what it changed. No code, nothing technical. <a href="/newsletter">More about it</a>.</span>
+      </div>
+      <NewsletterForm id="nl-footer" variant="footer" />
     </div>
     <div class="bottom">
       <span>{site.legalName} &middot; Est. {site.founded} &middot; {site.city}, {site.region}</span>
@@ -47,12 +56,19 @@ import { site } from "../lib/site";
   nav span { color: var(--faint); font-size: 14px; margin-bottom: 4px; }
   nav a { color: var(--muted); text-decoration: none; overflow-wrap: anywhere; }
   nav a:hover { color: var(--fg); }
+  .news { display: grid; gap: 18px; padding-block: 32px; border-top: 1px solid var(--line); }
+  .news-copy { display: grid; gap: 6px; max-width: 34em; }
+  .news-copy b { font-weight: 500; font-size: 17px; }
+  .news-copy span { color: var(--muted); }
+  .news-copy a { color: var(--muted); }
+  .news-copy a:hover { color: var(--fg); }
   .bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; padding-block: 22px 32px; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
   .legal-links { display: flex; gap: 22px; }
   .legal-links a { color: var(--faint); text-decoration: none; }
   .legal-links a:hover { color: var(--fg); }
   @media (min-width: 1024px) {
     .top { grid-template-columns: 1fr auto; }
+    .news { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: center; gap: 48px; }
     nav { gap: 72px; }
   }
 </style>
