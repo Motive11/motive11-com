@@ -6,19 +6,15 @@ export const pricing = {
     rate: 3500,
   },
   website: {
-    small: 5000,
-    established: 10000,
     care: 99,
-  },
-  build: {
-    from: 10000,
   },
   fractional: {
     monthly: "6,000",
     earlyMonthly: "4,000",
     earlySpots: 2,
     totalSpots: 6,
-    earlySpotsLeft: 2,
+    // The $4,000 early rate was retired November 6, 2026 (Mark: flat $6,000). At 0 every early-rate line is hidden.
+    earlySpotsLeft: 0,
   },
 } as const;
 

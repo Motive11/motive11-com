@@ -7,7 +7,7 @@ import { breadcrumb } from "../lib/schema";
 import { site } from "../lib/site";
 
 const title = "Services | Motive11";
-const description = "Fractional AI and Systems Lead, the AI Onboarding Day, websites, and custom software. What each one is, who it's for, and how it starts.";
+const description = "Fractional AI and Systems Lead and the AI Onboarding Day: what each one is, who it's for, what it costs, and how it starts.";
 const schema = [
   breadcrumb([{ name: "Home", url: site.url }, { name: "Services", url: `${site.url}/services` }]),
   ...offers.map((o) => ({ "@type": "Service", name: o.name, description: o.short, provider: { "@id": `${site.url}/#organization` } })),
@@ -18,8 +18,8 @@ const schema = [
   <section class="intro">
     <div class="wrap">
       <span class="label">Services</span>
-      <h1>Four ways to work with me.</h1>
-      <p class="lead">Every one of them is me doing the work, from the first call to the last change. The prices are right here, so you know before we ever talk.</p>
+      <h1>Two ways to work with me.</h1>
+      <p class="lead">Either way, it's me doing the work, from the first call to the last change. The prices are right here, so you know before we ever talk.</p>
       <nav class="jump" aria-label="Services on this page">
         {offers.map((o) => <a href={`#${o.id}`}>{o.name}</a>)}
       </nav>

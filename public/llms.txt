@@ -5,7 +5,7 @@
 ## Pages
 
 - [Home](https://motive11.com/): what Motive11 does and who it's for
-- [Services](https://motive11.com/services): Fractional AI and Systems Lead, the AI Onboarding Day, Website + Care, and custom software, with prices
+- [Services](https://motive11.com/services): the two offers, Fractional AI and Systems Lead and the AI Onboarding Day, with prices
 - [Fractional AI and Systems Lead](https://motive11.com/fractional): the main offer, Mark as a business's AI and systems lead every month, with versions for engineering firms, law firms, and home services
 - [AI Onboarding Day](https://motive11.com/ai-onboarding-day): one day to set up AI around how a business works
 - [Case studies](https://motive11.com/case-studies): engineering, law, insurance, landscaping, nonprofit, and software clients
