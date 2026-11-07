@@ -2,43 +2,76 @@
 import LegalLayout from "../layouts/LegalLayout.astro";
 ---
 
-<LegalLayout title="Privacy Policy | Motive11" description="What Motive11 collects, what it does not, and what happens to your information.">
+<LegalLayout title="Privacy Policy | Motive11" description="What Motive11 records, what it does not, and what happens to your information.">
 <p class="eyebrow">Motive11</p>
   <h1>Privacy Policy</h1>
   <p class="standfirst">
     Most privacy policies are written to cover the company. This one is written to tell you what
-    actually happens. The short version is that this website collects nothing about you unless you book a call, and the information that really matters is the material you hand over once you become a client.
+    actually happens. The short version is that this website keeps a record of how people use it, ties that record to you only once you give me your email, never does any of it for visitors in Europe, and the information that really matters is the material you hand over once you become a client.
   </p>
   <p class="updated">Last updated November 6, 2026</p>
 
   <section>
     <h2><span class="num">1</span>The short version</h2>
     <ul>
-      <li><strong>This website sets no cookies, and the only place it asks for anything is the booking page.</strong> There is no signup, no tracking pixel, and no advertising network.</li>
-      <li>Analytics are anonymous and aggregate. I can see that a page was viewed. I cannot see who viewed it.</li>
-      <li>The information worth caring about is what you send me directly: emails, files, documents, and access to your systems during an engagement.</li>
+      <li><strong>This website keeps its own record of visits:</strong> the pages you view, what you click, and where you came from. It sets one cookie of its own to do that. There is no advertising network, no retargeting pixel, and no data broker.</li>
+      <li>The record is anonymous until you give me your email, by booking a call, submitting a form, or clicking a link in an email I sent you. From then on, your visits to my own websites are tied to you. Nothing follows you anywhere else on the internet.</li>
+      <li><strong>If you are in Europe, none of this happens.</strong> No cookie, no visit record, and nothing tied to you.</li>
+      <li>The information worth caring about most is what you send me directly: emails, files, documents, and access to your systems during an engagement.</li>
       <li>That material goes through AI providers as part of how the work gets done. The <a href="/ai-policy">AI Policy</a> explains exactly how, and it is worth reading before the rest of this page.</li>
       <li>Nothing is sold, rented, or handed to advertisers. Ever. There is no version of this business where that makes sense.</li>
     </ul>
   </section>
 
   <section>
-    <h2><span class="num">2</span>What this website collects</h2>
+    <h2><span class="num">2</span>What this website records</h2>
     <p>
-      Almost nothing, and that is deliberate. motive11.com has no newsletter box and no account system. The one place it asks for information is the booking page: when you book a call you give your name, your email, and the answers to a few questions about your business, and for a paid booking your card details go straight to Stripe. That information is stored with the booking, added to my calendar, and used to run the call and follow up on it.
+      I want to know who is reading this site and what brought them here, so it keeps a visit record
+      of its own. This is what goes into it:
+    </p>
+    <ul>
+      <li><strong>Pages you view,</strong> with the page's title, the site that linked you here, and any campaign tags on the link (the "utm" part of an address).</li>
+      <li><strong>What you click</strong> on the site, by the label on the link or button, and any link you follow to another site.</li>
+      <li><strong>When you start a form,</strong> meaning the first time you click into one. Not what you type into it.</li>
+      <li><strong>Your email, when you give it to me:</strong> when you book a call, submit any form on the site, or click a link in an email I sent you. When you book, your name, your email, and your answers are also stored with the booking and added to my calendar, and for a paid booking your card details go straight to Stripe.</li>
+      <li><strong>Roughly where you are and how you are connected:</strong> your city, region, and country, and the name of your internet provider, which Cloudflare works out from your connection. I never store your IP address in this record.</li>
+      <li><strong>Your device:</strong> your browser and operating system, your screen and window size, your language, and your time zone, plus how long a page was open, how far you scrolled, and how fast it loaded. That is how I tell a person from a program pretending to be one.</li>
+    </ul>
+    <p>
+      To connect one visit to the next, the site sets <strong>one cookie</strong> of its own, called
+      m11_vid. It holds a random number and nothing else, and it lasts a year. My server sets it, not a
+      script on the page, for two reasons: no script on the page can read it, and Safari erases
+      anything a page's own scripts save after seven days without a visit, while deciding to hire
+      someone usually takes longer than that. On the booking page, Stripe's card form can set its own
+      cookies for fraud prevention when you pay.
     </p>
     <p>
-      Traffic is measured with <strong>Fathom Analytics</strong>, which is cookieless by design. It
-      does not set cookies, does not fingerprint you, does not retain IP addresses, and does not
-      follow you to other sites. What it produces is counts: pages viewed, rough referrer, rough
-      country, device type. None of it identifies a person.
+      Until you give me your email, the record is anonymous: a random number, a city, and a list of
+      pages. Once you do, everything that browser does on my own properties is tied to you, before and
+      after. My own properties are this site, markszymanski.co, my short links at mjs.link, and the
+      emails I send. If you use a phone and a laptop, those are two records with the same email. I do
+      not track you on any site I do not own, and I do not buy or match data from anyone else.
     </p>
     <div class="callout">
       <p>
-        Because there are no cookies and no personal data, this site has no cookie banner. That is
-        not an oversight. There is nothing to ask your consent for.
+        <strong>Nobody in Europe is tracked or identified.</strong> If you visit from the EU, the EEA,
+        the UK, Switzerland, Turkey, or anywhere else in Europe, the site sets no cookie, keeps no
+        visit record, never reads your device details, and never ties a visit to you, and any cookie
+        from an earlier visit is cleared. Your visit shows up only in the anonymous Fathom counts
+        below. That is also why there is no cookie banner: where the law asks for a yes first, I
+        don't keep the record at all.
       </p>
     </div>
+    <p>
+      What is never recorded: what you type into a form (other than your email when you submit it),
+      your mouse movements, and recordings of your session.
+    </p>
+    <p>
+      Traffic is also counted with <strong>Fathom Analytics</strong>, which is cookieless by design.
+      It does not set cookies, does not fingerprint you, does not retain IP addresses, and does not
+      follow you to other sites. What it produces is counts: pages viewed, rough referrer, rough
+      country, and device type. None of it identifies a person.
+    </p>
     <p>
       Your IP address is seen by <strong>Cloudflare</strong>, which hosts this site and the booking system, because serving you a web page is impossible without it. The booking page also uses Cloudflare's bot check, and Stripe when a booking is paid. That is standard infrastructure
       logging, it is not used to build a profile of you, and I do not have access to it as an
@@ -91,7 +124,8 @@ import LegalLayout from "../layouts/LegalLayout.astro";
       <li><strong>Card numbers.</strong> Payments run through <strong>Stripe</strong>. Card details go to Stripe directly and I never see or store them. What I get back is the fact that an invoice was paid, and the billing name and email attached to it.</li>
       <li><strong>Government identifiers.</strong> Social security numbers, tax identifiers, licenses, passports. There is no reason for this business to hold any of it, so it does not.</li>
       <li><strong>Credentials sent to AI providers.</strong> Passwords, keys, and access tokens are used to operate your systems and are not transmitted to AI providers. This is stated in the AI Policy too, because it is worth saying twice.</li>
-      <li><strong>Anything from a tracking network.</strong> No advertising pixels, no retargeting, no data brokers, no third-party audience tools.</li>
+      <li><strong>What you type, beyond your email.</strong> The visit record never captures what you type into a form, your mouse movements, or a recording of your session. Your email is kept only when you submit it.</li>
+      <li><strong>Anything from a tracking network.</strong> No advertising pixels, no retargeting, no data brokers, and no third-party audience tools.</li>
     </ul>
   </section>
 
@@ -105,7 +139,7 @@ import LegalLayout from "../layouts/LegalLayout.astro";
       <li><strong>Google Workspace</strong> hosts my email, so any correspondence with me lives there.</li>
       <li><strong>Stripe</strong> processes payments and holds the billing record.</li>
       <li><strong>Postmark</strong> sends transactional email, meaning things like confirmations and notifications. It is not a marketing platform and is never used as one.</li>
-      <li><strong>Cloudflare</strong> hosts this site and much of what gets built.</li>
+      <li><strong>Cloudflare</strong> hosts this site and much of what gets built, and stores the visit record described above in a database on my Cloudflare account.</li>
       <li><strong>Fathom Analytics</strong> counts page views, anonymously, as described above.</li>
       <li><strong>AI providers</strong>, currently Anthropic as the main one, process material during an engagement. See the <a href="/ai-policy">AI Policy</a>.</li>
     </ul>
@@ -125,6 +159,11 @@ import LegalLayout from "../layouts/LegalLayout.astro";
       business law requires, which is several years.
     </p>
     <p>
+      An anonymous visit record, one never tied to an email, is deleted automatically once that
+      browser has gone 180 days without visiting. A record tied to your email is kept until you ask me
+      to delete it.
+    </p>
+    <p>
       If you want your material deleted sooner, say so. Anything I am not legally required to keep
       gets removed, and I will tell you plainly what has to stay and why.
     </p>
@@ -134,7 +173,7 @@ import LegalLayout from "../layouts/LegalLayout.astro";
     <h2><span class="num">8</span>Your choices</h2>
     <p>
       You can ask me what information I hold about you, ask for it to be corrected, ask for a copy,
-      or ask for it to be deleted. There is no portal and no form for this. Email
+      or ask for it to be deleted, your visit record included. There is no portal and no form for this. Email
       <a href="mailto:hello@motive11.com">hello@motive11.com</a> and you will get a real answer from
       the person who actually has the files.
     </p>

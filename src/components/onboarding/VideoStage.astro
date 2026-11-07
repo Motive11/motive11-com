@@ -77,7 +77,7 @@ const playSrc = `${embed}?autoplay=true&muted=false&loop=false&${baseParams}`;
       frame.classList.remove("is-hidden");
       frame.removeAttribute("tabindex");
       frame.removeAttribute("aria-hidden");
-      if (stage.dataset.track && window.fathom) window.fathom.trackEvent(stage.dataset.track);
+      if (stage.dataset.track) window.mjsTrack(stage.dataset.track);
 
       if (!player) {
         frame.src = stage.dataset.playSrc;

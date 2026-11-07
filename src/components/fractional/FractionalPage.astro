@@ -677,7 +677,7 @@ const schema = [
   <script is:inline>
     (function () {
       var track = function (name) {
-        try { if (window.fathom) window.fathom.trackEvent(name); } catch (e) {}
+        try { window.mjsTrack(name); } catch (e) {}
       };
 
       // Delegated so CTAs that come after this script in the DOM still scroll instead of snapping.

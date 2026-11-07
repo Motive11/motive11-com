@@ -9,7 +9,8 @@ his content, and builders; this site links there and never copies its prices.
 - Astro 7 (static output), Tailwind v4 via `@tailwindcss/vite`, `@astrojs/sitemap`
 - Satoshi, self-hosted by Astro's Fonts API from Fontshare at build time
 - Cloudflare Pages, git-connected (`Motive11/motive11-website` → Pages project `motive11-website`, which holds motive11.com and www)
-- No forms and no Pages Functions. Booking is the shared widget from the AIOS booking Worker
+- No forms of its own. Booking is the shared widget from the AIOS booking Worker
+- One Pages Function, `functions/api/v.ts`: the visitor ledger (below)
 
 ## Pages
 
@@ -30,6 +31,29 @@ Testimonials are read at build time from `testimonials.markszymanski.co` by id (
 A failed fetch drops the quote and the build carries on, so a rebuild picks up edited quotes.
 
 Dark mode is the default; the header toggle stores `light` or `dark` in `localStorage`.
+
+## Visitor ledger
+
+The same visitor ledger markszymanski.co runs (AIOS `state/VISITORS.md`): every page view (with utm tags and
+the referring site), click, outbound click, form start, and Fathom moment, plus the email from any submitted
+form, the booking widget's included, so a visitor is tied to a person once they give an email.
+
+- The browser half is in `src/components/Head.astro` (`mjsTrack`, `mjsEvent`, `mjsIdentify`). It only sends from
+  motive11.com itself. Pages fire conversion moments with `window.mjsTrack("Name")`, which reaches Fathom and the
+  ledger; the booking widget calls the same function.
+- The server half is `functions/api/v.ts` (with `functions/_shared/`). It sets the `m11_vid` cookie (HttpOnly,
+  a year) and writes `visitors` and `visitor_events` rows with `site = motive11.com` to the shared AIOS D1
+  `aios-state`, so they show up in Mission Control > Sales > Visitors beside markszymanski.co's.
+- **Production needs a D1 binding: variable name `DB`, database `aios-state`, on the `motive11-website` Pages
+  project's Production environment only.** Without it (previews, `wrangler pages dev`), `/api/v` answers 204
+  and writes nothing.
+- Kept from markszymanski.co: nobody in Europe is stored or has device details read, machines are labeled
+  not dropped, 4 KB bodies, hourly flood caps (its own `visitor_hourly` counter, `YYYY-MM-DDTHHm`), and the
+  180-day sweep of anonymous visitors. Not carried over: the server-side page count (`_middleware.ts`,
+  `page_hits`), because its daily tables have no site column and Motive11 rows would land in
+  markszymanski.co's numbers. Fathom counts this site's totals.
+- **`src/pages/privacy.astro` must change in the same commit whenever what the ledger records, how long it
+  keeps it, or where it skips changes.**
 
 ## Develop
 

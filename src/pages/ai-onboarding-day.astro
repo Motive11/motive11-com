@@ -305,9 +305,9 @@ const schema = [
       document.addEventListener("click", function (e) {
         var el = e.target.closest("[data-scroll-to]");
         if (!el) return;
-        if (el.dataset.cta && window.fathom) {
-          window.fathom.trackEvent("AI onboarding day book clicked");
-          window.fathom.trackEvent("AI onboarding day book clicked (" + el.dataset.cta + ")");
+        if (el.dataset.cta) {
+          window.mjsTrack("AI onboarding day book clicked");
+          window.mjsTrack("AI onboarding day book clicked (" + el.dataset.cta + ")");
         }
         var target = document.getElementById(el.dataset.scrollTo);
         if (!target) return;
@@ -318,7 +318,7 @@ const schema = [
       if (book && "IntersectionObserver" in window) {
         var io = new IntersectionObserver(function (entries) {
           if (!entries.some(function (en) { return en.isIntersecting; })) return;
-          if (window.fathom) window.fathom.trackEvent("AI onboarding day saw form");
+          window.mjsTrack("AI onboarding day saw form");
           io.disconnect();
         }, { threshold: 0.4 });
         io.observe(book);

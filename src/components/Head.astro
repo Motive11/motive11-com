@@ -56,4 +56,190 @@ const jsonLd = graph(webPage(canonical, title, description), ...schema);
      pipelines/site-analytics. -->
 <script is:inline src="https://cdn.usefathom.com/script.js" data-excluded-domains="localhost,127.0.0.1" data-site="UYCRGPKV" defer></script>
 
+<!--
+  mjsTrack("Event name") sends a conversion moment to Fathom and to the visitor ledger below. Named
+  mjs* to match markszymanski.co because the shared booking widget (AIOS
+  state/booking-worker/public/widget.js) calls window.mjsTrack for "Booked <type>" and a
+  data-track name, and only falls back to Fathom alone when it is missing.
+
+  A wrapper because the Fathom script is defer, so window.fathom does not exist while the page is
+  still parsing, and a bare call would throw. Fathom creates an event the first time it receives a
+  name and a name can never be renamed, so the string at each call site is permanent: a casing or
+  typo fix mints a second event and splits the history.
+-->
+<script is:inline>
+  window.mjsTrack = function (name) {
+    try {
+      if (window.fathom && typeof window.fathom.trackEvent === "function") {
+        window.fathom.trackEvent(name);
+      }
+      if (window.mjsEvent) window.mjsEvent(name);
+    } catch (e) {
+      /* analytics must never break the page it measures */
+    }
+  };
+</script>
+
+<!--
+  The visitor ledger (functions/api/v.ts, AIOS state/VISITORS.md): every page view, every mjsTrack
+  moment, every click, the first focus in a form, and the email from any form submitted, sent to
+  /api/v. The visitor's ID is a cookie /api/v sets, so this script never sees or stores it.
+
+  Forms are caught by one capture-phase submit listener, not per form, so the booking widget's form
+  (served into the page by book.motive11.com) and any form added later are covered without anyone
+  remembering to wire them. A newsletter link's ?k= code names the visitor too.
+
+  Each page view carries a random pv id; later "engage" posts update that same row with signs of
+  life, time visible, scroll depth, and load time. Device details (screen, window, language, time
+  zone) are read only after /api/v answers X-Track: 1, so a visitor in Europe never has them read.
+  Never recorded: what anyone types (other than the email on submit), mouse paths, or replays.
+
+  Sent only from motive11.com itself, never from a local build or a preview deploy.
+-->
+<script is:inline>
+  (function () {
+    var live = location.hostname.replace(/^www\./, "") === "motive11.com";
+    function send(body, then) {
+      if (!live) return;
+      try {
+        fetch("/api/v", {
+          method: "POST",
+          keepalive: true,
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }).then(function (r) { if (then) then(r); }).catch(function () {});
+      } catch (e) {}
+    }
+    window.mjsEvent = function (type, detail) {
+      send({ t: type, p: location.pathname, d: detail || "" });
+    };
+    window.mjsIdentify = function (email, via) {
+      send({ t: "identify", e: email, p: location.pathname, d: via || location.pathname });
+    };
+
+    var q = new URLSearchParams(location.search), ref = "";
+    try {
+      ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : "";
+      if (ref === location.hostname.replace(/^www\./, "")) ref = "";
+    } catch (e) {}
+    var pv = (Math.random().toString(36).slice(2, 10) + Date.now().toString(36)).slice(0, 20);
+    var tracked = false, alive = false, details = false, depth = 0, shown = 0;
+    var since = document.visibilityState === "visible" ? Date.now() : 0;
+    function engage() {
+      if (!tracked) return;
+      var b = { t: "engage", pv: pv, a: alive ? 1 : 0, as: Math.round((shown + (since ? Date.now() - since : 0)) / 1000), sc: depth };
+      try {
+        var n = performance.getEntriesByType("navigation")[0];
+        if (n && n.loadEventEnd) b.ld = Math.round(n.loadEventEnd);
+      } catch (e) {}
+      if (!details) {
+        details = true;
+        try {
+          b.scr = screen.width + "x" + screen.height;
+          b.vp = innerWidth + "x" + innerHeight;
+          b.lang = navigator.language || "";
+          b.tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+          b.wd = navigator.webdriver ? 1 : 0;
+        } catch (e) {}
+      }
+      send(b);
+    }
+    send({
+      t: "view",
+      pv: pv,
+      ti: (document.title || "").slice(0, 120),
+      p: location.pathname,
+      s: q.get("utm_source") || q.get("ref") || "",
+      m: q.get("utm_medium") || "",
+      c: q.get("utm_campaign") || "",
+      ct: q.get("utm_content") || "",
+      tm: q.get("utm_term") || "",
+      r: ref,
+      k: q.get("k") || "",
+    }, function (r) {
+      tracked = r.headers.get("X-Track") === "1";
+      if (tracked && alive) engage();
+    });
+    function measure() {
+      try {
+        var h = document.documentElement.scrollHeight;
+        if (h > 0) depth = Math.max(depth, Math.min(100, Math.round(((scrollY + innerHeight) / h) * 100)));
+      } catch (e) {}
+    }
+    var life = ["scroll", "pointermove", "pointerdown", "touchstart", "keydown"];
+    function onLife() {
+      if (alive) return;
+      alive = true;
+      life.forEach(function (ev) { removeEventListener(ev, onLife, true); });
+      measure();
+      engage();
+    }
+    life.forEach(function (ev) { addEventListener(ev, onLife, { capture: true, passive: true }); });
+    addEventListener("scroll", measure, { passive: true });
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        if (since) { shown += Date.now() - since; since = 0; }
+        engage();
+      } else if (!since) since = Date.now();
+    });
+    addEventListener("pagehide", function () {
+      if (since) { shown += Date.now() - since; since = 0; }
+      engage();
+    });
+    // ?k= is a subscriber's private code from a newsletter link (AIOS state/visitor_keys.py).
+    // Taken out of the address bar once sent, so a copied or bookmarked URL never carries it on.
+    if (q.has("k")) {
+      try {
+        q.delete("k");
+        history.replaceState(history.state, "", location.pathname + (q.toString() ? "?" + q : "") + location.hash);
+      } catch (e) {}
+    }
+
+    document.addEventListener("submit", function (e) {
+      try {
+        var field = e.target.querySelector('input[type="email"], input[name="email"]');
+        var email = field && field.value.trim();
+        if (email) window.mjsIdentify(email, location.pathname);
+      } catch (err) {}
+    }, true);
+
+    // Capped per page so a stuck button or a script cannot flood the ledger. The label is the
+    // page's own text, never anything typed.
+    var clicks = 0;
+    // Inside a form or the booking widget (.bk), only a submit button is named: other buttons
+    // there can carry what the visitor supplied, like the widget's "Remove <file name>".
+    function label(el) {
+      if (el.closest && el.closest("form, .bk") && el.getAttribute("type") !== "submit") return "(form button)";
+      return ((el.getAttribute("aria-label") || el.innerText || el.value || el.title || "") + "").replace(/\s+/g, " ").trim().slice(0, 60);
+    }
+    document.addEventListener("click", function (e) {
+      try {
+        var a = e.target.closest && e.target.closest("a[href]");
+        if (a) {
+          var u = new URL(a.href, location.href);
+          if (/^https?:$/.test(u.protocol) && u.hostname.replace(/^www\./, "") !== location.hostname.replace(/^www\./, "")) {
+            window.mjsEvent("Clicked off site", u.href.slice(0, 200));
+            return;
+          }
+          if (clicks++ < 40) window.mjsEvent("Clicked", (label(a) || "(no label)") + " -> " + u.pathname.slice(0, 120));
+          return;
+        }
+        var b = e.target.closest && e.target.closest("button, [role=button], input[type=submit], summary");
+        if (b && clicks++ < 40) window.mjsEvent("Clicked", label(b) || "(button)");
+      } catch (err) {}
+    }, true);
+
+    var started = [];
+    document.addEventListener("focusin", function (e) {
+      try {
+        var f = e.target.closest && e.target.closest("form");
+        if (!f || started.indexOf(f) >= 0 || !/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+        started.push(f);
+        window.mjsEvent("Started form", (f.getAttribute("name") || f.id || f.getAttribute("aria-label") || location.pathname).slice(0, 80));
+      } catch (err) {}
+    }, true);
+  })();
+</script>
+
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
