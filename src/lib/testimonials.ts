@@ -27,6 +27,33 @@ export async function fetchTestimonial(id: string): Promise<Testimonial | null> 
   }
 }
 
+export async function fetchTestimonials(options: {
+  tags?: string[];
+  type?: "text" | "video";
+  sort?: "date" | "rating";
+  order?: "asc" | "desc";
+  limit?: number;
+} = {}): Promise<(Testimonial & Record<string, unknown>)[]> {
+  const params = new URLSearchParams({ approved: "true" });
+  if (options.sort) params.set("sort", options.sort);
+  if (options.order) params.set("order", options.order);
+  if (options.limit) params.set("limit", String(options.limit));
+  if (options.type) params.set("type", options.type);
+  for (const tag of options.tags ?? []) params.append("tags", tag);
+  try {
+    const res = await fetch(`${TESTIMONIALS_API_URL}/testimonials?${params}`);
+    if (!res.ok) {
+      console.error(`[testimonials] list failed ${res.status}`);
+      return [];
+    }
+    const json = (await res.json()) as { testimonials?: (Testimonial & Record<string, unknown>)[] };
+    return json.testimonials ?? [];
+  } catch (err) {
+    console.error("[testimonials] list unreachable", err);
+    return [];
+  }
+}
+
 // The API keeps highlight markup (<mark>) inside the text; this site shows quotes without it.
 export function quoteParagraphs(text: string): string[] {
   return text

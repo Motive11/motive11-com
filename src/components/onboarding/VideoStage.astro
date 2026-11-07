@@ -1,0 +1,128 @@
+---
+// Bunny Stream intro video with a silent CDN loop on top until the visitor clicks for sound.
+// Same player as markszymanski.co/ai-onboarding-day; why each piece is the way it is:
+// AIOS pipelines/web-build/video-on-a-page.md. Every host here must stay in public/_headers.
+interface Props {
+  embed: string;
+  loop: string;
+  poster: string;
+  duration: string;
+  title: string;
+  playLabel: string;
+  trackAs?: string;
+}
+
+const { embed, loop, poster, duration, title, playLabel, trackAs = "" } = Astro.props;
+const baseParams = "preload=true&responsive=true&rememberPosition=false&showSpeed=true";
+const previewSrc = `${embed}?autoplay=true&muted=true&loop=false&${baseParams}`;
+const playSrc = `${embed}?autoplay=true&muted=false&loop=false&${baseParams}`;
+---
+
+<figure class="stage" data-stage data-overlap-ok data-play-src={playSrc} data-track={trackAs || undefined}>
+  <iframe
+    src={previewSrc}
+    title={title}
+    loading="eager"
+    allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+    allowfullscreen
+    class="frame is-hidden"
+    data-frame
+    tabindex="-1"
+    aria-hidden="true"></iframe>
+
+  <video class="loop" src={loop} poster={poster} autoplay muted loop playsinline preload="auto" aria-hidden="true" data-loop></video>
+
+  <button type="button" class="play" data-play aria-label={playLabel}>
+    <span class="cue">
+      <span class="dot">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+      </span>
+      <span class="txt">Play with sound · {duration}</span>
+    </span>
+  </button>
+</figure>
+
+<script is:inline src="https://assets.mediadelivery.net/playerjs/playerjs-latest.min.js"></script>
+<script is:inline>
+  (function () {
+    var stage = document.querySelector("[data-stage]");
+    if (!stage) return;
+    var btn = stage.querySelector("[data-play]");
+    var frame = stage.querySelector("[data-frame]");
+    if (!btn || !frame) return;
+
+    var loop = stage.querySelector("[data-loop]");
+    var player = window.playerjs ? new window.playerjs.Player(frame) : null;
+
+    var started = false;
+
+    // A click can land before the priming timer fires; without the started guard the timer
+    // would pause the video the viewer just started.
+    if (player) {
+      player.on("ready", function () {
+        player.mute();
+        player.play();
+        setTimeout(function () {
+          if (started) return;
+          player.pause();
+          player.setCurrentTime(0);
+        }, 2500);
+      });
+    }
+
+    btn.addEventListener("click", function () {
+      started = true;
+      btn.remove();
+      if (loop) loop.remove();
+      frame.classList.remove("is-hidden");
+      frame.removeAttribute("tabindex");
+      frame.removeAttribute("aria-hidden");
+      if (stage.dataset.track && window.fathom) window.fathom.trackEvent(stage.dataset.track);
+
+      if (!player) {
+        frame.src = stage.dataset.playSrc;
+        return;
+      }
+      player.setCurrentTime(0);
+      player.unmute();
+      player.setVolume(100);
+      player.play();
+      // If the browser refused the programmatic unmute, reload into the unmuted URL.
+      setTimeout(function () {
+        player.getMuted(function (muted) {
+          if (muted) frame.src = stage.dataset.playSrc;
+        });
+      }, 900);
+    }, { once: true });
+  })();
+</script>
+
+<style>
+  .stage {
+    position: relative; isolation: isolate; width: 100%; aspect-ratio: 16 / 9; margin: 0;
+    border-radius: 14px; overflow: hidden; background: #000;
+    border: 1px solid var(--line); box-shadow: 0 40px 90px -30px var(--shadow);
+  }
+  .frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; transition: opacity 0.2s ease; }
+  .frame.is-hidden { opacity: 0; pointer-events: none; }
+  .loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; }
+  .play {
+    position: absolute; inset: 0; z-index: 10; cursor: pointer; border: 0; padding: 0; font: inherit;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.05) 50%, transparent);
+    transition: opacity 0.15s ease;
+  }
+  .play:hover { opacity: 0.92; }
+  .cue { position: absolute; left: 16px; bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  .dot {
+    display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%;
+    background: var(--orange); color: #1E1E1F; box-shadow: 0 10px 30px -10px rgba(255, 106, 26, 0.7);
+    transition: transform 0.15s ease;
+  }
+  .stage:hover .dot { transform: scale(1.05); }
+  .dot svg { width: 22px; height: 22px; margin-left: 2px; }
+  .txt { color: #fff; font-size: 14px; font-weight: 500; letter-spacing: 0.01em; text-align: left; }
+  @media (min-width: 1024px) {
+    .cue { left: 24px; bottom: 24px; }
+    .dot { width: 58px; height: 58px; }
+  }
+</style>

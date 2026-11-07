@@ -1,0 +1,473 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ClientLogos from "../components/ClientLogos.astro";
+import Testimonial from "../components/Testimonial.astro";
+import VideoStage from "../components/onboarding/VideoStage.astro";
+import { fetchTestimonial } from "../lib/testimonials";
+import { pricing, usd } from "../lib/pricing";
+import { breadcrumb } from "../lib/schema";
+import { site } from "../lib/site";
+import portrait from "../assets/mark/portrait.webp";
+
+// Copy and structure mirror markszymanski.co/ai-onboarding-day on purpose (Mark, November 6, 2026).
+const rate = usd(pricing.onboardingDay.rate);
+const p = pricing.partnership;
+const partnershipRate = p.earlySpotsLeft > 0 ? p.earlyMonthly : p.monthly;
+const inWords = (n: number) => ["zero", "one", "two", "three", "four", "five", "six"][n] ?? String(n);
+
+const title = "AI Onboarding Day | Motive11";
+const description = "You know AI could be doing more for your business. In one day I learn how it runs, put it in one place you own, and get AI doing real work on it before I leave.";
+
+// Same verbatim trim of the published Sheffler testimonial as markszymanski.co. Never paraphrase it.
+const sheffler = await fetchTestimonial("8b67a481-a547-4d8f-a6e1-c4554bb6f0fe");
+const quoteExcerpt =
+  "When my team finds something that needs to change, Mark fixes it fast, often the same day. At this point he knows how our business runs as well as anyone in the building.";
+const quote = sheffler ? { ...sheffler, title: null, text: quoteExcerpt } : null;
+
+const walkAway = [
+  "Your business written down in one place: what you sell, who buys, how you price, how a job gets done, and how you talk to customers. Pulled out of you in the interview and organized so your AI reads it every time you open it.",
+  "One or two things you do by hand every week, working before I leave.",
+  "You and your team trained to use it and keep it current.",
+  "All of it yours, in your accounts. Nothing runs on mine, and nothing is held back.",
+];
+
+const day = [
+  {
+    title: "The interview",
+    body: "About half the day, recorded. How your business actually works: what you sell and for how much, who buys, how a job goes from first call to paid, what a normal week looks like, and what you keep doing by hand. This is the part almost nobody can do alone, because nobody's asking you the right questions.",
+  },
+  {
+    title: "Write it down",
+    body: "What you told me becomes the files your AI reads every time you open it, in your own accounts, so it stops guessing about your business and you stop repeating yourself.",
+  },
+  {
+    title: "Put it to work",
+    body: "We pick one or two things you do by hand every week and set them up for real, connected to the tools those jobs need. A follow-up written the way you write, a call turned into a quote, or a Monday summary of where everything stands.",
+  },
+  {
+    title: "Train you and your team",
+    body: "How to ask it things, how to keep it current, what to do when it's wrong, and when it's worth calling me.",
+  },
+];
+
+const bring = [
+  "The computer you'll keep using, with admin access",
+  "A paid AI plan (I'll tell you which one when we book)",
+  "Logins for the tools you want connected",
+  "Anything already written down, like price sheets, templates, or the email you send new customers",
+];
+
+const forYou = [
+  "You own a business that already makes money",
+  "You've used ChatGPT or Claude and know it could be doing a lot more",
+  "You'd rather have it set up right in a day than figure it out over months",
+];
+
+const notForYou = [
+  "Custom software built for your team (that's a bigger project, and this is a good place to start it)",
+  "An army of AI agents talking to each other (you probably don't need one, and I'll tell you why)",
+  "Everything fixed in one day (nobody can do that, and I won't pretend to)",
+  "Someone to run it for you every week (that's a partnership)",
+];
+
+const faqs = [
+  {
+    q: "Is this just a lesson on how to use Claude?",
+    a: "No. A lesson leaves you with notes. This leaves you with an AI that already knows your business and is already doing a real job or two for you. The training is the last part of the day, not the whole day.",
+  },
+  {
+    q: "Do I need to be technical?",
+    a: "No. I do the setup. You do the talking, because you're the one who knows how the business runs. By the end you'll know how to use it and keep it current, and none of that takes code.",
+  },
+  {
+    q: "Can my team be there?",
+    a: "Yes. Bring whoever is going to use it. The interview is mostly you, because you know how the business runs, and the training at the end is for everyone in the room.",
+  },
+  {
+    q: "I already use ChatGPT. Do I have to switch?",
+    a: "Not necessarily. I'll tell you what fits your business before we book. Either way, anything worth keeping from your old chats comes over during the day.",
+  },
+  {
+    q: "What about confidential information?",
+    a: "You decide what goes in, and I'll tell you where the line is for your kind of business before anything sensitive does. I set it up so your conversations aren't used to train the AI, and everything lives in your accounts, not mine.",
+  },
+  {
+    q: "What happens after the day?",
+    a: "It's yours and it runs without me. Nothing is included after the day, so a question later is an advisory call. If you want me working on your business every month, that's a partnership.",
+  },
+];
+
+const notes = [
+  "Paid when you book. Pick your day (or both half-days for remote) and pay on this page.",
+  "Need to move it? Reschedule online, up to 24 hours before, to any open day at least two weeks out. To cancel, reply to your confirmation email: 14 or more days ahead is a full refund; after that it can be rescheduled, not refunded.",
+  "I write up every project as a case study (no private numbers or customer data). If you need yours kept confidential, that option is available and the price doubles.",
+  "Anything after the day is its own project or an advisory call.",
+];
+
+const schema = [
+  breadcrumb([{ name: "Home", url: site.url }, { name: "AI Onboarding Day", url: `${site.url}/ai-onboarding-day` }]),
+  {
+    "@type": "Service",
+    name: "AI Onboarding Day",
+    description,
+    provider: { "@id": `${site.url}/#organization` },
+    offers: { "@type": "Offer", price: pricing.onboardingDay.rate, priceCurrency: "USD" },
+  },
+];
+---
+
+<BaseLayout title={title} description={description} schema={schema}>
+  <section class="hero">
+    <div class="wrap col">
+      <span class="label">AI Onboarding Day</span>
+      <h1>You know AI could be doing a lot more for your business. <span class="em">I'll set it up in a day.</span></h1>
+      <div class="video">
+        <VideoStage
+          embed="https://iframe.mediadelivery.net/embed/572643/316a00be-ccd8-4707-851a-4210b934e3ec"
+          loop="https://cdn.markszymanski.co/ai-onboarding-day/aiod-intro-loop-v2.mp4"
+          poster="https://cdn.markszymanski.co/ai-onboarding-day/aiod-intro-poster-v2.jpg"
+          duration="2:07"
+          title="AI Onboarding Day"
+          playLabel="Play the AI Onboarding Day video with sound"
+          trackAs="AI onboarding day video played"
+        />
+      </div>
+      <p class="lead intro">
+        You've used ChatGPT or Claude, maybe set up a few projects. Sometimes it's great, and sometimes it's confidently wrong, because it's guessing about a business nobody ever explained to it. And everything you've told it is scattered across chats you can't find and don't really own. I spend a day learning how your business runs, put it in one place that's yours, and get AI doing real work on it before I leave.
+      </p>
+      <div class="price-row">
+        <span class="price">{rate}</span>
+        <span class="price-for">one day, at your office near Pittsburgh or remote</span>
+      </div>
+      <p class="cap">I take two of these a month.</p>
+      <div class="actions">
+        <a class="btn" href="#book" data-scroll-to="book" data-cta="top">Book your day <svg class="arrow"><use href="#arrow" /></svg></a>
+        <a class="btn ghost" href="#day" data-scroll-to="day">See how the day goes</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap logos-wrap"><ClientLogos caption="Businesses I've worked with" /></div>
+
+  {quote && (
+    <section class="quote">
+      <div class="wrap reveal">
+        <Testimonial q={quote} variant="feature" />
+        <a class="text-link story" href="/case-studies/sheffler-and-company">Read the full story <svg class="arrow"><use href="#arrow" /></svg></a>
+      </div>
+    </section>
+  )}
+
+  <section class="block tint">
+    <div class="wrap col reveal">
+      <span class="label">Why it's right one day and wrong the next</span>
+      <h2>It can search the internet. It can't search your business.</h2>
+      <div class="prose-m11 body">
+        <p>Nothing it can look up tells it how you price a job, who your customers are, or how work actually gets done at your place. So it fills the gaps with what's typical for businesses in general, and says it with the same confidence either way. That's why it nails something on Monday and makes something up on Tuesday, and why you end up explaining your business again every time you open it.</p>
+        <p>Every app you use is adding its own AI, and each one only knows its own corner of your business. What you actually need is the whole thing in one place, written down, where any AI can read it. Most owners have never had that, not even as a binder of procedures.</p>
+        <p>The fix isn't a better app. It's giving it your business, in one place you control. Writing that down feels like busywork, and nobody's asking you the right questions. Asking those questions is the part I do.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap col reveal">
+      <span class="label">What you walk away with</span>
+      <h2>By the time I leave, it's working.</h2>
+      <ul class="checks">
+        {walkAway.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section id="day" class="block tint anchor">
+    <div class="wrap col reveal">
+      <span class="label">How the day goes</span>
+      <h2>Here's exactly what happens.</h2>
+      <div class="callout">
+        <p class="callout-label">We start and end with the same question</p>
+        <p>First thing in the morning, you ask your AI something real about your business, the way you would today, and we save the answer. Last thing, you ask it again. The difference is what the day was for.</p>
+      </div>
+      <div class="steps">
+        {day.map((step, i) => (
+          <div class="step">
+            <span class="n">0{i + 1}</span>
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap col reveal">
+      <h2>On site or remote, same price.</h2>
+      <div class="formats">
+        <div class="card">
+          <h3>On site</h3>
+          <p>I come to your office for the day, anywhere I can drive to from Pittsburgh. Farther than that, you cover travel, or we do it remote.</p>
+        </div>
+        <div class="card">
+          <h3>Remote</h3>
+          <p>Two half-day sessions over video in the same week. Splitting it keeps us both sharp, and I use the time in between to organize what you told me.</p>
+        </div>
+      </div>
+      <a class="btn" href="#book" data-scroll-to="book" data-cta="format">Book your day <svg class="arrow"><use href="#arrow" /></svg></a>
+
+      <h3 class="sub-h">What to have ready</h3>
+      <ul class="checks muted">
+        {bring.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <div class="fit">
+        <div>
+          <h3 class="sub-h">This is for you if</h3>
+          <ul class="checks muted">
+            {forYou.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h3 class="sub-h">It isn't</h3>
+          <ul class="crosses">
+            {notForYou.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block tint">
+    <div class="wrap who reveal">
+      <figure class="portrait">
+        <Image src={portrait} alt="Mark Szymanski" widths={[480, 800]} sizes="(min-width: 1024px) 300px, 260px" loading="lazy" />
+      </figure>
+      <div>
+        <span class="label">Who shows up</span>
+        <h2>Me. Not a trainer reading slides.</h2>
+        <p class="who-lead">I'm Mark. I run my own business on the same kind of setup I'll build for yours, and I use it every day.</p>
+        <p class="who-body">The day is me in the room (or on the call) the whole time, doing the setup myself and asking the questions. Read how I work before you book. If it sounds right to you, we'll get along.</p>
+        <a class="text-link accent" href="https://markszymanski.co/how-i-work">How I work <svg class="arrow"><use href="#arrow" /></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap col reveal">
+      <span class="label">What one day can and can't do</span>
+      <h2>One day won't fix everything. Anyone who tells you it will is selling you something.</h2>
+      <div class="prose-m11 body">
+        <p>You've run your business for years, and how it really works lives in your head and across a dozen apps. One day gets it out, written down, and working on a couple of real jobs. That's a head start, not the finish line.</p>
+        <p>After that, somebody has to keep it going: adding to it, putting it to work on the next thing, and making sure your team actually uses it. That's either someone on your team who champions it (I'll train them on the day), or it's me, from the outside, as a <a href="/partnership">partnership</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block tint">
+    <div class="wrap col reveal">
+      <span class="label">FAQ</span>
+      <h2>You probably still have questions.</h2>
+      <div class="faq">
+        {faqs.map((f) => (
+          <details>
+            <summary>
+              <span>{f.q}</span>
+              <svg class="plus" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m7-7H5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="book" class="book anchor">
+    <div class="wrap col center">
+      <span class="label">Start here</span>
+      <h2>Book your day</h2>
+      <p class="book-lead">Pick in person or remote, choose your day, and pay {rate} here. Days open at least two weeks out, and I take two a month.</p>
+    </div>
+    <div class="wrap booking">
+      <div data-booking data-slug="ai-onboarding-day" data-variant="minimal" data-entity-only="motive11"
+           data-photo="/images/mark-szymanski.webp" data-title-suffix="Motive11"></div>
+    </div>
+    <div class="wrap col">
+      <h3 class="notes-h">Good to know</h3>
+      <ul class="notes">
+        {notes.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+    <script is:inline src="https://book.motive11.com/widget.js" defer></script>
+    <script is:inline>
+      // Delegated so CTAs that come after this script in the DOM still scroll instead of snapping,
+      // and preventDefault keeps #book out of the address bar.
+      document.addEventListener("click", function (e) {
+        var el = e.target.closest("[data-scroll-to]");
+        if (!el) return;
+        if (el.dataset.cta && window.fathom) {
+          window.fathom.trackEvent("AI onboarding day book clicked");
+          window.fathom.trackEvent("AI onboarding day book clicked (" + el.dataset.cta + ")");
+        }
+        var target = document.getElementById(el.dataset.scrollTo);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      var book = document.getElementById("book");
+      if (book && "IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (en) { return en.isIntersecting; })) return;
+          if (window.fathom) window.fathom.trackEvent("AI onboarding day saw form");
+          io.disconnect();
+        }, { threshold: 0.4 });
+        io.observe(book);
+      }
+    </script>
+  </section>
+
+  <section class="longer">
+    <div class="wrap col reveal">
+      <h2>Looking for something longer term?</h2>
+      <p class="longer-lead">One day is the start. If you want me on your business every month, that's a partnership.</p>
+      <a class="pcard" href="/partnership">
+        <span class="pcard-name">Partnership</span>
+        <span class="pcard-price">${partnershipRate}/month{p.earlySpotsLeft > 0 && ` for the next ${p.earlySpotsLeft === 1 ? "partner" : `${inWords(p.earlySpotsLeft)} partners`}`}</span>
+        <span class="pcard-body">Your website, your systems, and your AI, run by me, working on whatever moves your business most.</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  /* On :root, not the wrapper: the widget reads these from the document root for Stripe's card form. */
+  :root {
+    --color-ink: var(--fg);
+    --color-paper: var(--bg);
+    --color-surface: var(--surface);
+    --color-border: var(--line);
+    --color-muted: var(--muted);
+    --color-accent: var(--orange);
+    --color-accent-hover: var(--orange-hover);
+    --radius-sm: 6px;
+  }
+  /* Reserves the form's height until it loads, so the notes below don't jump. */
+  .booking [data-booking]:not([data-bk-ready]) { display: block; min-height: 34rem; }
+  /* Motive11's orange is light, so text on it is the dark ground in both themes, not the page color. */
+  .booking .bk .bk-d.is-sel, .booking .bk .bk-next, .booking .bk .bk-btn { color: #1E1E1F; }
+</style>
+
+<style>
+  .col { max-width: 880px; }
+  .center { text-align: center; }
+  .anchor { scroll-margin-top: 84px; }
+
+  .hero { padding-block: clamp(56px, 8vw, 104px) clamp(48px, 6vw, 72px); }
+  .hero h1 { max-width: 15em; }
+  .em {
+    text-decoration: underline; text-decoration-color: var(--orange); text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.14em; text-decoration-skip-ink: none;
+  }
+  .video { margin-top: clamp(32px, 4vw, 48px); }
+  .intro { margin-top: clamp(32px, 4vw, 44px); max-width: 38em; }
+  .price-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; margin-top: 32px; }
+  .price { font-weight: 500; font-size: clamp(38px, 4vw, 48px); letter-spacing: -0.04em; line-height: 1; }
+  .price-for { color: var(--muted); }
+  .cap { color: var(--faint); font-size: 15px; margin-top: 10px; }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; margin-top: 34px; }
+
+  .logos-wrap { padding-block: clamp(24px, 4vw, 40px) clamp(64px, 8vw, 96px); }
+
+  .quote { background: var(--surface); border-block: 1px solid var(--line); text-align: center; padding-block: clamp(80px, 10vw, 120px); }
+  .story { margin-top: 26px; color: var(--accent-text); font-size: 15px; }
+
+  .tint { background: var(--surface); border-block: 1px solid var(--line); }
+  .tint + .tint { border-top: 0; }
+  h2 { max-width: 18em; }
+  .body { margin-top: 30px; }
+  .body a { color: var(--accent-text); }
+
+  .checks, .crosses, .notes { list-style: none; padding: 0; margin: 0; }
+  .checks { margin-top: 36px; border-top: 1px solid var(--line); }
+  .checks li { position: relative; padding: 16px 0 16px 30px; border-bottom: 1px solid var(--line); line-height: 1.55; }
+  .checks li::before {
+    content: ""; position: absolute; left: 2px; top: 24px; width: 12px; height: 7px;
+    border-left: 2px solid var(--orange); border-bottom: 2px solid var(--orange); transform: rotate(-45deg);
+  }
+  .checks.muted li { color: var(--muted); }
+  .crosses { margin-top: 20px; border-top: 1px solid var(--line); }
+  .crosses li { position: relative; padding: 14px 0 14px 30px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 16px; line-height: 1.55; }
+  .crosses li::before { content: "\00d7"; position: absolute; left: 2px; top: 11px; color: var(--faint); font-size: 22px; line-height: 1; }
+
+  .callout { margin-top: 36px; padding: 22px 24px; border: 1px solid rgba(255, 106, 26, 0.45); background: rgba(255, 106, 26, 0.1); border-radius: 14px; }
+  .callout-label { color: var(--accent-text); font-weight: 500; font-size: 15px; margin-bottom: 8px; }
+  .steps { margin-top: 40px; border-top: 1px solid var(--line); }
+  .step { display: grid; grid-template-columns: 52px 1fr; gap: 6px 10px; padding-block: 26px; border-bottom: 1px solid var(--line); }
+  .step .n { color: var(--accent-text); font-weight: 500; font-size: 22px; line-height: 1.25; }
+  .step h3 { font-weight: 500; font-size: 22px; letter-spacing: -0.025em; line-height: 1.3; }
+  .step p { grid-column: 2; color: var(--muted); }
+
+  .formats { display: grid; gap: 16px; margin: 36px 0 32px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+  .card h3 { font-weight: 500; font-size: 24px; letter-spacing: -0.025em; margin-bottom: 10px; }
+  .card p { color: var(--muted); font-size: 16px; line-height: 1.6; }
+  .sub-h { font-weight: 500; font-size: clamp(24px, 2.4vw, 30px); letter-spacing: -0.03em; line-height: 1.15; margin-top: clamp(64px, 8vw, 88px); }
+  .fit { display: grid; gap: 0 48px; }
+  .fit .sub-h { margin-top: clamp(56px, 7vw, 72px); }
+  .fit .checks { margin-top: 20px; }
+
+  .who { display: grid; gap: 40px; align-items: center; max-width: 1000px; }
+  .portrait { margin: 0; width: 260px; max-width: 100%; justify-self: center; background: var(--bg); border: 1px solid var(--line); border-radius: 20px; padding: 10px; }
+  .portrait :global(img) { width: 100%; height: auto; aspect-ratio: 1591 / 1989; object-fit: cover; border-radius: 12px; }
+  .who-lead { font-size: 20px; letter-spacing: -0.015em; line-height: 1.45; margin-top: 26px; }
+  .who-body { color: var(--muted); margin-top: 14px; max-width: 34em; }
+  .who .text-link { margin-top: 24px; }
+  .text-link.accent { color: var(--accent-text); }
+
+  .faq { margin-top: 40px; border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; cursor: pointer; padding-block: 22px; font-weight: 500; font-size: 19px; letter-spacing: -0.015em; list-style: none; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary:hover { color: var(--accent-text); }
+  .plus { width: 18px; height: 18px; flex: none; color: var(--accent-text); transition: transform 0.2s ease; }
+  .faq details[open] .plus { transform: rotate(45deg); }
+  .faq details p { color: var(--muted); padding-bottom: 24px; max-width: 40em; }
+
+  .book { padding-block: clamp(88px, 11vw, 120px) clamp(24px, 4vw, 40px); }
+  .book h2 { margin-inline: auto; }
+  .book-lead { color: var(--muted); font-size: 19px; margin: 20px auto 0; max-width: 30em; text-wrap: pretty; }
+  .booking { max-width: 960px; padding-block: clamp(32px, 4vw, 48px); }
+  .notes-h { color: var(--faint); font-weight: 500; font-size: 15px; margin-bottom: 14px; }
+  .notes li { position: relative; padding-left: 22px; color: var(--muted); font-size: 15px; line-height: 1.6; }
+  .notes li + li { margin-top: 10px; }
+  .notes li::before { content: ""; position: absolute; left: 2px; top: 0.6em; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+
+  .longer { padding-block: clamp(56px, 7vw, 88px) clamp(100px, 12vw, 140px); }
+  .longer h2 { font-size: clamp(28px, 3vw, 38px); }
+  .longer-lead { color: var(--muted); margin-top: 14px; }
+  .pcard {
+    display: flex; flex-direction: column; max-width: 440px; margin-top: 32px; text-decoration: none;
+    border: 1px solid rgba(255, 106, 26, 0.45); border-radius: 16px; padding: 28px;
+    background: linear-gradient(160deg, rgba(255, 106, 26, 0.12), var(--surface) 60%);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .pcard:hover { border-color: var(--orange); transform: translateY(-2px); }
+  .pcard-name { font-weight: 500; font-size: 24px; letter-spacing: -0.025em; }
+  .pcard-price { color: var(--accent-text); font-weight: 500; margin-top: 4px; }
+  .pcard-body { color: var(--muted); margin-top: 10px; font-size: 16px; line-height: 1.6; }
+
+  @media (min-width: 1024px) {
+    .formats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .fit { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .who { grid-template-columns: 300px minmax(0, 1fr); gap: clamp(48px, 6vw, 80px); }
+    .portrait { width: 100%; }
+  }
+  @media (max-width: 560px) {
+    .actions { flex-direction: column; align-items: stretch; }
+    .actions .btn { justify-content: center; }
+    .who-lead { font-size: 18px; }
+    .book-lead { font-size: 17px; }
+    .faq summary { font-size: 17px; }
+    .step { grid-template-columns: 40px 1fr; }
+  }
+</style>

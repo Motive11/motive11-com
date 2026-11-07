@@ -90,6 +90,7 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
         {offers.map((o) => (
           <a class:list={["offer reveal", { featured: o.featured }]} href={`/services#${o.id}`}>
             <h3>{o.name}</h3>
+            <span class="price">{o.price}</span>
             <p>{o.short}</p>
             <span class="more">Learn more <svg class="arrow"><use href="#arrow" /></svg></span>
           </a>
@@ -128,7 +129,7 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
         <div><span class="label">The problem</span><p>A named person losing real time every week to proposals, research, intake, scheduling, or data entry.</p></div>
         <div><span class="label">The owner</span><p>Wants it fixed for good, not another app for the team to learn.</p></div>
       </div>
-      <p class="smaller">Smaller team, or just want AI set up right? <a class="text-link" href="/services#ai-onboarding-day">The AI Onboarding Day <svg class="arrow"><use href="#arrow" /></svg></a></p>
+      <p class="smaller">Smaller team, or just want AI set up right? <a class="text-link" href="/ai-onboarding-day">The AI Onboarding Day <svg class="arrow"><use href="#arrow" /></svg></a></p>
     </div>
   </section>
 
@@ -187,6 +188,7 @@ const quote = await fetchTestimonial("a85e6793-5b63-4dc5-99d5-f6c18eadd6d6");
   .offer:hover { border-color: rgba(255, 106, 26, 0.55); transform: translateY(-2px); }
   .offer.featured { border-color: rgba(255, 106, 26, 0.45); background: linear-gradient(160deg, rgba(255, 106, 26, 0.12), var(--surface) 60%); }
   .offer h3 { font-weight: 500; font-size: 24px; letter-spacing: -0.025em; }
+  .offer .price { color: var(--accent-text); font-weight: 500; margin-top: 4px; }
   .offer p { color: var(--muted); margin-top: 10px; flex: 1; }
   .offer .more { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; color: var(--accent-text); font-weight: 500; }
 

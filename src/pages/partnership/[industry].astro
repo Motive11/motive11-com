@@ -1,0 +1,12 @@
+---
+import PartnershipPage from "../../components/partnership/PartnershipPage.astro";
+import { industries, type Industry } from "../../lib/industries";
+
+export function getStaticPaths() {
+  return industries.map((industry) => ({ params: { industry: industry.slug }, props: { industry } }));
+}
+
+const { industry } = Astro.props as { industry: Industry };
+---
+
+<PartnershipPage industry={industry} />

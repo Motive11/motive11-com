@@ -16,8 +16,9 @@ Details in `README.md`.
 
 ## Rules for this repo
 
-- **No prices on this site.** Operator prices live in the markszymanski.co repo (`src/lib/pricing.ts`).
-  A second copy here would drift. Link to the page that holds the price instead.
+- **Prices live in `src/lib/pricing.ts`, and the same numbers live in the markszymanski.co repo's
+  `src/lib/pricing.ts`.** Mark chose to show prices here (November 6, 2026) knowing it makes a second
+  copy. Change both files in the same task until the operator offers leave markszymanski.co.
 - **Case studies are written for operators** (problem, what I built, what changed), first person,
   buttoned up. markszymanski.co keeps the longer builder versions; never sync one from the other.
 - **Brand colors mirror `AIOS entities/motive11/brand/brand.json`** in `src/styles/global.css`. Change both

@@ -1,0 +1,921 @@
+---
+/**
+ * The Partnership page, /partnership and its industry versions /partnership/<slug>. A copy of
+ * markszymanski.co's /work-with-me (that repo's src/components/WorkWithMe.astro) in Motive11's look,
+ * made November 6, 2026 at Mark's request: same sections, order, copy, video, and pricing logic.
+ * Prices come from src/lib/pricing.ts, industry wording from src/lib/industries.ts.
+ */
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ClientLogos from "../ClientLogos.astro";
+import Testimonial from "../Testimonial.astro";
+import StoryCard from "./StoryCard.astro";
+import { fetchTestimonials } from "../../lib/testimonials";
+import { pricing, usd } from "../../lib/pricing";
+import { breadcrumb } from "../../lib/schema";
+import { site } from "../../lib/site";
+import type { Industry } from "../../lib/industries";
+import portrait from "../../assets/mark/portrait.webp";
+
+const { industry } = Astro.props as { industry?: Industry };
+
+const services = await fetchTestimonials({ tags: ["Services"], sort: "date", order: "desc", limit: 500 });
+const testimonials = services.slice(0, 9);
+
+const cases = (await getCollection("case-studies")).sort((a, b) => a.data.order - b.data.order);
+const storyFor = new Map<string, string>();
+for (const c of cases) for (const id of c.data.testimonialIds) storyFor.set(id, `/case-studies/${c.id}`);
+
+// Excerpts are verbatim trims of the published testimonial. Never paraphrased or pronoun-edited.
+const shefflerQuoteId = "8b67a481-a547-4d8f-a6e1-c4554bb6f0fe";
+const heroQuote = services.find((t) => t.id === (industry?.heroQuoteId ?? shefflerQuoteId));
+const heroQuoteExcerpt = industry
+  ? industry.heroQuoteExcerpt
+  : "When my team finds something that needs to change, Mark fixes it fast, often the same day. At this point he knows how our business runs as well as anyone in the building.";
+// The stat strip is Sheffler's numbers, so it would mislead under anyone else's quote.
+const showShefflerStats = heroQuote?.id === shefflerQuoteId;
+const midQuote = industry?.midQuoteId
+  ? services.find((t) => t.id === industry.midQuoteId)
+  : services.find((t) => t.customer_name?.includes("Kyle Simmons"));
+const midQuoteExcerpt = industry?.midQuoteId
+  ? industry.midQuoteExcerpt
+  : "I came to Mark thinking I needed a new website. That's what I asked for. What I ended up getting was somebody who actually took the time to learn my business and came back with ideas I hadn't thought of.";
+const excerpt = <T extends { text: string }>(t: T, text?: string) => (text ? { ...t, text } : t);
+
+// markszymanski.co orders the rest newest first; this site's case studies carry a curated `order`
+// instead, which also keeps a one-day startup consult from reading as the headline proof.
+const leadStories = industry?.storyOrder ?? ["sheffler-and-company"];
+const recentWork = [
+  ...leadStories.map((id) => cases.find((c) => c.id === id)).filter((c) => c !== undefined),
+  ...cases.filter((c) => !leadStories.includes(c.id)),
+].slice(0, 4);
+
+const p = pricing.partnership;
+const yearly = (monthly: string) => (Number(monthly.replace(/,/g, "")) * 12).toLocaleString("en-US");
+
+// Verified on bls.gov October 27, 2026: OEWS May 2025 medians (web developers $99,520, software
+// developers $135,980); ECEC June 2026, benefits = 30% of private-industry compensation, so benefits
+// = salary x 30/70. Recruiter 15-30% of first-year salary is a vendor-reported range, not BLS.
+// Re-check when BLS publishes May 2026 wages (spring 2027), here and on markszymanski.co.
+const hires = [
+  {
+    name: "An in-house web developer",
+    total: "$157,000+",
+    lines: ["$99,520 salary (the national median)", "+ $42,650 benefits and payroll taxes", "+ $15,000 to $30,000 to a recruiter"],
+    note: "Builds websites. Your systems, your AI, and deciding what's worth building still need someone else.",
+  },
+  {
+    name: "An in-house software developer",
+    total: "$215,000+",
+    lines: ["$135,980 salary (the national median)", "+ $58,300 benefits and payroll taxes", "+ $20,000 to $40,000 to a recruiter"],
+    note: "Can build the systems. A senior one costs more, and still needs you to tell them what moves the business.",
+  },
+];
+
+const hidden = [
+  "One to three months to find them, then more months while they learn your business.",
+  "Bring on someone junior to save money and you pay them to learn on your dime, and you're the one teaching.",
+  "Bring on someone senior and you pay for it, then you manage them, review their work, and keep them busy.",
+  "When they leave, what they built and how it works can walk out with them. Everything I build is documented.",
+  "An employee does tasks. This ships systems that keep working after they're built.",
+];
+
+// Our own silent 12-second clip on top (no Bunny chrome before the click), Bunny's iframe primed
+// underneath, handed over through Player.js on click. Why each piece is the way it is:
+// AIOS pipelines/web-build/video-on-a-page.md. Same video and files as markszymanski.co/work-with-me.
+const videoBase = "https://iframe.mediadelivery.net/embed/572643/6c6ea7ee-887c-4a68-98f3-f3336250a73c";
+const videoBaseParams = "preload=true&responsive=true&rememberPosition=false&showSpeed=true";
+const videoPreviewSrc = `${videoBase}?autoplay=true&muted=true&loop=false&${videoBaseParams}`;
+const videoPlaySrc = `${videoBase}?autoplay=true&muted=false&loop=false&${videoBaseParams}`;
+const videoLoop = "https://cdn.markszymanski.co/work-with-me/wwm-intro-loop-v2.mp4";
+const videoPoster = "https://cdn.markszymanski.co/work-with-me/wwm-intro-poster-v2.jpg";
+const videoDuration = "2:01";
+const inWords = (n: number) => ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"][n] ?? String(n);
+
+// The left column can be specific because it is one person's actual words. The right column stays
+// industry-neutral: naming a trade there reads as "he only works with surveying firms."
+const sentences = [
+  ["\"I know what to charge. I just can't be the one writing forty proposals a month.\"", "Pulled the pricing logic and the scope language out of a decade of past proposals. The first draft writes itself now, and the people who actually price the work still make that call."],
+  ["\"Before we can quote a job I have to check the flood maps, the wetlands, the soils, the mining and the slope. Every single time.\"", "One lookup instead of ten, and the report comes back with its sources cited so nothing has to be taken on trust. Half a day became a few seconds."],
+  ["\"Somebody has to open every one of these emails, read it, and type the important parts into a spreadsheet.\"", "The documents get read, named properly and filed to the right place on their own. No AI guessing involved, so it is either exactly right or it stops and asks."],
+  ["\"People fill out the form on our site and I don't find out for a day. Sometimes two.\"", "Rewired the intake so a lead reaches a human immediately and gets recorded, instead of sitting in a mailbox nobody watches."],
+  ["\"Our site looks like it was built in 2015, and every small change means emailing somebody and waiting a week.\"", "Rebuilt it static and fast, archived the old one, redirected every old URL, and got it off the ageing server. Then I keep it running."],
+  ["\"I tried ChatGPT but it doesn't know anything about my business, so I gave up.\"", "The most common one, and the tool was never the problem. It had no context to work from. Giving it that context is most of what I actually do."],
+];
+
+const tracks = [
+  {
+    name: "Bringing in more revenue",
+    body: industry?.leadsBody ?? "I look at how your business brings in revenue: how many of the right people find you, how many reach out, how many sign, and how much more your current customers buy or send your way. Then I fix the step that's leaking the most.",
+    measures: industry?.leadsMeasures ?? ["New inquiries/month", "Signed jobs/month", "Repeat and referral work"],
+  },
+  {
+    name: "Taking work off your team's plate",
+    body: industry?.organizedBody ?? "Less of your team's week spent on work software should be doing. Quotes, proposals, intake, scheduling, reporting. Custom tools your team uses every day, built around how you already work.",
+    measures: industry?.organizedMeasures ?? ["Hours your team spends on it each week", "How long a quote or proposal takes", "Work handled without adding staff"],
+  },
+];
+
+const steps = [
+  {
+    title: "A 20-minute intro call",
+    body: "Tell me what's going on and I'll tell you straight whether I can move it. If not, I'll say so.",
+  },
+  {
+    title: "Kickoff",
+    body: "Time with you first, then short conversations with the people who actually do the work, over video or in person if you're local: how work comes in, who does what, and where it gets stuck. You're too deep in your business to see all of it, which is normal, and it's why you bring in someone from outside. Then I tell you what I'd fix first and why, pick the number that proves it, measure where it is today, and write the plan for your first three months. No paid audit, no report that sits on a shelf.",
+  },
+  {
+    title: "The first three months",
+    body: "I work the plan. One thing at a time, shipped, working, and actually used by your team, then the next. The first one is in your team's hands within 30 days, or your second month is free. If something better shows up along the way, we swap it in.",
+  },
+  {
+    title: "After that",
+    body: `Keep going month to month and I bring you the next number to go after. Or step down to Care, $${pricing.website.care}/month to keep your website online, and call me when you need the next project.`,
+  },
+];
+
+const included = [
+  "A strategy call and a one-page report: your number first, then what shipped.",
+  "My read on any tech or AI decision before you spend money on it.",
+  "Everything I build, kept running, and fixed within one business day if it breaks.",
+  "Your team trained on everything I build, and I check that it's actually getting used.",
+  "Your website, rebuilt on my stack if I didn't build it, then hosted and kept running. I only run what I build.",
+];
+
+const excluded = [
+  "Ad spend. If we run ads, the budget is yours.",
+  "Usage costs: AI credits, paid software, and anything billed by usage. You pay the provider directly.",
+  "General IT: email accounts, laptops, printers, other vendors' software.",
+  "Nights and weekends, unless something I built is down.",
+  "Big builds, like a client portal. Quoted separately, or covered by extending your minimum.",
+];
+
+const faqs = [
+  {
+    q: "How many hours do I get?",
+    a: "I don't track hours, and you don't buy them. You're paying for your number to move. I use AI and modern tooling, so a lot of what used to take weeks takes days, and that speed goes to you as more shipped work, not a smaller bill.",
+  },
+  {
+    q: "How much of my time does this take?",
+    a: "Less than a project would, but not zero, and you wouldn't want zero. I need you for what only you know: how the business really runs, and whether what I built works before your team gets it. While something's being built, that's a short check-in each week, and I'll come to you or whoever knows the work when I have a question. I also train your team and show you every month who's using what I built. The one thing only you can do is tell them it's how the work gets done now.",
+  },
+  {
+    q: "How long until I see results?",
+    a: "The first thing usually ships in the first few weeks. The number takes longer to move, which is why there's a three-month minimum: that's enough time to show it.",
+  },
+  {
+    q: "What if nothing happens?",
+    a: "Then you don't pay for it. If nothing I've built is in your team's hands within 30 days of kickoff, your second month is free. The only condition is that you give me the access and the time with your team that we agree on at kickoff.",
+  },
+  {
+    q: "Will you talk about our work publicly?",
+    a: "Yes, the parts that aren't confidential. Telling the story of what we built is how I get new work, and it puts your business in front of my audience too. Your clients, your data, and anything proprietary never go in it. If you need the whole engagement kept private, that's available, and the price doubles.",
+  },
+  {
+    q: "We tried AI tools before and nothing stuck. Why is this different?",
+    a: "Because a tool on its own doesn't know your business and nobody owns getting your team to use it. I set it up around how you actually work, train your people on it, and stay to keep it working.",
+  },
+  {
+    q: "Will this replace people on my team?",
+    a: "That's not the goal. The goal is your people spending their time on the work only they can do, instead of copying, pasting, and chasing things a system can handle.",
+  },
+  industry?.industryFaq ?? {
+    q: "Have you worked in my industry?",
+    a: "Maybe not, and it matters less than you'd think. I've done this for an engineering firm, a law firm, an insurance agency, a landscaper, a roofer, and a nonprofit, and the problems repeat: leads slip through, quotes take too long, and how things get done lives in one person's head. I learn how your business works fast, and kickoff exists for exactly that. If yours is outside what I can help with, I'll tell you on the intro call.",
+  },
+  {
+    q: "I'm already a client. What happens to what I pay now?",
+    a: "It rolls in. While you're a partner, your website care and anything else I run for you is covered by the one fee. If you ever stop, we just go back to billing those pieces separately, like before.",
+  },
+  {
+    q: "Do I tell you what to build?",
+    a: "No. You tell me about your business: how work comes in, where it gets stuck, and what you've already tried. Deciding what to build is my job, and it's what you're paying for. If you have an idea, I'll tell you straight whether it moves your number.",
+  },
+  {
+    q: "What if I need both?",
+    a: "Most businesses do. I start with whichever one is costing you more right now, and switch when it's handled.",
+  },
+  {
+    q: "Can I get it cheaper?",
+    a: "No. The price is the price, and it's on this page so you never have to find out on a call. Custom pricing exists for when you've outgrown the plan (a bigger team, a bigger build), not for making it smaller.",
+  },
+  {
+    q: "What if I need something bigger, like a client portal?",
+    a: "Bigger builds are quoted on their own. Or, instead of paying for the build up front, you can extend your minimum to cover it.",
+  },
+  {
+    q: "Do I need to be technical?",
+    a: "No. That's the point. You run your business, I build and run the systems. Everything gets documented, so your team can see how it works.",
+  },
+  {
+    q: "What happens after three months?",
+    a: `You keep going month to month and I bring you the next number to go after, or you step down to Care at $${pricing.website.care}/month, which keeps your website online, and call me when you need the next project.`,
+  },
+  {
+    q: "What if we want to run it ourselves someday?",
+    a: "Tell me on the first call, and I'll plan for it from day one. Everything I build is yours, and all of it is documented. The three-month minimum is how long it takes to learn your business and move your number, not a lock-in. After that, stay as long as it's worth it, or I'll train your team to run it while you're still a partner and step back. I'd much rather know up front than find out later.",
+  },
+];
+
+const path = industry ? `/partnership/${industry.slug}` : "/partnership";
+const schema = [
+  breadcrumb([
+    { name: "Home", url: site.url },
+    { name: "Partnership", url: `${site.url}/partnership` },
+    ...(industry ? [{ name: industry.eyebrow, url: `${site.url}${path}` }] : []),
+  ]),
+  { "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
+];
+---
+
+<BaseLayout
+  title={industry?.metaTitle ?? "Partnership | Motive11"}
+  description={industry?.metaDescription ?? "The AI and systems person your business is missing, without the full-time hire. I run your website and systems, and every month I work on more revenue or less busywork for your team."}
+  schema={schema}
+>
+  <section class="hero">
+    <div class="wrap">
+      <div class="col">
+        <span class="label">{industry?.eyebrow ?? "Partnership"}</span>
+        <!-- The emphasis is a weight step plus the orange underline, not a color: dimming the setup
+             failed contrast in light mode on markszymanski.co. -->
+        <h1>{industry?.h1Setup ?? "The AI and systems person your business is missing,"} <span class="payoff">without the full-time hire.</span></h1>
+        <p class="lead">
+          {industry?.intro ?? "I figure out what's holding your business back, then build the custom software and AI systems that fix it, keep them running, and improve them every month: more revenue, or less busywork for your team."}
+        </p>
+
+        <figure class="stage" data-stage data-play-src={videoPlaySrc}>
+          <iframe
+            src={videoPreviewSrc}
+            title="Partnership"
+            loading="eager"
+            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+            allowfullscreen
+            class="frame is-hidden"
+            data-frame
+            tabindex="-1"
+            aria-hidden="true"></iframe>
+          <video class="loop" src={videoLoop} poster={videoPoster} autoplay muted loop playsinline preload="auto" aria-hidden="true" data-loop></video>
+          <button type="button" class="play" data-play data-overlap-ok aria-label="Play the Partnership video with sound">
+            <span class="play-row">
+              <span class="play-dot">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>
+              </span>
+              <span class="play-label">Play with sound &middot; {videoDuration}</span>
+            </span>
+          </button>
+        </figure>
+
+        <p class="body-lg">
+          {industry?.audience ?? "This is for established businesses that need someone to own their website, their systems, and their AI, and don't want to hire for it. One person, one monthly fee, working on whatever moves your business most."}
+        </p>
+        <p class="body-lg">
+          I find what's costing you the most, measure where it is today, fix it one thing at a time, and show you the number every month.
+        </p>
+        {p.earlySpotsLeft > 0 && (
+          <div class="spots">
+            <span class="pulse" aria-hidden="true"><i></i><i></i></span>
+            <span>
+              <b>{p.earlySpotsLeft} {p.earlySpotsLeft === 1 ? "spot" : "spots"} left at ${p.earlyMonthly}/month.</b>
+              <span class="dim"> Then it goes to ${p.monthly}/month, and anyone in at ${p.earlyMonthly} keeps it for their first 12 months.</span>
+            </span>
+          </div>
+        )}
+        <div class="actions">
+          <a class="btn" href="#start" data-scroll-to="start" data-cta="top">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a>
+          <a class="btn ghost" href="#details" data-scroll-to="details">See the details</a>
+        </div>
+        <p class="note">
+          Doing under $3M a year? <a class="inline" href="/ai-onboarding-day" data-track="Partnership onboarding day clicked (top)">Start with the AI Onboarding Day</a>.
+        </p>
+        {p.earlySpotsLeft === 0 && (
+          <p class="note">${p.monthly}/month. I work with {inWords(p.totalSpots)} businesses at a time.</p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap logos">
+    <ClientLogos caption="Businesses I've worked with" />
+    <p class="logos-line">Engineering, law, insurance, landscaping, roofing, nonprofits, sports, and software. The industries change. The problems mostly don't.</p>
+  </div>
+
+  {heroQuote && (
+    <section class="quote-sec">
+      <div class="wrap">
+        <div class="reveal">
+          <Testimonial q={excerpt(heroQuote, heroQuoteExcerpt)} variant="feature" />
+          {!showShefflerStats && storyFor.get(heroQuote.id) && (
+            <p class="quote-link"><a class="text-link" href={storyFor.get(heroQuote.id)}>Read the case study <svg class="arrow"><use href="#arrow" /></svg></a></p>
+          )}
+        </div>
+        {showShefflerStats && (
+          <div class="stats reveal">
+            <!-- Lower bounds on purpose (portal figures as of October 23, 2026: 106 proposals, 27 web
+                 leads), so the line stays true as the counts keep climbing. Re-check before raising. -->
+            <div class="stat-grid">
+              {[
+                ["100+", "proposals written in their own software"],
+                ["25+", "website leads straight into their pipeline, none retyped"],
+                ["44", "days from yes to their system going live"],
+              ].map(([n, label]) => (
+                <div>
+                  <p class="stat-n">{n}</p>
+                  <p class="stat-l">{label}</p>
+                </div>
+              ))}
+            </div>
+            <p class="stat-src">
+              Sheffler &amp; Company, since July 2026. <a class="inline" href="/case-studies/sheffler-and-company">Read the case study</a>
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <section id="details" class="block band anchor">
+    <div class="wrap">
+      <div class="col reveal">
+        <span class="label">What I solve for you</span>
+        <h2>It's almost always one of two problems. Kickoff tells me which one to fix first.</h2>
+        <div class="tracks">
+          {tracks.map((t) => (
+            <div class="card">
+              <h3>{t.name}</h3>
+              <p class="muted">{t.body}</p>
+              <p class="mini">What we'd measure, for example</p>
+              <ul class="plus">
+                {t.measures.map((m) => <li>{m}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <ol class="loop-steps">
+          {["Find the problem", "Measure where it is today", "Fix it", "Measure again, then repeat"].map((step, i) => (
+            <li class="card">
+              <span class="n">0{i + 1}</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+        <p class="muted after">Every month you see the number next to where it started, so you always know what you're paying for.</p>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="tracks">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="familiar" class="block anchor">
+    <div class="wrap">
+      <div class="col reveal">
+        <span class="label">Sound familiar?</span>
+        <h2>Real sentences, said to me by real business owners. And what I did about each one.</h2>
+        <p class="lead">Not one of them called it a technology problem. They described something that hurts. If any of these is close to something you'd say out loud, we should talk.</p>
+        <div class="said">
+          <div class="said-head">
+            <span>What they said</span>
+            <span>How I solved it</span>
+          </div>
+          {sentences.map(([said, solved]) => (
+            <div class="said-row">
+              <p class="said-q">{said}</p>
+              <p class="said-a">{solved}</p>
+            </div>
+          ))}
+        </div>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="familiar">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block band">
+    <div class="wrap">
+      <div class="col reveal">
+        <span class="label">How it works</span>
+        <h2>Here's exactly what happens.</h2>
+        <div class="steps">
+          {steps.map((s, i) => (
+            <div class="step">
+              <span class="n">0{i + 1}</span>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          ))}
+        </div>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="how">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  {midQuote && (
+    <section class="quote-sec mid">
+      <div class="wrap reveal">
+        <Testimonial q={excerpt(midQuote, midQuoteExcerpt)} variant="feature" />
+        {storyFor.get(midQuote.id) && (
+          <p class="quote-link"><a class="text-link" href={storyFor.get(midQuote.id)}>Read the case study <svg class="arrow"><use href="#arrow" /></svg></a></p>
+        )}
+      </div>
+    </section>
+  )}
+
+  <section class="block band">
+    <div class="wrap">
+      <div class="who reveal">
+        <figure class="portrait">
+          <Image src={portrait} alt="Mark Szymanski" widths={[400, 640]} sizes="(min-width: 768px) 280px, 240px" loading="lazy" />
+        </figure>
+        <div>
+          <span class="label">Who you'd be working with</span>
+          <h2>Me. Not a team you'll never meet.</h2>
+          <p class="who-lead">I'm Mark. I run my own business on the same kind of AI setup I'd build for yours.</p>
+          <p class="muted">You work with me directly, from the first call on, and I'm the one who answers when something needs to change. Before we talk, read how I work. If it sounds right to you, we'll get along.</p>
+          <a class="text-link who-link" href="https://markszymanski.co/how-i-work">How I work <svg class="arrow"><use href="#arrow" /></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="col reveal">
+        <h2>What you get every month</h2>
+        <h3 class="sub-h first">The same every month</h3>
+        <ul class="plus big">
+          {included.map((item) => <li>{item}</li>)}
+        </ul>
+        <h3 class="sub-h">What changes every month: the work</h3>
+        <p class="copy">
+          It's whatever moves your number next. I bring you what that is and why, and you sign off before your team gets it. One thing at a time: when it ships, the next one starts. Every line under <a class="inline" href="#familiar" data-scroll-to="familiar">"Sound familiar?"</a> above was work like this for a real business: proposals that draft themselves, half a day of research done in one report, a website rebuilt so leads stop slipping through, an AI that actually knows the business.
+        </p>
+        <h3 class="sub-h">Not included</h3>
+        <ul class="minus">
+          {excluded.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="math" class="block ruled">
+    <div class="wrap">
+      <div class="wide reveal">
+      <div class="col">
+        <span class="label">The math</span>
+        <h2>Adding an employee to do this costs up to four times as much.</h2>
+        <p class="lead">The usual way to get this done is adding someone to your payroll. Here's what a full-time employee costs in the first year, before they've built anything.</p>
+      </div>
+      <div class="hires">
+        {hires.map((h) => (
+          <div class="hire">
+            <h3>{h.name}</h3>
+            <p class="hire-n">{h.total}</p>
+            <p class="mini">First year</p>
+            <ul>
+              {h.lines.map((l) => <li>{l}</li>)}
+            </ul>
+            <p class="hire-note">{h.note}</p>
+          </div>
+        ))}
+        <div class="hire me">
+          <h3>Me</h3>
+          <p class="hire-n">${yearly(p.monthly)}</p>
+          <p class="mini">First year</p>
+          <ul>
+            {p.earlySpotsLeft > 0 && <li>${yearly(p.earlyMonthly)} at today's rate</li>}
+            <li>No benefits or payroll taxes</li>
+            <li>No recruiter</li>
+            <li>Starts the day we kick off</li>
+          </ul>
+          <p class="hire-note">Your website, your systems, your AI, and deciding what's worth building. Month to month after three months.</p>
+        </div>
+      </div>
+      <div class="col">
+        <h3 class="sub-h first-wide">And what never shows up on the salary</h3>
+        <ul class="plus big">
+          {hidden.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="flip">
+          Or flip it around: what's one more {industry?.win ?? "signed job"} worth to you? If it's ${p.monthly}, one extra {industry?.winNoun ?? "job"}/month covers this.
+        </p>
+        <p class="source">
+          Salaries: U.S. Bureau of Labor Statistics median annual pay for web developers and for software developers, May 2025. Benefits and payroll taxes: BLS, 30% of total compensation in private industry, June 2026. Recruiter fees: the typical agency range of 15 to 30% of first-year salary.
+        </p>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="price" class="block band">
+    <div class="wrap">
+      <div class="col reveal">
+        <span class="label">The investment</span>
+        {p.earlySpotsLeft > 0 ? (
+          <>
+            <p class="price">${p.earlyMonthly}<span>/month</span></p>
+            <p class="price-l strong">For my next {p.earlySpotsLeft === 1 ? "partner" : `${inWords(p.earlySpotsLeft)} partners`}, your rate locked in for 12 months.</p>
+            <p class="price-l accent">{p.earlySpotsLeft} of {p.earlySpots} spots left at this price.</p>
+            <p class="price-l muted">After that, the price goes up to ${p.monthly}/month.</p>
+          </>
+        ) : (
+          <p class="price">${p.monthly}<span>/month</span></p>
+        )}
+        <p class="muted terms">Three-month minimum, then month to month with 30 days' notice. Every month is paid up front, starting at kickoff.</p>
+        <div class="guarantee">
+          <span class="label">My guarantee</span>
+          <p class="g-main">If nothing I've built is in your team's hands within 30 days of kickoff, your second month is free.</p>
+          <p class="muted g-sub">As long as you give me the access and the time with your team that we agree on at kickoff.</p>
+        </div>
+        <p class="copy">I only work with {inWords(p.totalSpots)} businesses at a time, so grab a spot while there's an opening.</p>
+        <div class="cta"><a class="btn" href="#start" data-scroll-to="start" data-cta="price">Book an intro call <svg class="arrow"><use href="#arrow" /></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="wide reveal">
+      <span class="label">Recent work</span>
+      <h2>What it looks like in practice.</h2>
+      <p class="lead">
+        I also make videos about this on <a class="inline" href="https://www.youtube.com/@MarkJSzymanski">YouTube</a> every week, so you can see how I think before we ever talk.
+      </p>
+      <div class="stories">
+        {recentWork.map((c) => <StoryCard entry={c} />)}
+      </div>
+      <div class="cta"><a class="text-link" href="/case-studies">See all case studies <svg class="arrow"><use href="#arrow" /></svg></a></div>
+      </div>
+    </div>
+  </section>
+
+  {testimonials.length > 0 && (
+    <section class="block wall-sec">
+      <div class="wrap">
+        <div class="wide">
+        <span class="label">What clients are saying</span>
+        <h2>From the people I've built for.</h2>
+        <div class="wall">
+          {testimonials.map((t) => (
+            <div class="wall-item">
+              <Testimonial q={t} />
+              {storyFor.get(t.id) && (
+                <a class="text-link wall-link" href={storyFor.get(t.id)}>Read the case study <svg class="arrow"><use href="#arrow" /></svg></a>
+              )}
+            </div>
+          ))}
+        </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="block band faq-sec">
+    <div class="wrap">
+      <div class="col reveal">
+        <span class="label">FAQ</span>
+        <h2>You probably still have questions.</h2>
+        <p class="lead">These are the ones owners ask me most, answered straight.</p>
+        <div class="faqs">
+          {faqs.map((f) => (
+            <details>
+              <summary>
+                <span>{f.q}</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14m7-7H5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="start" class="start anchor">
+    <div class="wrap">
+      <div class="start-head reveal">
+        <span class="label">Start here</span>
+        <h2>Book an intro call.</h2>
+        <p class="lead">Pick a time, then tell me who you are and what's going on. If you've read this far, you know what it costs and how it works, so the call is about whether I can move your number.</p>
+      </div>
+    </div>
+    <!-- The form is the shared copy the AIOS booking Worker serves (state/booking-worker/public/widget.js),
+         the same one /book loads; the --color-* properties below give it Motive11's colors. -->
+    <div class="booking">
+      <div
+        data-booking
+        data-slug="intro"
+        data-variant="minimal"
+        data-list="motive11"
+        data-entity-only="motive11"
+        data-title-suffix="Motive11"
+        data-photo="/images/mark-szymanski.webp"
+        data-tag={industry?.formTag}
+        data-track="Partnership submitted"
+      ></div>
+    </div>
+  </section>
+
+  <section class="smaller-sec">
+    <div class="wrap">
+      <div class="col reveal">
+        <h2 class="smaller-h">Not ready for a monthly commitment?</h2>
+        <p class="lead">No problem. Let's start smaller.</p>
+        <a class="day" href="/ai-onboarding-day">
+          <span class="day-name">AI Onboarding Day</span>
+          <span class="day-price">{usd(pricing.onboardingDay.rate)}, one day</span>
+          <span class="day-body">Your business set up for AI in a day, and you trained to use it.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline src="https://book.motive11.com/widget.js" defer></script>
+  <script is:inline src="https://assets.mediadelivery.net/playerjs/playerjs-latest.min.js"></script>
+  <script is:inline>
+    (function () {
+      var track = function (name) {
+        try { if (window.fathom) window.fathom.trackEvent(name); } catch (e) {}
+      };
+
+      // Delegated so CTAs that come after this script in the DOM still scroll instead of snapping.
+      document.addEventListener("click", function (e) {
+        var tracked = e.target.closest("[data-track]");
+        if (tracked && !tracked.hasAttribute("data-booking")) track(tracked.dataset.track);
+        var el = e.target.closest("[data-scroll-to]");
+        if (!el) return;
+        if (el.dataset.cta) {
+          track("Partnership call clicked");
+          track("Partnership call clicked (" + el.dataset.cta + ")");
+        }
+        var target = document.getElementById(el.dataset.scrollTo);
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      // How far down people read: each fires once per visit, so Fathom's counts are visitors.
+      if ("IntersectionObserver" in window) {
+        [["price", "Partnership saw price"], ["start", "Partnership saw form"]].forEach(function (pair) {
+          var el = document.getElementById(pair[0]);
+          if (!el) return;
+          var io = new IntersectionObserver(function (entries) {
+            if (!entries.some(function (en) { return en.isIntersecting; })) return;
+            track(pair[1]);
+            io.disconnect();
+          }, { threshold: 0.4 });
+          io.observe(el);
+        });
+      }
+
+      var stage = document.querySelector("[data-stage]");
+      if (!stage) return;
+      var btn = stage.querySelector("[data-play]");
+      var frame = stage.querySelector("[data-frame]");
+      if (!btn || !frame) return;
+      var loop = stage.querySelector("[data-loop]");
+      var player = window.playerjs ? new window.playerjs.Player(frame) : null;
+      var started = false;
+
+      // A click can land before the priming timer fires; without the started guard the timer
+      // would pause the video the viewer just started.
+      if (player) {
+        player.on("ready", function () {
+          player.mute();
+          player.play();
+          setTimeout(function () {
+            if (started) return;
+            player.pause();
+            player.setCurrentTime(0);
+          }, 2500);
+        });
+      }
+
+      btn.addEventListener("click", function () {
+        started = true;
+        btn.remove();
+        if (loop) loop.remove();
+        frame.classList.remove("is-hidden");
+        frame.removeAttribute("tabindex");
+        frame.removeAttribute("aria-hidden");
+        track("Partnership video played");
+        if (!player) {
+          frame.src = stage.dataset.playSrc;
+          return;
+        }
+        player.setCurrentTime(0);
+        player.unmute();
+        player.setVolume(100);
+        player.play();
+        // If the browser refused the programmatic unmute, reload into the unmuted URL.
+        setTimeout(function () {
+          player.getMuted(function (muted) {
+            if (muted) frame.src = stage.dataset.playSrc;
+          });
+        }, 900);
+      }, { once: true });
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .col { max-width: 780px; margin-inline: auto; }
+  .wide { max-width: 1040px; margin-inline: auto; }
+  .wide .col { margin-inline: 0; }
+  .muted { color: var(--muted); }
+  .anchor { scroll-margin-top: 68px; }
+  .band { background: var(--surface); border-block: 1px solid var(--line); }
+  .ruled { border-top: 1px solid var(--line); }
+  .cta { margin-top: 40px; }
+  .inline { color: var(--accent-text); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
+  .inline:hover { border-bottom-color: transparent; }
+  .mini { color: var(--faint); font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+  h2 + .lead { margin-top: 22px; }
+  h3 { font-weight: 500; letter-spacing: -0.02em; }
+
+  .hero { padding-block: clamp(64px, 9vw, 112px) clamp(48px, 6vw, 72px); }
+  .hero h1 { font-weight: 400; font-size: clamp(36px, 4.8vw, 62px); }
+  .payoff { font-weight: 500; text-decoration: underline; text-decoration-color: var(--orange); text-decoration-thickness: 5px; text-underline-offset: 10px; text-decoration-skip-ink: none; }
+  .hero .lead { margin-top: 24px; }
+  .body-lg { color: var(--muted); font-size: 19px; line-height: 1.6; max-width: 36em; }
+  .body-lg + .body-lg { margin-top: 16px; }
+
+  .stage { position: relative; isolation: isolate; aspect-ratio: 16 / 9; margin: 40px 0 44px; border-radius: 14px; overflow: hidden; background: #000; border: 1px solid var(--line); box-shadow: 0 40px 90px -30px var(--shadow); }
+  .frame, .loop, .play { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .frame { transition: opacity 0.2s ease; }
+  .frame.is-hidden { opacity: 0; pointer-events: none; }
+  .loop { object-fit: cover; z-index: 5; }
+  .play { z-index: 10; cursor: pointer; padding: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.05) 50%, transparent); transition: opacity 0.15s ease; }
+  .play:hover { opacity: 0.92; }
+  .play-row { position: absolute; left: clamp(16px, 2.5vw, 24px); bottom: clamp(16px, 2.5vw, 24px); display: flex; align-items: center; gap: 12px; }
+  .play-dot { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--orange); color: #1E1E1F; box-shadow: 0 10px 30px -10px rgba(255, 106, 26, 0.7); transition: transform 0.15s ease; }
+  .play:hover .play-dot { transform: scale(1.05); }
+  .play-dot svg { width: 24px; height: 24px; margin-left: 2px; }
+  .play-label { color: #fff; font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .spots { display: inline-flex; align-items: flex-start; gap: 14px; margin-top: 36px; padding: 16px 20px; border: 1px solid rgba(255, 106, 26, 0.45); background: rgba(255, 106, 26, 0.1); border-radius: 10px; max-width: 36em; font-size: 18px; line-height: 1.4; }
+  .spots b { color: var(--accent-text); font-weight: 500; }
+  .spots .dim { color: var(--muted); }
+  .pulse { position: relative; flex: none; width: 8px; height: 8px; margin-top: 9px; }
+  .pulse i { position: absolute; inset: 0; border-radius: 50%; background: var(--orange); }
+  .pulse i:first-child { animation: ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite; opacity: 0.75; }
+  @keyframes ping { 75%, 100% { transform: scale(2.4); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .pulse i:first-child { animation: none; } }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; margin-top: 32px; }
+  .note { color: var(--muted); font-size: 16px; margin-top: 22px; }
+
+  .logos { padding-bottom: clamp(56px, 7vw, 88px); }
+  .logos-line { color: var(--muted); font-size: 16px; text-align: center; margin: 34px auto 0; max-width: 40em; }
+
+  .quote-sec { padding-bottom: clamp(80px, 10vw, 120px); }
+  .quote-sec.mid { padding-block: clamp(80px, 10vw, 120px); }
+  .quote-link { display: flex; justify-content: center; margin-top: 22px; }
+  .stats { max-width: 780px; margin: clamp(48px, 6vw, 72px) auto 0; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px clamp(16px, 3vw, 40px); border-top: 1px solid var(--line); padding-top: 28px; }
+  .stat-n { color: var(--accent-text); font-weight: 500; font-size: clamp(34px, 5vw, 56px); letter-spacing: -0.05em; line-height: 1; }
+  .stat-l { color: var(--muted); font-size: 15px; line-height: 1.4; margin-top: 10px; }
+  .stat-src { color: var(--faint); font-size: 14px; margin-top: 24px; }
+
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; }
+  .tracks { display: grid; gap: 16px; margin-top: 48px; }
+  .tracks .card { padding: clamp(24px, 3vw, 32px); }
+  .tracks h3 { font-size: 22px; }
+  .tracks .muted { margin-top: 12px; font-size: 16px; line-height: 1.6; }
+  .tracks .mini { margin-top: 24px; }
+  .plus { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
+  .plus li { position: relative; padding-left: 22px; }
+  .plus li::before { content: "+"; position: absolute; left: 0; color: var(--accent-text); font-weight: 700; }
+  .plus.big { gap: 14px; margin-top: 18px; }
+  .loop-steps { list-style: none; padding: 0; margin: 32px 0 0; display: grid; gap: 12px; }
+  .loop-steps .card { padding: 18px 20px; display: grid; gap: 4px; font-weight: 500; font-size: 16px; }
+  .loop-steps .n { color: var(--accent-text); }
+  .after { margin-top: 24px; }
+
+  .said { margin-top: 48px; border-bottom: 1px solid var(--line); }
+  .said-head { display: none; padding-bottom: 12px; }
+  .said-head span { color: var(--faint); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .said-row { display: grid; gap: 8px 40px; padding-block: 24px; border-top: 1px solid var(--line); }
+  .said-q { color: var(--fg); font-weight: 500; font-size: 18px; line-height: 1.4; letter-spacing: -0.01em; }
+  .said-a { color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+  .steps { margin-top: 44px; border-top: 1px solid var(--line); }
+  .step { display: grid; grid-template-columns: 52px 1fr; gap: 6px 10px; padding-block: 26px; border-bottom: 1px solid var(--line); }
+  .step .n { color: var(--accent-text); font-weight: 500; font-size: 22px; line-height: 1.25; }
+  .step h3 { font-size: 22px; line-height: 1.3; }
+  .step p { grid-column: 2; color: var(--muted); }
+
+  .who { display: grid; gap: 40px; align-items: center; max-width: 960px; margin-inline: auto; }
+  .portrait { margin: 0 auto; width: 240px; background: var(--bg); border: 1px solid var(--line); border-radius: 18px; padding: 10px; }
+  .portrait :global(img) { width: 100%; height: auto; border-radius: 10px; }
+  .who h2 { margin-bottom: 20px; }
+  .who-lead { font-size: 19px; color: var(--fg); margin-bottom: 14px; }
+  .who-link { margin-top: 22px; }
+
+  .sub-h { font-size: 22px; margin-top: 44px; }
+  .sub-h.first { margin-top: 36px; }
+  .sub-h.first-wide { margin-top: clamp(48px, 6vw, 72px); }
+  .copy { margin-top: 14px; }
+  .minus { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 10px; }
+  .minus li { position: relative; padding-left: 22px; color: var(--muted); font-size: 16px; }
+  .minus li::before { content: "\00d7"; position: absolute; left: 0; color: var(--faint); font-weight: 700; }
+
+  .hires { display: grid; gap: 16px; margin-top: 48px; }
+  .hire { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: clamp(24px, 3vw, 32px); }
+  .hire h3 { font-size: 19px; }
+  .hire-n { font-weight: 500; font-size: 40px; letter-spacing: -0.045em; line-height: 1; margin: 18px 0 8px; }
+  .hire ul { list-style: none; padding: 0; margin: 18px 0 24px; display: grid; gap: 6px; color: var(--muted); font-size: 15px; }
+  .hire-note { margin-top: auto; font-size: 16px; line-height: 1.5; }
+  .hire.me { border: 2px solid var(--orange); background: linear-gradient(160deg, rgba(255, 106, 26, 0.14), var(--surface) 65%); }
+  .hire.me .hire-n { color: var(--accent-text); }
+  .flip { font-size: 21px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.35; margin-top: 40px; }
+  .source { color: var(--faint); font-size: 13px; line-height: 1.55; margin-top: 36px; }
+
+  .price { font-weight: 500; font-size: clamp(56px, 7vw, 80px); letter-spacing: -0.05em; line-height: 1; }
+  .price span { color: var(--muted); font-size: 0.4em; letter-spacing: -0.02em; }
+  .price-l { margin-top: 8px; }
+  .price-l.strong { margin-top: 18px; font-weight: 500; }
+  .price-l.accent { color: var(--accent-text); font-weight: 500; }
+  .terms { margin-top: 24px; }
+  .guarantee { margin: 32px 0; padding: clamp(20px, 3vw, 28px); border: 1px solid rgba(255, 106, 26, 0.45); background: rgba(255, 106, 26, 0.08); border-radius: 14px; }
+  .guarantee .label { font-size: 15px; margin-bottom: 10px; }
+  .g-main { font-size: 20px; font-weight: 500; letter-spacing: -0.015em; line-height: 1.4; }
+  .g-sub { font-size: 15px; margin-top: 8px; }
+
+  .stories { display: grid; gap: 20px; margin-top: 48px; }
+
+  .wall-sec { padding-top: 0; }
+  .wall { columns: 1; column-gap: 20px; margin-top: 48px; }
+  .wall-item { break-inside: avoid; margin-bottom: 20px; }
+  .wall-item :global(.t.card) { background: var(--surface); }
+  .wall-link { font-size: 15px; margin: 12px 0 0 6px; }
+
+  .faqs { margin-top: 40px; border-top: 1px solid var(--line); }
+  details { border-bottom: 1px solid var(--line); }
+  summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; cursor: pointer; list-style: none; font-weight: 500; font-size: 18px; letter-spacing: -0.01em; }
+  summary::-webkit-details-marker { display: none; }
+  summary svg { width: 18px; height: 18px; flex: none; color: var(--accent-text); transition: transform 0.2s ease; }
+  details[open] summary svg { transform: rotate(45deg); }
+  details p { color: var(--muted); font-size: 16px; line-height: 1.65; padding-bottom: 22px; max-width: 40em; }
+
+  .start { padding-top: clamp(88px, 11vw, 140px); }
+  .start-head { text-align: center; max-width: 640px; margin: 0 auto; }
+  .start-head .lead { margin-inline: auto; }
+  .booking { margin-top: 24px; }
+
+  .smaller-sec { padding-block: 24px clamp(88px, 11vw, 140px); }
+  .smaller-h { font-size: clamp(26px, 2.6vw, 34px); }
+  .smaller-sec .lead { margin-top: 12px; }
+  .day { display: grid; gap: 6px; max-width: 440px; margin-top: 28px; padding: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; text-decoration: none; transition: border-color 0.15s ease; }
+  .day:hover { border-color: var(--orange); }
+  .day-name { font-weight: 500; font-size: 19px; }
+  .day-price { color: var(--accent-text); font-weight: 500; font-size: 15px; }
+  .day-body { color: var(--muted); font-size: 15px; line-height: 1.55; }
+
+  @media (min-width: 640px) {
+    .loop-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (min-width: 768px) {
+    .tracks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .said-head, .said-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); column-gap: 40px; }
+    .said-head span + span, .said-a { padding-left: 40px; border-left: 1px solid var(--line); }
+    .said-head span + span { border-left: 0; }
+    .who { grid-template-columns: 280px minmax(0, 1fr); gap: 56px; }
+    .portrait { width: 100%; }
+    .hires { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .stories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .wall { columns: 2; }
+  }
+  @media (min-width: 1024px) {
+    .wall { columns: 3; }
+  }
+  @media (max-width: 560px) {
+    .payoff { text-decoration-thickness: 3px; text-underline-offset: 7px; }
+    .body-lg { font-size: 17px; }
+    .spots { font-size: 16px; }
+    .play-dot { width: 48px; height: 48px; }
+    .play-dot svg { width: 20px; height: 20px; }
+    .play-label { font-size: 11px; }
+    .stat-l { font-size: 13px; }
+    .step { grid-template-columns: 40px 1fr; }
+    .step .n { font-size: 19px; }
+    .step h3 { font-size: 20px; }
+    .hire-n { font-size: 36px; }
+    .flip { font-size: 19px; }
+  }
+</style>
+
+<style is:global>
+  /* On :root, not the wrapper: the widget reads these from the document root for Stripe's card form. */
+  :root {
+    --color-ink: var(--fg);
+    --color-paper: var(--bg);
+    --color-surface: var(--surface);
+    --color-border: var(--line);
+    --color-muted: var(--muted);
+    --color-accent: var(--orange);
+    --color-accent-hover: var(--orange-hover);
+    --radius-sm: 6px;
+  }
+  .booking [data-booking]:not([data-bk-ready]) { display: block; min-height: 30rem; }
+  /* Motive11's orange is light, so text on it is the dark ground in both themes, not the page color. */
+  .booking .bk .bk-d.is-sel, .booking .bk .bk-next, .booking .bk .bk-btn { color: #1E1E1F; }
+</style>

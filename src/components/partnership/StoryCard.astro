@@ -1,0 +1,48 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"case-studies">;
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const href = `/case-studies/${entry.id}`;
+---
+
+<a class="story" href={href}>
+  <span class:list={["media", `cover-${d.coverBg}`, { art: d.coverStyle === "art" }]}>
+    <Image src={d.cover} alt={d.coverAlt} widths={[560, 900, 1200]} sizes="(min-width: 1024px) 560px, 100vw" />
+  </span>
+  <span class="body">
+    <span class="meta"><b>{d.client.name}</b> &middot; {d.year}</span>
+    <span class="title">{d.title}</span>
+    <span class="summary">{d.summary}</span>
+    <span class="tags">
+      {d.services.map((s) => <span>{s}</span>)}
+    </span>
+  </span>
+</a>
+
+<style>
+  .story { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; text-decoration: none; transition: border-color 0.15s ease, transform 0.15s ease; }
+  .story:hover { border-color: rgba(255, 106, 26, 0.55); transform: translateY(-2px); }
+  .media { display: block; aspect-ratio: 16 / 10; overflow: hidden; padding: clamp(18px, 3vw, 32px) clamp(18px, 3vw, 32px) 0; }
+  .media :global(img) { width: 100%; height: auto; border-radius: 8px 8px 0 0; box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.5); }
+  .media.art { padding: 0; }
+  .media.art :global(img) { height: 100%; object-fit: cover; border-radius: 0; box-shadow: none; }
+  /* Same grounds as CaseRow's covers. Its classes are global only on pages that render CaseRow. */
+  .cover-orange { background: linear-gradient(160deg, #FF7A30, #F25E10); }
+  .cover-charcoal { background: linear-gradient(160deg, #46464B, #313134); }
+  .cover-clay { background: linear-gradient(160deg, #BFA68F, #A88E77); }
+  .cover-sand { background: linear-gradient(160deg, #E9E1D6, #D8CDBF); }
+  .body { display: flex; flex-direction: column; flex: 1; padding: clamp(24px, 3vw, 32px); }
+  .meta { color: var(--faint); font-size: 15px; font-weight: 500; }
+  .meta b { color: var(--fg); font-weight: 500; }
+  .title { display: block; color: var(--fg); font-weight: 500; font-size: clamp(22px, 2vw, 26px); line-height: 1.2; letter-spacing: -0.028em; margin-top: 12px; text-wrap: balance; transition: color 0.15s ease; }
+  .story:hover .title { color: var(--accent-text); }
+  .summary { display: block; color: var(--muted); font-size: 16px; line-height: 1.6; margin-top: 12px; flex: 1; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .tags span { font-size: 12px; color: var(--muted); padding: 3px 8px; border: 1px solid var(--line); border-radius: 6px; }
+</style>

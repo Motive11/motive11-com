@@ -1,6 +1,9 @@
 # Old motive11.com paths, from before November 2026 when the site only pointed at markszymanski.co.
-/work-with-me       /services                         301
-/work-with-me/*     /services                         301
+/work-with-me       /partnership                      301
+/work-with-me/engineering-firms  /partnership/engineering-firms  301
+/work-with-me/law-firms          /partnership/law-firms          301
+/work-with-me/home-services      /partnership/home-services      301
+/work-with-me/*     /partnership                      301
 /pricing            /services                         301
 /about-us           /about                            301
 /contact            /book/intro                       301

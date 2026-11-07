@@ -16,7 +16,10 @@ his content, and builders; this site links there and never copies its prices.
 | Path | Source |
 |---|---|
 | `/` | `src/pages/index.astro` |
-| `/services` | `src/pages/services.astro`, offers from `src/lib/offers.ts` |
+| `/services` | `src/pages/services.astro`, offers from `src/lib/offers.ts`, prices from `src/lib/pricing.ts` |
+| `/partnership`, `/partnership/<industry>` | `src/components/partnership/PartnershipPage.astro`, industries in `src/lib/industries.ts` |
+| `/ai-onboarding-day` | `src/pages/ai-onboarding-day.astro` |
+| `/privacy` | `src/pages/privacy.astro` via `src/layouts/LegalLayout.astro` |
 | `/case-studies`, `/case-studies/<slug>` | `src/content/case-studies/*.md` (schema in `src/content.config.ts`) |
 | `/about` | `src/pages/about.astro` |
 | `/book`, `/book/<slug>` | `src/pages/book/index.astro`; `public/_redirects` rewrites every booking path to it |
