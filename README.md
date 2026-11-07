@@ -9,8 +9,12 @@ his content, and builders; this site links there and never copies its prices.
 - Astro 7 (static output), Tailwind v4 via `@tailwindcss/vite`, `@astrojs/sitemap`
 - Satoshi, self-hosted by Astro's Fonts API from Fontshare at build time
 - Cloudflare Pages, git-connected (`Motive11/motive11-website` → Pages project `motive11-website`, which holds motive11.com and www)
-- No forms of its own. Booking is the shared widget from the AIOS booking Worker
-- One Pages Function, `functions/api/v.ts`: the visitor ledger (below)
+- One form of its own: the operator newsletter signup (`src/components/NewsletterForm.astro`, on
+  `/newsletter` and in the footer). Booking is the shared widget from the AIOS booking Worker
+- Two Pages Functions: `functions/api/v.ts`, the visitor ledger (below), and
+  `functions/api/newsletter.ts`, which checks Turnstile (the `motive11.com` widget) and subscribes the
+  person in Szymanski Media's Bento with `audience:operator`, never asking. `functions/_shared/bento.ts`
+  is a copy of markszymanski.co's; fix a Bento quirk in both
 
 ## Pages
 
@@ -69,6 +73,10 @@ npx wrangler pages dev dist --port 8811   # serves dist with the real headers an
 
 Pushing `main` deploys. Pages build settings: build command `npm install --no-audit --no-fund && npm run build`,
 output `dist`, env `NODE_VERSION=24` and `SKIP_DEPENDENCY_INSTALL=1` (production and preview).
+Production secrets (set November 7, 2026, values from AIOS: the Turnstile widget's secret from the
+Cloudflare API, the Bento keys from `entities/szymanski-media/.env`): `TURNSTILE_SECRET_KEY`,
+`BENTO_PUBLISHABLE_KEY`, `BENTO_SECRET_KEY`, `BENTO_SITE_UUID`. Without them the newsletter form fails
+verification; nothing else depends on them.
 
 **Order for the first Astro deploy (November 2026):** the Pages project is still set up for the old static
 site (no build command, output = repo root). Change the build settings above BEFORE merging the Astro
