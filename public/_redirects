@@ -12,6 +12,9 @@
 /start              https://markszymanski.co/         301
 
 # Every booking link is served by the one /book page, which reads the path itself.
-/book/l/:token      /book/   200
-/book/manage/:token /book/   200
-/book/:slug         /book/   200
+/book/l/:token       /book/   200
+/book/l/:token/      /book/   200
+/book/manage/:token  /book/   200
+/book/manage/:token/ /book/   200
+/book/:slug          /book/   200
+/book/:slug/         /book/   200
